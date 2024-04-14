@@ -11,12 +11,14 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SetStateAction, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import { transform } from 'next/dist/build/swc/index';
 import theme from '../styles/muiTheme.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 function Header() {
   const [isLogin, setIsLogin] = useState(false);
+  const [openMenu, setOpenMenu] = useState(false);
   const path = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
@@ -43,9 +45,39 @@ function Header() {
 
   return (
     <ThemeProvider theme={theme}>
+      {/* 메뉴 */}
+      <div>
+        <div
+          className={
+            'fixed top-0 left-0 h-full w-80 bg-white flex flex-col justify-center items-center'
+          }
+          style={{
+            transform: openMenu ? 'translateX(0)' : 'translateX(-100%)',
+            transition: 'transform 0.4s ease-in-out', // 추가: 슬라이딩 애니메이션 효과를 위한 transition
+            zIndex: 70,
+          }}
+        >
+          메뉴창
+        </div>
+        <div
+          onClick={() => setOpenMenu(false)}
+          className={'fixed top-0 left-0 w-full h-full bg-zinc-600'}
+          style={{
+            opacity: openMenu ? '0.7' : '0',
+            transition: 'opacity 0.4s ease-in-out',
+            zIndex: openMenu ? 60 : -1,
+          }}
+        />
+      </div>
+      {/* 헤더 */}
       <div className="flex flex-row justify-center items-center w-full h-20">
         <div className="flex justify-start items-center w-1/6">
-          <IconButton className="ml-2" size="large" aria-label="open menu">
+          <IconButton
+            onClick={() => setOpenMenu(true)}
+            className="ml-2"
+            size="large"
+            aria-label="open menu"
+          >
             <MenuIcon />
           </IconButton>
           <Link
