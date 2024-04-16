@@ -3,11 +3,7 @@
 
 'use client';
 
-import { ThemeProvider } from '@emotion/react';
-import { IconButton } from '@mui/material';
-import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useState } from 'react';
-import theme from '../styles/muiTheme.ts';
 
 function HomeHeaderComponent() {
   const [pageIndex, setPageIndex] = useState(1);
@@ -26,39 +22,44 @@ function HomeHeaderComponent() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
-      <div className="flex flex-row w-full h-96 justify-center items-center bg-black opacity-90 relative overflow-hidden">
-        <img
-          src="https://i.ibb.co/wL61Zx5/home-Image.png"
-          alt="home-Image"
-          className="w-full absolute"
-        />
-        <div className="flex w-1/6 h-full justify-center items-center z-0">
-          <IconButton
-            className="bg-white bg-opacity-10"
-            onClick={handleBackwardClick}
+    <div className="flex flex-row w-full h-96 justify-center items-center bg-black opacity-90 relative overflow-hidden">
+      <img
+        src="https://i.ibb.co/wL61Zx5/home-Image.png"
+        alt="home-Image"
+        className="w-full absolute"
+      />
+      <div className="flex w-1/6 h-full justify-center items-center z-0">
+        <button
+          className="btn btn-circle bg-black bg-opacity-20 text-white border-none hover:bg-zinc-800"
+          onClick={handleBackwardClick}
+        >
+          <svg
+            className="h-6 w-6 transform rotate-180"
+            fill="none"
+            stroke="currentColor"
           >
-            <ArrowBackIosNewIcon color="primary" fontSize="large" />
-          </IconButton>
-        </div>
-        <div className="flex flex-col w-4/6 h-full justify-center z-0">
-          <p className="text-white text-4xl p-2">모임을 만들고</p>
-          <p className="text-white text-4xl font-bold p-2">잇다</p>
-          <p className="text-white text-2xl p-2">
-            간편 만남 서비스, <span className="font-bold">모잇다</span>
-          </p>
-        </div>
-        <div className="flex w-1/6 h-full justify-center items-center z-0">
-          {' '}
-          <IconButton
-            className="bg-white bg-opacity-10 rotate-180"
-            onClick={handleForwardClick}
-          >
-            <ArrowBackIosNewIcon color="primary" fontSize="large" />
-          </IconButton>
-        </div>
+            <path strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
       </div>
-    </ThemeProvider>
+      <div className="flex flex-col w-4/6 h-full justify-center z-0">
+        <p className="text-white text-4xl p-2">모임을 만들고</p>
+        <p className="text-white text-4xl font-bold p-2">잇다</p>
+        <p className="text-white text-2xl p-2">
+          간편 만남 서비스, <span className="font-bold">모잇다</span>
+        </p>
+      </div>
+      <div className="flex w-1/6 h-full justify-center items-center z-0">
+        <button
+          className="btn btn-circle bg-black bg-opacity-20 text-white border-none hover:bg-zinc-800"
+          onClick={handleForwardClick}
+        >
+          <svg className="h-6 w-6 transform" fill="none" stroke="currentColor">
+            <path strokeWidth="2" d="M9 5l7 7-7 7" />
+          </svg>
+        </button>
+      </div>
+    </div>
   );
 }
 

@@ -9,7 +9,7 @@ async function page() {
   return (
     <div className="flex flex-col justify-center items-center w-full h-full">
       <HomeHeaderComponent />
-      <div className="flex flex-col justify-center items-center w-4/6 h-full">
+      <div className="flex flex-col justify-center items-center w-[67.5rem] h-full">
         <HomeBodyComponent />
       </div>
     </div>
