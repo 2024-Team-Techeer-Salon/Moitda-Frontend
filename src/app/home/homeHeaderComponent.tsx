@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-// 메인 페이지 상단 홈 컴포넌트
+// 메인 페이지 홈 헤더 컴포넌트
 
 'use client';
 
@@ -7,9 +7,9 @@ import { ThemeProvider } from '@emotion/react';
 import { IconButton } from '@mui/material';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import { useState } from 'react';
-import theme from './styles/muiTheme.ts';
+import theme from '../styles/muiTheme.ts';
 
-function HomeMainComponent() {
+function HomeHeaderComponent() {
   const [pageIndex, setPageIndex] = useState(1);
   const [maxPageIndex] = useState(4);
 
@@ -62,4 +62,4 @@ function HomeMainComponent() {
   );
 }
 
-export default HomeMainComponent;
+export default HomeHeaderComponent;
