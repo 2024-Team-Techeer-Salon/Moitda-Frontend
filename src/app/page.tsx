@@ -1,8 +1,12 @@
+// 메인 페이지 컴포넌트
+
 'use server';
+
+import HomeMainComponent from './homeMainComponent.tsx';
 
 const Home = async () => (
   <div>
-    <h1>Moitda 프로젝트입니다.</h1>
+    <HomeMainComponent />
   </div>
 );
 

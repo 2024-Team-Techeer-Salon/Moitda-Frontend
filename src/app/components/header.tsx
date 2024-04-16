@@ -18,7 +18,7 @@ import theme from '../styles/muiTheme.ts';
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 function Header() {
-  const [isLogin, setIsLogin] = useState(false);
+  const [isLogin] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [openCategories, setOpenCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
