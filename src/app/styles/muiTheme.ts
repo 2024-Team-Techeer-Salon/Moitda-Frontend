@@ -8,7 +8,7 @@ const theme = createTheme({
     },
     // 2순위 컬러(보조 색)
     secondary: {
-      main: '#ffffff',
+      main: '#000000',
     },
   },
 });

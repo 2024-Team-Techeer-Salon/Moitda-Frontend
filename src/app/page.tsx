@@ -2,11 +2,14 @@
 
 'use server';
 
-import HomeMainComponent from './homeMainComponent.tsx';
+import Link from 'next/link';
 
 const Home = async () => (
   <div>
-    <HomeMainComponent />
+    <h1 className="text-2xl">Moitda 프로젝트입니다.</h1>
+    <Link className="text-blue-600" href="/home">
+      home으로 가기
+    </Link>
   </div>
 );
 
