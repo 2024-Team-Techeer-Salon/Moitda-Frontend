@@ -8,7 +8,7 @@ import LatestComponent from './latestComponent.tsx';
 import DistanceComponent from './distanceComponent.tsx';
 
 function HomeBodyComponent() {
-  const [activeTab, setActiveTab] = useState<string>('distance');
+  const [activeTab, setActiveTab] = useState<string>('latest');
   const [selectedTheme, setSelectedTheme] = useState<string>('지역 검색');
 
   const cityList = [
@@ -44,14 +44,14 @@ function HomeBodyComponent() {
   const mainBody = () => {
     if (activeTab === 'latest') {
       return (
-        <div>
+        <div className="flex justify-center items-center w-full">
           <LatestComponent />
         </div>
       );
     }
     if (activeTab === 'distance') {
       return (
-        <div>
+        <div className="flex justify-center items-center w-full">
           <DistanceComponent />
         </div>
       );
@@ -120,6 +120,10 @@ function HomeBodyComponent() {
       </div>
       <div className="flex flex-col justify-start items-start w-full h-full">
         {mainBody()}
+        {/* 강제로 지도 컴포넌트 렌더링 */}
+        <div className="w-0 h-0 overflow-hidden">
+          <DistanceComponent />
+        </div>
       </div>
     </div>
   );
