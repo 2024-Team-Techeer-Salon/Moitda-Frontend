@@ -14,6 +14,7 @@ import { SetStateAction, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
 import theme from '../styles/muiTheme.ts';
+import ignorePath from '../styles/ignorePath.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -27,7 +28,7 @@ function Header() {
   const path = usePathname();
 
   // 만약 로그인 페이지이면 Header를 숨깁니다.
-  if (path === '/login' || path === '/signup' || path === '/introduce') {
+  if (ignorePath().includes(path)) {
     return null;
   }
 
