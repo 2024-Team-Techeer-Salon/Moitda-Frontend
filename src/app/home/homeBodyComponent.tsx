@@ -5,9 +5,10 @@
 
 import { useState } from 'react';
 import LatestComponent from './latestComponent.tsx';
+import DistanceComponent from './distanceComponent.tsx';
 
 function HomeBodyComponent() {
-  const [activeTab, setActiveTab] = useState<string>('latest');
+  const [activeTab, setActiveTab] = useState<string>('distance');
   const [selectedTheme, setSelectedTheme] = useState<string>('지역 검색');
 
   const cityList = [
@@ -49,7 +50,11 @@ function HomeBodyComponent() {
       );
     }
     if (activeTab === 'distance') {
-      return <div>거리</div>;
+      return (
+        <div>
+          <DistanceComponent />
+        </div>
+      );
     }
   };
 
@@ -65,7 +70,7 @@ function HomeBodyComponent() {
             className={`tab ${activeTab === 'latest' ? 'font-bold' : ''}`}
             aria-label="최신순"
             checked={activeTab === 'latest'}
-            onClick={() => handleTabClick('latest')}
+            onChange={() => handleTabClick('latest')}
           />
 
           <input
@@ -75,7 +80,7 @@ function HomeBodyComponent() {
             className={`tab ${activeTab === 'distance' ? 'font-bold' : ''}`}
             aria-label="거리순"
             checked={activeTab === 'distance'}
-            onClick={() => handleTabClick('distance')}
+            onChange={() => handleTabClick('distance')}
           />
         </div>
 
