@@ -2,18 +2,11 @@
 
 'use client';
 
-import { ThemeProvider } from '@emotion/react';
 import { Montserrat } from 'next/font/google';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
-import CloseIcon from '@mui/icons-material/Close';
-import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 import Link from 'next/link';
 import { SetStateAction, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
-import ArrowDropDownIcon from '@mui/icons-material/ArrowDropDown';
-import theme from '../styles/muiTheme.ts';
 import ignorePath from '../styles/ignorePath.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
@@ -27,7 +20,6 @@ function Header() {
   const router = useRouter();
   const path = usePathname();
 
-  // 만약 로그인 페이지이면 Header를 숨깁니다.
   if (ignorePath().includes(path)) {
     return null;
   }
@@ -42,9 +34,10 @@ function Header() {
   // form 제출 시 검색 실행
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault(); // 기본 제출 동작 방지
-
-    // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
-    router.push(`/search/${searchQuery}`);
+    if (searchQuery) {
+      // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
+      router.push(`/search/${searchQuery}`);
+    }
   };
 
   const toggleCategories = () => {
@@ -52,7 +45,7 @@ function Header() {
   };
 
   return (
-    <ThemeProvider theme={theme}>
+    <div>
       {/* 메뉴가 열렸을 때, 메뉴 영역 외의 배경을 어둡게 처리하기 위한 div */}
       <div
         onClick={() => setOpenMenu(false)}
@@ -76,14 +69,14 @@ function Header() {
         {/* 메뉴 헤더 */}
         <div>
           <div className="flex flex-row items-center w-full h-20">
-            <IconButton
+            <button
+              className="w-12 h-12 ml-4 font-bold flex justify-center items-center rounded-full hover:bg-zinc-500 hover:bg-opacity-5"
               onClick={() => setOpenMenu(false)}
-              className="ml-2"
-              size="large"
-              aria-label="open menu"
             >
-              <CloseIcon />
-            </IconButton>
+              <svg className="w-6 h-6 cursor-pointer" viewBox="0 0 512 512">
+                <polygon points="400 145.49 366.51 112 256 222.51 145.49 112 112 145.49 222.51 256 112 366.51 145.49 400 256 289.49 366.51 400 400 366.51 289.49 256 400 145.49" />
+              </svg>
+            </button>
             <Link
               className="pl-4 flex flex-row items-center text-xl cursor-pointer"
               href="/"
@@ -103,7 +96,7 @@ function Header() {
             채팅
           </Link>
           <div
-            className="flex flex-row text-lg p-2 font-bold cursor-pointer"
+            className="flex flex-row text-lg p-2 font-bold cursor-pointer items-center"
             onClick={toggleCategories}
           >
             <p className="flex w-full">카테고리</p>
@@ -112,7 +105,12 @@ function Header() {
                 openCategories ? 'rotate-180' : ''
               }`}
             >
-              <ArrowDropDownIcon />
+              <svg
+                className="h-2 w-2 fill-current opacity-60 inline-block"
+                viewBox="0 0 2048 2048"
+              >
+                <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z" />
+              </svg>
             </span>
           </div>
           <div
@@ -151,14 +149,14 @@ function Header() {
       {/* 헤더 */}
       <div className="flex flex-row justify-center items-center w-full h-20">
         <div className="flex justify-start items-center w-1/6">
-          <IconButton
+          <button
+            className="w-12 h-12 ml-4 font-bold flex justify-center items-center rounded-full hover:bg-zinc-500 hover:bg-opacity-5"
             onClick={() => setOpenMenu(true)}
-            className="ml-2"
-            size="large"
-            aria-label="open menu"
           >
-            <MenuIcon />
-          </IconButton>
+            <svg className="w-6 h-6 cursor-pointer" viewBox="0 0 512 512">
+              <path d="M64,384H448V341.33H64Zm0-106.67H448V234.67H64ZM64,128v42.67H448V128Z" />
+            </svg>
+          </button>
           <Link
             className="pl-4 flex flex-row items-center text-xl cursor-pointer"
             href="/"
@@ -172,7 +170,18 @@ function Header() {
             onSubmit={handleSubmit}
             className="flex bg-opacity-15 items-center rounded-lg h-12 hover:bg-opacity-25 w-1/2 bg-gray-300 px-2"
           >
-            <SearchIcon />
+            {/* 돋보기 아이콘 */}
+            <svg
+              className="h-6 w-6"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeWidth="2"
+                d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+              />
+            </svg>
             <input
               type="text"
               className="w-full bg-transparent outline-none px-2"
@@ -196,7 +205,7 @@ function Header() {
           )}
         </div>
       </div>
-    </ThemeProvider>
+    </div>
   );
 }
 
