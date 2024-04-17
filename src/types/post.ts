@@ -1,4 +1,4 @@
-export interface Post {
+export interface postProps {
   titleImage: string;
   title: string;
   location: string;

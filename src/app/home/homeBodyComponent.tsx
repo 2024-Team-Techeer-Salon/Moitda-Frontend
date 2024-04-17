@@ -4,6 +4,7 @@
 'use client';
 
 import { useState } from 'react';
+import LatestComponent from './latestComponent.tsx';
 
 function HomeBodyComponent() {
   const [activeTab, setActiveTab] = useState<string>('latest');
@@ -41,7 +42,11 @@ function HomeBodyComponent() {
 
   const mainBody = () => {
     if (activeTab === 'latest') {
-      return <div>최신</div>;
+      return (
+        <div>
+          <LatestComponent />
+        </div>
+      );
     }
     if (activeTab === 'distance') {
       return <div>거리</div>;
