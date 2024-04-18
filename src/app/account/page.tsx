@@ -13,7 +13,7 @@ function Account() {
       <Profile />
       </div>
 
-      <div className="flex justify-end">
+      <div className="flex justify-end ">
       <MannerBar/>
       </div>
 
