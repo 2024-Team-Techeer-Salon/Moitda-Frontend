@@ -1,5 +1,4 @@
 import React from 'react';
-import PostCard from './PostCard.tsx';
 import Banner from './Banner.tsx';
 import Classification from './Classification.tsx';
 import Profile from './Profile.tsx';
@@ -10,7 +9,7 @@ function Account() {
     <div>
       <Banner />
 
-      <div className="-mt-10">
+      <div className="-mt-20">
       <Profile />
       </div>
 
@@ -19,7 +18,7 @@ function Account() {
       </div>
 
       <div className="flex justify-center">
-        <Classification />
+        {/* <Classification /> */}
       </div>
 
     </div>
