@@ -16,7 +16,6 @@ function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openCategories, setOpenCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const logo = 'https://i.ibb.co/kyrZGk4/fhrh.png';
   const router = useRouter();
   const path = usePathname();
 
@@ -82,7 +81,6 @@ function Header() {
               href="/"
               onClick={() => setOpenMenu(false)}
             >
-              <Image src={logo} alt="logo" width={50} height={50} />
               <h1 className={mont.className}>MOITDA</h1>
             </Link>
           </div>
@@ -161,7 +159,6 @@ function Header() {
             className="pl-4 flex flex-row items-center text-xl cursor-pointer"
             href="/"
           >
-            <Image src={logo} alt="logo" width={50} height={50} />
             <h1 className={mont.className}>MOITDA</h1>
           </Link>
         </div>
