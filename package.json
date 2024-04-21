@@ -23,7 +23,8 @@
     "react": "^18",
     "react-dom": "^18",
     "react-hook-form": "^7.51.3",
-    "react-kakao-maps-sdk": "^1.1.26"
+    "react-kakao-maps-sdk": "^1.1.26",
+    "react-quill": "^2.0.0"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.0.2",
