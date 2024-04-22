@@ -87,7 +87,7 @@ function Header() {
         </div>
         {/* 메뉴 바디 */}
         <div className="flex flex-col w-full h-full px-4 pt-[20%]">
-          <Link className="text-lg p-2 font-bold" href="/write">
+          <Link className="text-lg p-2 font-bold" href="/posts">
             모임 생성
           </Link>
           <Link className="text-lg p-2 font-bold" href="/chat">
