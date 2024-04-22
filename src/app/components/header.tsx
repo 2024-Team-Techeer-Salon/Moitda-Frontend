@@ -1,3 +1,4 @@
+/* eslint-disable operator-linebreak */
 // header(네비게이션) 컴포넌트
 
 'use client';
@@ -5,7 +6,9 @@
 import { ThemeProvider } from '@emotion/react';
 import { Montserrat } from 'next/font/google';
 import IconButton from '@mui/material/IconButton';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import MenuIcon from '@mui/icons-material/Menu';
+// eslint-disable-next-line import/no-extraneous-dependencies
 import SearchIcon from '@mui/icons-material/Search';
 import Image from 'next/image';
 import Link from 'next/link';
@@ -16,13 +19,19 @@ import theme from '../styles/muiTheme.ts';
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 function Header() {
+  // eslint-disable-next-line no-unused-vars
   const [isLogin, setIsLogin] = useState(false);
   const path = usePathname();
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
 
   // 만약 로그인 페이지이면 Header를 숨깁니다.
-  if (path === '/login' || path === '/signup' || path === '/introduce') {
+  if (
+    path === '/login' ||
+    path === '/signup' ||
+    path === '/introduce' ||
+    path === '/meetingdetail'
+  ) {
     return null;
   }
 
