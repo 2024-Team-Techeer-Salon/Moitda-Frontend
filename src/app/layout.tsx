@@ -20,7 +20,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <link rel="icon" href="https://i.ibb.co/kyrZGk4/fhrh.png" sizes="any" />
+        <link
+          rel="icon"
+          href="https://i.ibb.co/dgzmhY2/Moitda-Logo.png"
+          sizes="any"
+        />
         <Header />
         {children}
         <Footer />

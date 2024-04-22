@@ -16,7 +16,6 @@ function Header() {
   const [openMenu, setOpenMenu] = useState(false);
   const [openCategories, setOpenCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const logo = 'https://i.ibb.co/kyrZGk4/fhrh.png';
   const router = useRouter();
   const path = usePathname();
 
@@ -82,14 +81,13 @@ function Header() {
               href="/"
               onClick={() => setOpenMenu(false)}
             >
-              <Image src={logo} alt="logo" width={50} height={50} />
               <h1 className={mont.className}>MOITDA</h1>
             </Link>
           </div>
         </div>
         {/* 메뉴 바디 */}
         <div className="flex flex-col w-full h-full px-4 pt-[20%]">
-          <Link className="text-lg p-2 font-bold" href="/write">
+          <Link className="text-lg p-2 font-bold" href="/posts">
             모임 생성
           </Link>
           <Link className="text-lg p-2 font-bold" href="/chat">
@@ -161,7 +159,6 @@ function Header() {
             className="pl-4 flex flex-row items-center text-xl cursor-pointer"
             href="/"
           >
-            <Image src={logo} alt="logo" width={50} height={50} />
             <h1 className={mont.className}>MOITDA</h1>
           </Link>
         </div>
