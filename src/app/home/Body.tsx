@@ -7,7 +7,7 @@ import { useState } from 'react';
 import LatestComponent from './Latest.tsx';
 import DistanceComponent from './Distance.tsx';
 
-function HomeBodyComponent() {
+function Body() {
   const [activeTab, setActiveTab] = useState<string>('latest');
   const [selectedTheme, setSelectedTheme] = useState<string>('지역 검색');
 
@@ -129,4 +129,4 @@ function HomeBodyComponent() {
   );
 }
 
-export default HomeBodyComponent;
+export default Body;
