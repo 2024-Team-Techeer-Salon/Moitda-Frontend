@@ -4,8 +4,8 @@
 'use client';
 
 import { useState } from 'react';
-import LatestComponent from './latestComponent.tsx';
-import DistanceComponent from './distanceComponent.tsx';
+import LatestComponent from './Latest.tsx';
+import DistanceComponent from './Distance.tsx';
 
 function HomeBodyComponent() {
   const [activeTab, setActiveTab] = useState<string>('latest');
@@ -44,14 +44,14 @@ function HomeBodyComponent() {
   const mainBody = () => {
     if (activeTab === 'latest') {
       return (
-        <div className="flex justify-center items-center w-full">
+        <div className="flex w-full items-center justify-center">
           <LatestComponent />
         </div>
       );
     }
     if (activeTab === 'distance') {
       return (
-        <div className="flex justify-center items-center w-full">
+        <div className="flex w-full items-center justify-center">
           <DistanceComponent />
         </div>
       );
@@ -59,8 +59,8 @@ function HomeBodyComponent() {
   };
 
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="flex flex-row justify-start items-start w-full p-12">
+    <div className="flex h-full w-full flex-col">
+      <div className="flex w-full flex-row items-start justify-start p-12">
         {/* 탭 리스트 */}
         <div role="tablist" className="tabs tabs-bordered tabs-lg w-1/4">
           <input
@@ -85,13 +85,13 @@ function HomeBodyComponent() {
         </div>
 
         {/* 지역 검색 드롭다운 */}
-        <div className="flex flex-row justify-end items-center w-full">
+        <div className="flex w-full flex-row items-center justify-end">
           {activeTab === 'latest' && (
-            <div className="dropdown dropdown-bottom dropdown-end">
+            <div className="dropdown dropdown-end dropdown-bottom">
               <div tabIndex={0} role="button" className="btn">
                 {selectedTheme}
                 <svg
-                  className="h-2 w-2 fill-current opacity-60 inline-block"
+                  className="inline-block h-2 w-2 fill-current opacity-60"
                   viewBox="0 0 2048 2048"
                 >
                   <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z" />
@@ -99,14 +99,14 @@ function HomeBodyComponent() {
               </div>
               <ul
                 tabIndex={0}
-                className="dropdown-content z-[1] p-2 shadow-2xl bg-base-200 rounded-box w-52"
+                className="dropdown-content z-[1] w-52 rounded-box bg-base-200 p-2 shadow-2xl"
               >
                 {cityList.map((district, index) => (
                   <li key={`${index}`}>
                     <input
                       type="radio"
                       name="theme-dropdown"
-                      className="theme-controller btn btn-sm btn-block btn-ghost justify-start"
+                      className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
                       aria-label={`${district}`}
                       value={`${district}`}
                       onChange={handleThemeChange}
@@ -118,10 +118,10 @@ function HomeBodyComponent() {
           )}
         </div>
       </div>
-      <div className="flex flex-col justify-start items-start w-full h-full">
+      <div className="flex h-full w-full flex-col items-start justify-start">
         {mainBody()}
         {/* 강제로 지도 컴포넌트 렌더링 */}
-        <div className="w-0 h-0 overflow-hidden">
+        <div className="h-0 w-0 overflow-hidden">
           <DistanceComponent />
         </div>
       </div>

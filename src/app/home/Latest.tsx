@@ -1,4 +1,4 @@
-import PostComponent from '../components/postComponent.tsx';
+import PostComponent from '../components/Post.tsx';
 
 function LatestComponent() {
   const postList = [];
@@ -15,7 +15,7 @@ function LatestComponent() {
     );
   }
 
-  return <div className="flex flex-row items-center flex-wrap">{postList}</div>;
+  return <div className="flex flex-row flex-wrap items-center">{postList}</div>;
 }
 
 export default LatestComponent;
