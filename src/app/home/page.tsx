@@ -2,15 +2,15 @@
 
 'use server';
 
-import HomeHeaderComponent from './homeHeaderComponent.tsx';
-import HomeBodyComponent from './homeBodyComponent.tsx';
+import Header from './Header.tsx';
+import Body from './Body.tsx';
 
 async function page() {
   return (
-    <div className="flex flex-col justify-center items-center w-full h-full">
-      <HomeHeaderComponent />
-      <div className="flex flex-col justify-center items-center w-[67.5rem] h-full">
-        <HomeBodyComponent />
+    <div className="flex h-full w-full flex-col items-center justify-center">
+      <Header />
+      <div className="flex h-full w-[67.5rem] flex-col items-center justify-center">
+        <Body />
       </div>
     </div>
   );

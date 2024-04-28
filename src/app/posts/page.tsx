@@ -157,12 +157,12 @@ function page() {
   };
 
   return (
-    <div className="flex flex-col justify-center items-center w-full mt-20">
-      <div className="flex flex-col w-[67.5rem] h-full">
+    <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
+      <div className="flex h-full w-[67.5rem] flex-col">
         {/* 제목 입력 및 카테고리 선택 */}
-        <div className="flex flex-row w-full h-12 ">
+        <div className="flex h-12 w-full flex-row ">
           <form
-            className="flex w-full mr-4 border border-1 p-2 border-zinc-300"
+            className="border-1 mr-4 flex w-full border border-zinc-300 p-2"
             onSubmit={handleSubmit(onSubmit)}
           >
             <input
@@ -173,14 +173,14 @@ function page() {
             />
           </form>
 
-          <FormControl className="flex w-40 h-12" fullWidth>
+          <FormControl className="flex h-12 w-40" fullWidth>
             <InputLabel className="flex h-full">카테고리</InputLabel>
             <Select
               value={category}
               label="카테고리"
               onChange={handleChange}
               style={{ borderRadius: 0 }}
-              className="flex w-full h-full"
+              className="flex h-full w-full"
             >
               <MenuItem value="Category1">Category1</MenuItem>
               <MenuItem value="Category2">Category2</MenuItem>
@@ -190,29 +190,29 @@ function page() {
         </div>
 
         {/* 장소 선택 */}
-        <div className="flex flex-row w-full mt-8 h-60">
-          <div className="flex flex-col justify-end w-1/2 ">
+        <div className="mt-8 flex h-60 w-full flex-row">
+          <div className="flex w-1/2 flex-col justify-end ">
             <p className="flex text-sm text-zinc-300">
               모임 장소를 입력해 주세요!
             </p>
-            <div className="flex flex-row w-full mt-4 h-12">
-              <p className="flex w-full  border border-1 justify-start items-center pl-2 text-zinc-300 border-zinc-300 mr-4">
+            <div className="mt-4 flex h-12 w-full flex-row">
+              <p className="border-1 mr-4  flex w-full items-center justify-start border border-zinc-300 pl-2 text-zinc-300">
                 주소
               </p>
-              <button className="btn w-32 h-12 text-white bg-[#E6E1E1] hover:bg-[#C7B7B7]">
+              <button className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]">
                 주소 검색
               </button>
             </div>
-            <form className="flex w-full mt-4 mr-4 border border-1 border-zinc-300">
+            <form className="border-1 mr-4 mt-4 flex w-full border border-zinc-300">
               <input
                 {...register('address', { required: true })}
                 type="text"
                 placeholder="상세 주소"
-                className="flex w-full h-12 focus:outline-none p-2"
+                className="flex h-12 w-full p-2 focus:outline-none"
               />
             </form>
           </div>
-          <div className="flex w-1/2 h-60 border border-zinc-300 ml-4" id="map">
+          <div className="ml-4 flex h-60 w-1/2 border border-zinc-300" id="map">
             <Script
               src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
               strategy="beforeInteractive"
@@ -225,10 +225,10 @@ function page() {
         </div>
 
         {/* 날짜 선택 */}
-        <p className="flex text-sm text-zinc-300 mt-12">
+        <p className="mt-12 flex text-sm text-zinc-300">
           약속 날짜를 입력해 주세요!
         </p>
-        <div className="flex w-full mt-4">
+        <div className="mt-4 flex w-full">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DateTimePicker
               className="flex w-80"
@@ -239,10 +239,10 @@ function page() {
         </div>
 
         {/* 인원수 선택 */}
-        <p className="flex text-sm text-zinc-300 mt-12">
+        <p className="mt-12 flex text-sm text-zinc-300">
           본인을 포함해 모일 최대 인원수를 입력해 주세요!
         </p>
-        <div className="flex flex-row w-full mt-4">
+        <div className="mt-4 flex w-full flex-row">
           {' '}
           <NumberInput
             aria-label="Demo number input"
@@ -264,48 +264,48 @@ function page() {
         </div>
 
         {/* 참가 방식 결정 */}
-        <p className="flex text-sm text-zinc-300 mt-12">
+        <p className="mt-12 flex text-sm text-zinc-300">
           참가 방식을 선택해 주세요!
         </p>
-        <div className="flex flex-row w-72 h-16 justify-start items-center rounded-2xl mt-4 bg-gray-200 shadow-md p-4">
+        <div className="mt-4 flex h-16 w-72 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md">
           <div
-            className="absolute w-32 h-12 justify-center items-center rounded-2xl bg-gray-100 shadow-md"
+            className="absolute h-12 w-32 items-center justify-center rounded-2xl bg-gray-100 shadow-md"
             style={{
               transform: joinImmediately ? 'translateX(0)' : 'translateX(100%)',
               transition: 'transform 0.3s ease-in-out',
             }}
           />
           <p
-            className="flex w-1/2 text-lg justify-center text-zinc-500 font-bold z-10 cursor-pointer"
+            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
             onClick={() => setJoinImmediately(true)}
           >
             즉시 참가
           </p>
           <p
-            className="flex w-1/2 text-lg justify-center text-zinc-500 font-bold z-10 cursor-pointer"
+            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
             onClick={() => setJoinImmediately(false)}
           >
             승인 후 참가
           </p>
         </div>
 
-        <div className="flex w-full h-full flex-col mt-12">
+        <div className="mt-12 flex h-full w-full flex-col">
           {/* React-Quill 컴포넌트 */}
           <ReactQuill
             theme="snow" // 에디터의 테마 설정
             value={editorHtml} // 현재 편집 중인 HTML 내용
             onChange={handleEditorChange} // 내용이 변경될 때 호출되는 콜백 함수
-            className="w-full h-96"
+            className="h-96 w-full"
             placeholder="어떤 모임을 가질 지 설명해주세요!"
           />
         </div>
 
         {/* 이미지 업로드 */}
-        <p className="flex text-sm text-zinc-300 mt-20">
+        <p className="mt-20 flex text-sm text-zinc-300">
           모임 대표 사진을 업로드해 주세요! (최대 8장)
         </p>
 
-        <div className="flex flex-row w-full h-auto overflow-x-scroll">
+        <div className="flex h-auto w-full flex-row overflow-x-scroll">
           <input
             ref={fileInputRef}
             type="file"
@@ -324,7 +324,7 @@ function page() {
               }}
               onClick={handleFileInputChange}
             >
-              <div className="flex w-28 h-28 border border-1 justify-center items-center border-zinc-300 m-3 text-black cursor-pointer">
+              <div className="border-1 m-3 flex h-28 w-28 cursor-pointer items-center justify-center border border-zinc-300 text-black">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
                   className="h-5 w-5"
@@ -352,13 +352,13 @@ function page() {
               <Image
                 src={image}
                 alt={`Uploaded ${index}`}
-                className="flex border border-1 border-zinc-300 m-3 cursor-pointer"
+                className="border-1 m-3 flex cursor-pointer border border-zinc-300"
                 width={112}
                 height={112}
               />
               {hoveredIndex === index && (
                 <div
-                  className="absolute w-28 h-28 flex justify-center items-center top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-zinc-200 bg-opacity-70 cursor-pointer"
+                  className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center bg-zinc-200 bg-opacity-70"
                   onClick={() => handleImageDelete(index)}
                 >
                   <svg
@@ -381,8 +381,8 @@ function page() {
             </div>
           ))}
         </div>
-        <div className="flex flex-row justify-end w-full mt-12">
-          <button className="btn w-32 h-12 text-white bg-[#E6E1E1] hover:bg-[#C7B7B7]">
+        <div className="mt-12 flex w-full flex-row justify-end">
+          <button className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]">
             등록
           </button>
         </div>

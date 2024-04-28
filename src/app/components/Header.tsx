@@ -88,10 +88,18 @@ function Header() {
 
         {/* 메뉴 바디 */}
         <div className="flex h-full w-full flex-col px-4 pt-[20%]">
-          <Link className="p-2 text-lg font-bold" href="/posts">
+          <Link
+            className="p-2 text-lg font-bold"
+            href="/posts"
+            onClick={() => setOpenMenu(false)}
+          >
             모임 생성
           </Link>
-          <Link className="p-2 text-lg font-bold" href="/chat">
+          <Link
+            className="p-2 text-lg font-bold"
+            href="/chat"
+            onClick={() => setOpenMenu(false)}
+          >
             채팅
           </Link>
           <div
@@ -132,7 +140,11 @@ function Header() {
               </Link>
             </div>
           </div>
-          <Link className="p-2 text-lg font-bold" href="/account">
+          <Link
+            className="p-2 text-lg font-bold"
+            href="/account"
+            onClick={() => setOpenMenu(false)}
+          >
             마이페이지
           </Link>
         </div>
