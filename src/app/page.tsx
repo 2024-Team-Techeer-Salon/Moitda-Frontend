@@ -11,6 +11,9 @@ function Home() {
       <Link className="text-blue-600" href="/home">
         home으로 가기
       </Link>
+      <Link className="text-blue-600" href="/review">
+        후기페이지로 가기
+      </Link>
     </div>
   );
 }
