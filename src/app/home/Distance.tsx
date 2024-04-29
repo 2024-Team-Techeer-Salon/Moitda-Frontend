@@ -7,12 +7,12 @@ import Script from 'next/script';
 import { Map } from 'react-kakao-maps-sdk';
 import Image from 'next/image'; // Import the Image component
 
-function DistanceComponent() {
+function Distance() {
   return (
-    <div className="flex flex-col w-full h-full">
-      <div className="flex flex-row justify-center items-center">
-        <div className="flex flex-col w-60 h-[28rem] border m-4 border-zinc-300">
-          <div className="flex w-60 h-60">
+    <div className="flex h-full w-full flex-col">
+      <div className="flex flex-row items-center justify-center">
+        <div className="m-4 flex h-[28rem] w-60 flex-col border border-zinc-300">
+          <div className="flex h-60 w-60">
             <Image
               src="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
               width={1000}
@@ -21,7 +21,7 @@ function DistanceComponent() {
               alt="Image"
             />
           </div>
-          <div className="flex flex-col h-full justify-around p-2 py-8">
+          <div className="flex h-full flex-col justify-around p-2 py-8">
             {' '}
             <p className="text-lg font-bold">4월 8일 월요일 16:00</p>
             <p className="text-xl">모각코 할 사람!</p>
@@ -33,7 +33,7 @@ function DistanceComponent() {
           </div>
         </div>
         <div
-          className="w-[50rem] h-[28rem] border border-zinc-300 m-4"
+          className="m-4 h-[28rem] w-[50rem] border border-zinc-300"
           id="map"
         >
           <Script
@@ -50,4 +50,4 @@ function DistanceComponent() {
   );
 }
 
-export default DistanceComponent;
+export default Distance;
