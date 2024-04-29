@@ -18,7 +18,7 @@ function Account() {
       </div>
 
       <div className="flex justify-center">
-        {/* <Classification /> */}
+        <Classification />
       </div>
 
     </div>

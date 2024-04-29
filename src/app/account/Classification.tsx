@@ -1,3 +1,5 @@
+/* eslint-disable quotes */
+
 'use client';
 
 import React, { useState } from 'react';
@@ -11,10 +13,11 @@ const Classification = () => {
     setActiveTab(tab);
   };
 
-  const commonFontStyle = 'cursor-pointer text-center font-inter text-lg font-medium border-b-2';
+  const commonFontStyle = 'cursor-pointer text-center font-inter text-lg font-medium border-b-2 flex flex-row justify-center items-center';
+  const customStyle = 'w-1/2 h-16';
 
-  const joinedMeetfont = activeTab === 'joined' ? 'text-black' : 'text-gray-300';
-  const createdMeetfont = activeTab === 'created' ? 'text-black' : 'text-gray-300';
+  const joinedMeetfont = activeTab === 'joined' ? 'text-black border-black' : 'text-gray-300';
+  const createdMeetfont = activeTab === 'created' ? 'text-black border-black' : 'text-gray-300';
 
   const ClassBody = () => {
     if (activeTab === 'joined') {
@@ -27,22 +30,23 @@ const Classification = () => {
   };
 
   return (
-    <div className={`${commonFontStyle} flex justify-center`}>
-      <div
-        className={joinedMeetfont}
-        onClick={() => handleTabClick('joined')}
-      >
-        <p>참여한 모임</p>
+    <div className='flex flex-col justify-center w-full'>
+      <div className= 'flex flex-row w-full justify-center p-20'>
+        <div
+          className={`${commonFontStyle} ${customStyle} ${joinedMeetfont}`}
+          onClick={() => handleTabClick('joined')}
+        >
+          <p>참여한 모임</p>
+        </div>
+
+        <div
+          className={`${commonFontStyle} ${customStyle} ${createdMeetfont}`}
+          onClick={() => handleTabClick('created')}>
+          <p>생성한 모임</p>
+        </div>
       </div>
 
-      <div
-        className={createdMeetfont}
-        onClick={() => handleTabClick('created')}
-      >
-        <p>생성한 모임</p>
-      </div>
-
-      <div className="mt-2">
+      <div className='ml-16'>
         <ClassBody />
       </div>
     </div>
