@@ -85,15 +85,15 @@ function ChatList() {
         peopleCount={3}
         lastTime="2024-05-04 18:00:58"
         lastChat="그럼 그 때 봬요!"
-        unreadCount={1}
+        unreadCount={13}
       />
       <ChatElement
         titleImage="https://i.ibb.co/556bLCN/image.png"
         title="새로 나온 와퍼 먹으러 가 볼 사람"
-        peopleCount={8}
+        peopleCount={2}
         lastTime="2024-05-03 18:00:58"
-        lastChat="후추가 좀 더 있었으면 좋겠다 향이 조금 아쉬워"
-        unreadCount={62}
+        lastChat="후추가 좀 더 있었으면 좋겠어요. 향이 조금 약한게 아쉽네요 ㅠㅠ"
+        unreadCount={3}
       />
       <ChatElement
         titleImage="https://i.ibb.co/KDg6p1L/image.png"
