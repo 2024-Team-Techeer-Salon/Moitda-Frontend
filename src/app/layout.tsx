@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './styles/globals.css';
+import StoreProvider from './StoreProvider.tsx';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
 
@@ -26,7 +27,7 @@ export default function RootLayout({
           sizes="any"
         />
         <Header />
-        {children}
+        <StoreProvider>{children}</StoreProvider>
         <Footer />
       </body>
     </html>
