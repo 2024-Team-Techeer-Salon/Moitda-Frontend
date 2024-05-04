@@ -1,8 +1,20 @@
 /** @type {import('next').NextConfig} */
-const nextConfig = {
-  images: {
-    domains: ['i.ibb.co'],
-  },
+// ES Module syntax
+export const images = {
+  domains: ['i.ibb.co'],
 };
 
-export default nextConfig;
+export async function redirects() {
+  return [
+    {
+      source: '/',
+      destination: '/home',
+      permanent: true,
+    },
+  ];
+}
+
+export default {
+  images,
+  redirects,
+};
