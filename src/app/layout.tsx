@@ -2,8 +2,10 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './styles/globals.css';
+import StoreProvider from './StoreProvider.tsx';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
+import QueryProviders from '../lib/QueryProvider.tsx';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -26,7 +28,9 @@ export default function RootLayout({
           sizes="any"
         />
         <Header />
-        {children}
+        <QueryProviders>
+          <StoreProvider>{children}</StoreProvider>
+        </QueryProviders>
         <Footer />
       </body>
     </html>
