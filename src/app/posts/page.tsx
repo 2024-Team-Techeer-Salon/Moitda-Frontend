@@ -19,6 +19,7 @@ import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
+import DaumPostcode from 'react-daum-postcode';
 import {
   Unstable_NumberInput as BaseNumberInput,
   NumberInputProps,
