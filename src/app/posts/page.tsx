@@ -16,13 +16,12 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
-import Script from 'next/script';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
+import DaumPostcode from 'react-daum-postcode';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
-import DaumPostcode from 'react-daum-postcode';
 import {
   Unstable_NumberInput as BaseNumberInput,
   NumberInputProps,
@@ -33,7 +32,7 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import Head from 'next/head';
+import Script from 'next/script';
 
 const ReactQuill = dynamic(async () => import('react-quill'), {
   ssr: false,
@@ -227,16 +226,8 @@ function page() {
         className="fixed inset-0 z-40 flex h-full w-full items-center justify-center bg-black bg-opacity-10"
         onClick={() => setMeetingAddressModalOpen(false)}
       >
-        <Script
-          type="text/javascript"
-          src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
-        />
         <div className="flex h-96 w-1/3">
-          <DaumPostcode
-            onComplete={handleComplete}
-            autoClose={true}
-            className="h-full w-full"
-          />
+          <DaumPostcode onComplete={handleComplete} className="h-full w-full" />
         </div>
       </div>
     );
@@ -244,12 +235,11 @@ function page() {
 
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
-      <Head>
-        <script
-          type="text/javascript"
-          src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
-        />
-      </Head>
+      <Script
+        type="text/javascript"
+        src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
+        strategy="beforeInteractive"
+      />
 
       <div className="flex h-full w-[67.5rem] flex-col">
         {/* 제목 입력 및 카테고리 선택 */}
@@ -266,13 +256,13 @@ function page() {
             />
           </form>
 
-          <FormControl className="flex h-12 w-40" fullWidth>
+          <FormControl className="flex h-12 w-40">
             <InputLabel className="flex h-full">카테고리</InputLabel>
             <Select
               value={category}
               label="카테고리"
               onChange={handleChange}
-              style={{ borderRadius: 0 }}
+              style={{ borderRadius: 0 }} // width: '160px', height: '48px',
               className="flex h-full w-full"
             >
               <MenuItem value="Category1">Category1</MenuItem>
@@ -314,10 +304,10 @@ function page() {
             </form>
           </div>
           <div className="ml-4 flex h-60 w-1/2 border border-zinc-300" id="map">
-            <Script
+            {/* <Script
               src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
               strategy="beforeInteractive"
-            />
+            /> */}
             <Map // 지도를 표시할 컨테이너
               center={center} // 지도의 중심좌표
               style={{ width: '100%', height: '100%' }}
