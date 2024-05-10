@@ -5,7 +5,7 @@ import { api } from './axios.config.ts';
 
 export async function sample() {
   try {
-    const response = await api.get('/users/100');
+    const response = await api.get('/users/1');
     return response.data;
   } catch (error) {
     console.error('sample error : ', error);
