@@ -1,15 +1,17 @@
 /* eslint-disable consistent-return */
 /* eslint-disable import/prefer-default-export */
+import build from 'next/dist/build/index';
 import { formApi, api } from './axios.config.ts';
 
 export const postMeetings = async (
-  categoryId: number,
   title: string,
-  content: string,
+  categoryId: number,
+  editorHTML: string,
   buildingName: string,
   address: string,
+  addressDetail: string,
   numPeople: number,
-  joinImmediately: boolean,
+  needsApproval: boolean,
   meetingTime: string,
   image: File[],
 ) => {
@@ -19,14 +21,15 @@ export const postMeetings = async (
     new Blob(
       [
         JSON.stringify({
-          categoryId,
+          category_id: categoryId,
           title,
-          content,
-          buildingName,
+          content: editorHTML,
+          building_name: buildingName,
           address,
-          numPeople,
-          joinImmediately,
-          meetingTime,
+          address_detail: addressDetail,
+          max_participants_count: numPeople,
+          approval_required: needsApproval,
+          appointment_time: meetingTime,
         }),
       ],
       { type: 'application/json' },

@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-undef */
 /* eslint-disable @next/next/no-script-component-in-head */
 /* eslint-disable @next/next/no-sync-scripts */
@@ -21,7 +22,7 @@ import DaumPostcode from 'react-daum-postcode';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
-import { useForm } from 'react-hook-form';
+import { set, useForm } from 'react-hook-form';
 import {
   Unstable_NumberInput as BaseNumberInput,
   NumberInputProps,
@@ -33,6 +34,12 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Script from 'next/script';
+import { postMeetings } from '@/api/meetings.ts';
+import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
+import timezone from 'dayjs/plugin/timezone';
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const ReactQuill = dynamic(async () => import('react-quill'), {
   ssr: false,
@@ -112,16 +119,22 @@ const NumberInput = React.forwardRef(
 function page() {
   const [category, setcategory] = useState('');
   const [numPeople, setNumPeople] = useState(1);
-  const [joinImmediately, setJoinImmediately] = useState(true);
+  const [needsApproval, setNeedsApproval] = useState(true);
   const [editorHtml, setEditorHtml] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
   const [address, setAddress] = useState('');
+  const [buildingName, setBuildingName] = useState('');
   const [meetingAddressModalOpen, setMeetingAddressModalOpen] = useState(false);
-  const { register, handleSubmit } = useForm();
+  const { register, handleSubmit, watch } = useForm();
   const today = dayjs();
+  const [meetingTime, setMeetingTime] = useState(
+    dayjs(today).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm'), // 약속 날짜와 시간의 초기값, 한국 기준 현재 시간으로 설정
+  );
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  const title = watch('title');
+  const addressDetail = watch('addressDetail');
 
   useEffect(() => {
     if (navigator.geolocation) {
@@ -137,7 +150,6 @@ function page() {
           console.error(`Error Code = ${error.code} - ${error.message}`);
         },
       );
-      // console.log(center);
     } else {
       console.error('이 브라우저에서는 Geolocation이 지원되지 않습니다.');
     }
@@ -165,8 +177,8 @@ function page() {
     }
   };
 
-  const onSubmit = (data: any) => {
-    console.log(data); // 이곳에서 form 데이터를 처리합니다.
+  const onSubmit = (event: any) => {
+    event.preventDefault();
   };
 
   const handleChange = (event: SelectChangeEvent) => {
@@ -187,6 +199,9 @@ function page() {
     const handleComplete = (data: any) => {
       let fullAddress = data.buildingName;
       let extraAddress = '';
+
+      setAddress(data.address);
+      setBuildingName(data.buildingName);
 
       if (data.addressType === 'R') {
         if (data.bname !== '') {
@@ -232,6 +247,56 @@ function page() {
       </div>
     );
   }
+
+  const handleDateChange = (newValue: any) => {
+    // newValue를 ISO 문자열 형식으로 변환하여 상태 업데이트
+    setMeetingTime(
+      newValue
+        ? dayjs(newValue).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm')
+        : '',
+    );
+  };
+
+  const handlePostMeetings = () => {
+    console.log(
+      'title : ',
+      title,
+      'category : ',
+      category,
+      'editorHtml : ',
+      editorHtml,
+      'buildingName : ',
+      buildingName,
+      'address : ',
+      address,
+      'numPeople : ',
+      numPeople,
+      'needsApproval : ',
+      needsApproval,
+      'today : ',
+      meetingTime,
+      'images : ',
+      images,
+    );
+    postMeetings(
+      title,
+      categoryId,
+      editorHtml,
+      buildingName,
+      address,
+      addressDetail,
+      numPeople,
+      needsApproval,
+      meetingTime,
+      images,
+    )
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
@@ -296,7 +361,7 @@ function page() {
             </div>
             <form className="border-1 mr-4 mt-4 flex w-full border border-zinc-300">
               <input
-                {...register('address', { required: true })}
+                {...register('addressDetail', { required: true })}
                 type="text"
                 placeholder="상세 주소"
                 className="flex h-12 w-full p-2 focus:outline-none"
@@ -304,10 +369,6 @@ function page() {
             </form>
           </div>
           <div className="ml-4 flex h-60 w-1/2 border border-zinc-300" id="map">
-            {/* <Script
-              src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
-              strategy="beforeInteractive"
-            /> */}
             <Map // 지도를 표시할 컨테이너
               center={center} // 지도의 중심좌표
               style={{ width: '100%', height: '100%' }}
@@ -326,7 +387,9 @@ function page() {
             <DateTimePicker
               className="flex w-80"
               label="날짜 선택"
-              value={today}
+              value={dayjs(meetingTime)}
+              onChange={handleDateChange}
+              // renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </div>
@@ -339,18 +402,9 @@ function page() {
           {' '}
           <NumberInput
             aria-label="Demo number input"
-            // endAdornment={
-            //   <InputAdornment
-            //     className="flex pt-6 -ml-6"
-            //     position="end"
-            //     component="div"
-            //   >
-            //     명
-            //   </InputAdornment>
-            // }
             placeholder="인원수"
             value={numPeople}
-            onChange={(event, val: any) => setNumPeople(val)}
+            onChange={(val: any) => setNumPeople(val)}
             min={0}
             max={99}
           />
@@ -364,21 +418,21 @@ function page() {
           <div
             className="absolute h-12 w-32 items-center justify-center rounded-2xl bg-gray-100 shadow-md"
             style={{
-              transform: joinImmediately ? 'translateX(0)' : 'translateX(100%)',
+              transform: needsApproval ? 'translateX(0)' : 'translateX(100%)',
               transition: 'transform 0.3s ease-in-out',
             }}
           />
           <p
             className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
-            onClick={() => setJoinImmediately(true)}
+            onClick={() => setNeedsApproval(true)}
           >
-            즉시 참가
+            승인 후 참가
           </p>
           <p
             className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
-            onClick={() => setJoinImmediately(false)}
+            onClick={() => setNeedsApproval(false)}
           >
-            승인 후 참가
+            즉시 참가
           </p>
         </div>
 
@@ -475,7 +529,10 @@ function page() {
           ))}
         </div>
         <div className="mt-12 flex w-full flex-row justify-end">
-          <button className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]">
+          <button
+            className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
+            onClick={handlePostMeetings}
+          >
             등록
           </button>
         </div>
