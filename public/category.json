@@ -1,0 +1,35 @@
+{
+  "category_name": [
+    "여행/피크닉",
+    "운동/스포츠",
+    "독서/인문학",
+    "언어/외국어",
+    "문화/영화/공연",
+    "음악/악기",
+    "미술/공예",
+    "댄스",
+    "봉사 활동",
+    "친목/사교",
+    "오토바이/드라이브",
+    "사진/영상",
+    "스포츠 관람",
+    "게임",
+    "요리/베이킹",
+    "음식/맛집",
+    "술/와인",
+    "반려동물",
+    "스터디/자기계발"
+  ],
+  "category_image": [
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg",
+    "https://cdn.pixabay.com/photo/2017/08/06/12/06/landscape-2595562_960_720.jpg"
+  ]
+}
