@@ -22,7 +22,7 @@ import DaumPostcode from 'react-daum-postcode';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
-import { set, useForm } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import {
   Unstable_NumberInput as BaseNumberInput,
   NumberInputProps,
@@ -37,7 +37,9 @@ import Script from 'next/script';
 import { postMeetings } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
+import category from '../../../public/category.json';
 
+console.log(category.category_name[0]);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
