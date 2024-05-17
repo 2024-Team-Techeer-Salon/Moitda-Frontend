@@ -1,6 +1,7 @@
+/* eslint-disable no-console */
 /* eslint-disable consistent-return */
 /* eslint-disable import/prefer-default-export */
-import build from 'next/dist/build/index';
+
 import { formApi, api } from './axios.config.ts';
 
 export const postMeetings = async (

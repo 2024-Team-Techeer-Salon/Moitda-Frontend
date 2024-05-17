@@ -37,6 +37,8 @@ import Script from 'next/script';
 import { postMeetings } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
+import { useQuery } from '@tanstack/react-query';
+import { searchAddress } from '@/api/kakao.ts';
 import category from '../../../public/category.json';
 
 console.log(category.category_name[0]);
@@ -137,6 +139,12 @@ function page() {
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const title = watch('title');
   const addressDetail = watch('addressDetail');
+
+  const { data, isLoading } = useQuery({
+    queryKey: ['search address'],
+    queryFn: () =>
+      searchAddress('한일초등학교', 37.5662952, 126.9779451, 1, 10),
+  });
 
   useEffect(() => {
     if (navigator.geolocation) {
