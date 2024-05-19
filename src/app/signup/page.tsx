@@ -71,7 +71,7 @@ function page() {
             onChange={handleRadioChange}
           />
           {/* 두 번째 라디오 버튼 */}
-          <p className="mr-1">녀</p>
+          <p className="mr-1">여</p>
           <input
             type="radio"
             name="radio-1"
