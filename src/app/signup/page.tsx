@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react-hooks/rules-of-hooks */
 /* eslint-disable no-unused-vars */
 /* eslint-disable lines-around-directive */
@@ -9,13 +10,21 @@ import React, { useState } from 'react';
 import { DatePicker } from '@mui/x-date-pickers';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+import dayjs, { Dayjs } from 'dayjs';
+import { signupUserInfo } from '@/api/user.ts';
+import { useQuery } from '@tanstack/react-query';
+import test from 'node:test';
+import { sample } from '@/api/sample.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
 
-function page() {
+function Page() {
   const today = dayjs();
   const [selectedTheme, setSelectedTheme] = useState<string>('지역 선택');
+  const [selectedRadio, setSelectedRadio] = useState<string>('radio-1');
+  const [birthDate, setBirthDate] = useState<Dayjs | null>(today);
+  const [name, setName] = useState<string>('');
+
   const cityList = [
     '모든 지역',
     '서울',
@@ -35,18 +44,21 @@ function page() {
     '전북',
     '제주',
   ];
-  const handleThemeChange = (event: any) => {
+
+  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedTheme(event.target.value);
   };
 
-  // 상태 추가: 라디오 버튼의 선택 상태
-  const [selectedRadio, setSelectedRadio] = useState('radio-1');
-
-  // 라디오 버튼 선택 핸들러
-  const handleRadioChange = (event: {
-    target: { value: React.SetStateAction<string> };
-  }) => {
+  const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadio(event.target.value);
+  };
+
+  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setName(event.target.value);
+  };
+
+  const handleSubmit = async () => {
+    signupUserInfo('진우', '2024-05-19', 'M', '경기');
   };
 
   return (
@@ -65,7 +77,8 @@ function page() {
           <input
             type="radio"
             name="radio-1"
-            className="radio mr-2 mt-1"
+            style={{ width: '18px', height: '18px' }}
+            className="radio mr-2"
             value="radio-1"
             checked={selectedRadio === 'radio-1'}
             onChange={handleRadioChange}
@@ -75,6 +88,7 @@ function page() {
           <input
             type="radio"
             name="radio-1"
+            style={{ width: '18px', height: '18px' }}
             className="radio"
             value="radio-2"
             checked={selectedRadio === 'radio-2'}
@@ -83,12 +97,19 @@ function page() {
         </div>
         <div className="mb-1 mt-2 text-[#505050]">생년월일</div>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
-          <DatePicker className="mb-4 flex w-80" label="" value={today} />
+          <DatePicker
+            className="mb-4 flex w-80"
+            label=""
+            value={birthDate}
+            onChange={(date) => setBirthDate(date)}
+          />
         </LocalizationProvider>
         <div className="mb-1 text-[#505050]">이름</div>
         <input
           type="text"
           className="input mb-4 h-10 w-80 border border-b border-black"
+          value={name}
+          onChange={handleNameChange}
         />
         <div className="text-[#505050]">지역</div>
         <div className="dropdown dropdown-end dropdown-bottom">
@@ -120,11 +141,14 @@ function page() {
           </ul>
         </div>
       </div>
-      <button className="border-40 mt-16 h-14 w-72 border border-[#1A1A1A] bg-[#1A1A1A] font-extralight text-white">
+      <button
+        onClick={handleSubmit}
+        className="border-40 mt-16 h-14 w-72 border border-[#1A1A1A] bg-[#1A1A1A] font-extralight text-white"
+      >
         기본 회원정보 저장
       </button>
     </div>
   );
 }
 
-export default page;
+export default Page;
