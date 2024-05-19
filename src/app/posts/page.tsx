@@ -1,14 +1,13 @@
-/* eslint-disable max-len */
-/* eslint-disable no-undef */
-/* eslint-disable @next/next/no-script-component-in-head */
-/* eslint-disable @next/next/no-sync-scripts */
-/* eslint-disable no-unused-vars */
 /* eslint-disable no-console */
+/* eslint-disable no-return-assign */
+/* eslint-disable no-undef */
+/* eslint-disable no-shadow */
+/* eslint-disable consistent-return */
 /* eslint-disable operator-linebreak */
-/* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-confusing-arrow */
+/* eslint-disable object-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable react/display-name */
+/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable no-unused-vars */
 
 'use client';
 
@@ -18,17 +17,10 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
-import DaumPostcode from 'react-daum-postcode';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import dayjs from 'dayjs';
 import { useForm } from 'react-hook-form';
-import {
-  Unstable_NumberInput as BaseNumberInput,
-  NumberInputProps,
-  NumberInputOwnerState,
-} from '@mui/base/Unstable_NumberInput';
-import clsx from 'clsx';
 import { DateTimePicker } from '@mui/x-date-pickers';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
@@ -37,11 +29,11 @@ import Script from 'next/script';
 import { postMeetings } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
-import { useQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAddress } from '@/api/kakao.ts';
 import category from '../../../public/category.json';
+import { NumberInput } from './NumberInput.tsx';
 
-console.log(category.category_name[0]);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 
@@ -49,101 +41,54 @@ const ReactQuill = dynamic(async () => import('react-quill'), {
   ssr: false,
 });
 
-const resolveSlotProps = (fn: any, args: any) =>
-  typeof fn === 'function' ? fn(args) : fn;
-
-// numberInput 컴포넌트
-const NumberInput = React.forwardRef(
-  (props: NumberInputProps, ref: React.ForwardedRef<HTMLDivElement>) => (
-    <BaseNumberInput
-      {...props}
-      ref={ref}
-      slotProps={{
-        root: (ownerState: NumberInputOwnerState) => {
-          const resolvedSlotProps = resolveSlotProps(
-            props.slotProps?.root,
-            ownerState,
-          );
-          return {
-            ...resolvedSlotProps,
-            className: clsx(
-              'grid grid-cols-[1fr_8px] grid-rows-2 overflow-hidden font-sans rounded-lg text-slate-900 dark:text-slate-300 border border-solid  bg-white dark:bg-slate-900  hover:border-slate-400 dark:hover:border-slate-400 focus-visible:outline-0 p-1',
-              ownerState.focused
-                ? 'border-slate-400 dark:border-slate-400 shadow-lg shadow-outline-purple dark:shadow-outline-purple'
-                : 'border-slate-300 dark:border-slate-600 shadow-md shadow-slate-100 dark:shadow-slate-900',
-              resolvedSlotProps?.className,
-            ),
-          };
-        },
-        input: (ownerState: NumberInputOwnerState) => {
-          const resolvedSlotProps = resolveSlotProps(
-            props.slotProps?.input,
-            ownerState,
-          );
-          return {
-            ...resolvedSlotProps,
-            className: clsx(
-              'col-start-1 col-end-2 row-start-1 row-end-3 text-sm font-sans leading-normal text-slate-900 bg-inherit border-0 rounded-[inherit] dark:text-slate-300 px-3 py-2 outline-0 focus-visible:outline-0 focus-visible:outline-none',
-              resolvedSlotProps?.className,
-            ),
-          };
-        },
-        incrementButton: (ownerState: NumberInputOwnerState) => {
-          const resolvedSlotProps = resolveSlotProps(
-            props.slotProps?.incrementButton,
-            ownerState,
-          );
-          return {
-            ...resolvedSlotProps,
-            children: '▴',
-            className: clsx(
-              'font-[system-ui] flex flex-row flex-nowrap justify-center items-center p-0 w-[19px] h-[19px] border border-solid outline-none text-sm box-border leading-[1.2] rounded-t-md border-slate-200 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-300 transition-all duration-[120ms] hover:cursor-pointer hover:bg-purple-500 hover:text-slate-50 dark:hover:bg-slate-800 dark:border-slate-600 col-start-3 col-end-3 row-start-1 row-end-2',
-              resolvedSlotProps?.className,
-            ),
-          };
-        },
-        decrementButton: (ownerState: NumberInputOwnerState) => {
-          const resolvedSlotProps = resolveSlotProps(
-            props.slotProps?.decrementButton,
-            ownerState,
-          );
-          return {
-            ...resolvedSlotProps,
-            children: '▾',
-            className: clsx(
-              'font-[system-ui] flex flex-row flex-nowrap justify-center items-center p-0 w-[19px] h-[19px] border border-solid outline-none text-sm box-border leading-[1.2] rounded-b-md border-slate-200 border-t-0 bg-slate-50 dark:bg-slate-900 text-slate-900 dark:text-slate-300 transition-all duration-[120ms] hover:cursor-pointer hover:bg-purple-500 hover:text-slate-50 dark:hover:bg-slate-800 dark:border-slate-600 col-start-3 col-end-3 row-start-2 row-end-3',
-              resolvedSlotProps?.className,
-            ),
-          };
-        },
-      }}
-    />
-  ),
-);
 function page() {
-  const [category, setcategory] = useState('');
-  const [numPeople, setNumPeople] = useState(1);
+  const [categoryId, setcategoryId] = useState<number>(-1);
+  const [numPeople, setNumPeople] = useState(2);
   const [needsApproval, setNeedsApproval] = useState(true);
   const [editorHtml, setEditorHtml] = useState('');
   const [images, setImages] = useState<string[]>([]);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
+  const [title, setTitle] = useState('');
+  const titleRef = useRef<string>(title);
+  const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [address, setAddress] = useState('');
-  const [buildingName, setBuildingName] = useState('');
-  const [meetingAddressModalOpen, setMeetingAddressModalOpen] = useState(false);
-  const { register, handleSubmit, watch } = useForm();
+  const [addressDetail, setAddressDetail] = useState('');
+  const addressDetailRef = useRef<string>(addressDetail);
+  const [placeName, setPlaceName] = useState('');
+  const [meetingAddressModalOpen, setMeetingAddressModalOpen] =
+    useState<boolean>(false);
+  const { register: registerSearch, handleSubmit: handleSubmitSearch } =
+    useForm(); // 주소 검색 폼
   const today = dayjs();
   const [meetingTime, setMeetingTime] = useState(
     dayjs(today).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm'), // 약속 날짜와 시간의 초기값, 한국 기준 현재 시간으로 설정
   );
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
-  const title = watch('title');
-  const addressDetail = watch('addressDetail');
-
-  const { data, isLoading } = useQuery({
+  const loadMoreRef = useRef(null);
+  const renderSize = 10;
+  const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery({
     queryKey: ['search address'],
-    queryFn: () =>
-      searchAddress('한일초등학교', 37.5662952, 126.9779451, 1, 10),
+    queryFn: ({ pageParam = 1 }) =>
+      searchAddress(
+        searchKeyword,
+        center.lat,
+        center.lng,
+        pageParam,
+        renderSize,
+      ),
+    initialPageParam: 1,
+
+    getNextPageParam: (lastPage, allPages) => {
+      if (
+        lastPage === null ||
+        !lastPage?.documents.length ||
+        lastPage.meta.is_end
+      ) {
+        return undefined;
+      }
+      return allPages.length;
+    },
   });
 
   useEffect(() => {
@@ -187,12 +132,16 @@ function page() {
     }
   };
 
-  const onSubmit = (event: any) => {
-    event.preventDefault();
+  const onSubmitSearch = async (data: any) => {
+    async function setSearchKeywordAsync() {
+      setSearchKeyword(data.localKeyword);
+    }
+    await setSearchKeywordAsync();
+    fetchNextPage();
+    refetch();
   };
-
-  const handleChange = (event: SelectChangeEvent) => {
-    setcategory(event.target.value as string);
+  const handleCategoryIdChange = (event: SelectChangeEvent) => {
+    setcategoryId(Number(event.target.value));
   };
 
   // 텍스트 에디터 내용이 변경될 때 호출되는 콜백 함수
@@ -205,54 +154,185 @@ function page() {
   };
 
   // 주소 검색 모달
-  function DaumPostCodeModal() {
-    const handleComplete = (data: any) => {
-      let fullAddress = data.buildingName;
-      let extraAddress = '';
-
-      setAddress(data.address);
-      setBuildingName(data.buildingName);
-
-      if (data.addressType === 'R') {
-        if (data.bname !== '') {
-          extraAddress += data.bname;
-        }
-        if (data.buildingName !== '') {
-          extraAddress +=
-            extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName;
-        }
-        fullAddress += extraAddress !== '' ? ` (${extraAddress})` : '';
+  function SearchAddressModal({ isOpen }: { isOpen: boolean }) {
+    // 모달이 열렸을 때 body 스크롤을 막기 위한 useEffect
+    useEffect(() => {
+      if (isOpen) {
+        document.body.style.overflow = 'hidden';
+      } else {
+        document.body.style.overflow = 'auto';
       }
+      return () => {
+        document.body.style.overflow = 'auto';
+      };
+    }, [isOpen]);
+
+    if (!isOpen) return null;
+
+    useEffect(() => {
+      if (!hasNextPage) return;
+      const observer = new IntersectionObserver(
+        (entries) => {
+          if (entries[0].isIntersecting && searchKeyword !== '') {
+            fetchNextPage();
+          }
+        },
+        {
+          root: null,
+          rootMargin: '0px',
+          threshold: 1.0,
+        },
+      );
+      if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+      return () => {
+        if (loadMoreRef.current) observer.disconnect();
+      };
+    }, []);
+
+    // 검색 결과에서 주소를 클릭했을 때 실행되는 함수
+    const handleComplete = (data: any) => {
+      setAddress(
+        data.road_address_name ? data.road_address_name : data.address_name,
+      );
+      setPlaceName(data.place_name);
 
       window.kakao.maps.load(() => {
         const geocoder = new kakao.maps.services.Geocoder();
 
-        geocoder.addressSearch(data.address, (result, status) => {
-          if (status === window.kakao.maps.services.Status.OK) {
-            const newCenter = {
-              lat: result[0].y,
-              lng: result[0].x,
-            };
-            setCenter({
-              lat: parseFloat(newCenter.lat),
-              lng: parseFloat(newCenter.lng),
-            });
-          }
-        });
+        geocoder.addressSearch(
+          data.road_address_name ? data.road_address_name : data.address_name,
+          (result, status) => {
+            if (status === window.kakao.maps.services.Status.OK) {
+              const newCenter = {
+                lat: result[0].y,
+                lng: result[0].x,
+              };
+              setCenter({
+                lat: parseFloat(newCenter.lat),
+                lng: parseFloat(newCenter.lng),
+              });
+            }
+          },
+        );
       });
-
-      console.log(data); // 콘솔에 주소 출력
-      setAddress(fullAddress); // 상태에 주소 저장
       setMeetingAddressModalOpen(false); // 모달 닫기
     };
 
+    // 주소 검색 결과를 표시하는 컴포넌트
+    function Location({
+      title,
+      roadName,
+    }: {
+      title: string;
+      roadName: string;
+    }) {
+      return (
+        <div
+          className="flex h-20 w-full cursor-pointer flex-row items-center justify-start p-2 hover:bg-gray-100"
+          onClick={() => {
+            handleComplete(data);
+          }}
+        >
+          <svg className="m-2 mx-8 h-10 w-10" viewBox="0 0 72 72" fill="none">
+            <path
+              d="M22.1275 14.5775C25.9665 10.8591 30.5906 9 36 9C41.4094 9 46.0117 10.838 49.807 14.5141C53.6024 18.1902 55.5 22.6479 55.5 27.8873C55.5 30.5071 54.8238 33.507 53.4715 36.8873C52.1191 40.2676 50.4832 43.4366 48.5638 46.3944C46.6443 49.3521 44.7467 52.1197 42.8708 54.6972C40.995 57.2747 39.4027 59.3239 38.094 60.8451L36 63C35.4765 62.4084 34.7785 61.6268 33.906 60.6549C33.0336 59.6831 31.4631 57.7395 29.1946 54.8239C26.9262 51.9084 24.9413 49.0775 23.2399 46.331C21.5386 43.5845 19.9899 40.4789 18.594 37.0141C17.198 33.5493 16.5 30.5071 16.5 27.8873C16.5 22.6479 18.3758 18.2113 22.1275 14.5775Z"
+              stroke="black"
+              strokeWidth="6"
+            />
+            <path
+              d="M39 28.5C39 30.1569 37.6569 31.5 36 31.5C34.3431 31.5 33 30.1569 33 28.5C33 26.8431 34.3431 25.5 36 25.5C37.6569 25.5 39 26.8431 39 28.5Z"
+              stroke="black"
+              strokeWidth="4"
+            />
+          </svg>
+          <div className="flex flex-col">
+            <p className="text-lg text-black">{title}</p>
+            <p className="text-sm text-zinc-700">{roadName}</p>
+          </div>
+        </div>
+      );
+    }
+
     return (
+      // 모달 배경
       <div
         className="fixed inset-0 z-40 flex h-full w-full items-center justify-center bg-black bg-opacity-10"
         onClick={() => setMeetingAddressModalOpen(false)}
       >
-        <div className="flex h-96 w-1/3">
-          <DaumPostcode onComplete={handleComplete} className="h-full w-full" />
+        {/* 모달 내부 */}
+        <div
+          className="flex h-1/2 w-[60rem] flex-col rounded-lg bg-white p-4"
+          onClick={(e) => e.stopPropagation()}
+        >
+          {/* 제목 */}
+          <div className="border-1 relative flex h-14 w-full flex-row items-center justify-start rounded-lg border-2 border-zinc-200">
+            <form
+              className="flex w-full flex-row items-center"
+              onSubmit={handleSubmitSearch(onSubmitSearch)}
+            >
+              <input
+                {...registerSearch('localKeyword', { required: true })}
+                type="text"
+                className="mx-2 h-full w-full focus:outline-none"
+                placeholder="주소를 입력하세요"
+                autoComplete="off"
+              />
+              <button type="submit">
+                <svg
+                  className="m-2 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
+              </button>
+            </form>
+
+            {/* 돋보기 아이콘 */}
+          </div>
+          {/* 검색 결과 */}
+          <div className=" mt-4 flex h-12 w-full flex-row items-center justify-start rounded-t-lg bg-zinc-200 p-4 text-zinc-500">
+            Suggested Addresses
+          </div>
+          <div className="hide-scrollbar relative flex h-full w-full flex-col overflow-y-scroll rounded-b-lg border-2 border-zinc-200">
+            <div className="flex w-full flex-col">
+              {data?.pages.map((page, pageIndex) => (
+                <>
+                  {page?.documents.map(
+                    (
+                      doc: {
+                        address_name: string;
+                        place_name: string;
+                        road_address_name: string;
+                      },
+                      docIndex: any,
+                    ) => (
+                      <div
+                        key={`${pageIndex}-${docIndex}`}
+                        onClick={() => handleComplete(doc)}
+                      >
+                        <Location
+                          key={`${pageIndex}-${docIndex}`}
+                          title={doc.place_name}
+                          roadName={
+                            doc.road_address_name
+                              ? doc.road_address_name
+                              : doc.address_name
+                          }
+                        />
+                      </div>
+                    ),
+                  )}
+                </>
+              ))}
+              <div ref={loadMoreRef} />
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -272,11 +352,11 @@ function page() {
       'title : ',
       title,
       'category : ',
-      category,
+      categoryId,
       'editorHtml : ',
       editorHtml,
-      'buildingName : ',
-      buildingName,
+      'placeName : ',
+      placeName,
       'address : ',
       address,
       'numPeople : ',
@@ -292,7 +372,7 @@ function page() {
       title,
       categoryId,
       editorHtml,
-      buildingName,
+      placeName,
       address,
       addressDetail,
       numPeople,
@@ -319,37 +399,35 @@ function page() {
       <div className="flex h-full w-[67.5rem] flex-col">
         {/* 제목 입력 및 카테고리 선택 */}
         <div className="flex h-12 w-full flex-row ">
-          <form
-            className="border-1 mr-4 flex w-full border border-zinc-300 p-2"
-            onSubmit={handleSubmit(onSubmit)}
-          >
-            <input
-              {...register('title', { required: true })}
-              type="text"
-              placeholder="글 제목을 입력하세요"
-              className="flex w-full focus:outline-none"
-            />
-          </form>
+          <input
+            type="text"
+            placeholder="글 제목을 입력하세요"
+            className="border-1 mr-4 flex w-full border border-zinc-300 p-2 focus:outline-none"
+            onChange={(e) => (titleRef.current = e.target.value)}
+            onBlur={() => setTitle(titleRef.current)}
+          />
 
           <FormControl className="flex h-12 w-40">
             <InputLabel className="flex h-full">카테고리</InputLabel>
             <Select
-              value={category}
+              //  value={category.category_name}
               label="카테고리"
-              onChange={handleChange}
-              style={{ borderRadius: 0 }} // width: '160px', height: '48px',
+              onChange={handleCategoryIdChange}
+              style={{ borderRadius: 0 }}
               className="flex h-full w-full"
             >
-              <MenuItem value="Category1">Category1</MenuItem>
-              <MenuItem value="Category2">Category2</MenuItem>
-              <MenuItem value="Category3">Category3</MenuItem>
+              {category.category_name.map((name, index) => (
+                <MenuItem key={index} value={index}>
+                  {name}
+                </MenuItem>
+              ))}
             </Select>
           </FormControl>
         </div>
 
         {/* 장소 선택 */}
         <div className="mt-8 flex h-60 w-full flex-row">
-          {meetingAddressModalOpen && <DaumPostCodeModal />}
+          <SearchAddressModal isOpen={meetingAddressModalOpen} />
           <div className="flex w-1/2 flex-col justify-end ">
             <p className="flex text-sm text-zinc-300">
               모임 장소를 입력해 주세요!
@@ -359,7 +437,7 @@ function page() {
                 className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 focus:outline-none"
                 readOnly
                 type="text"
-                value={address}
+                value={placeName}
                 placeholder="주소"
               />
               <button
@@ -369,14 +447,14 @@ function page() {
                 주소 검색
               </button>
             </div>
-            <form className="border-1 mr-4 mt-4 flex w-full border border-zinc-300">
-              <input
-                {...register('addressDetail', { required: true })}
-                type="text"
-                placeholder="상세 주소"
-                className="flex h-12 w-full p-2 focus:outline-none"
-              />
-            </form>
+
+            <input
+              type="text"
+              placeholder="상세 주소"
+              className="border-1 mr-4 mt-4 flex h-12 w-full border border-zinc-300 p-2 focus:outline-none"
+              onChange={(e) => (addressDetailRef.current = e.target.value)}
+              onBlur={() => setAddressDetail(addressDetailRef.current)}
+            />
           </div>
           <div className="ml-4 flex h-60 w-1/2 border border-zinc-300" id="map">
             <Map // 지도를 표시할 컨테이너
@@ -399,7 +477,6 @@ function page() {
               label="날짜 선택"
               value={dayjs(meetingTime)}
               onChange={handleDateChange}
-              // renderInput={(params) => <TextField {...params} />}
             />
           </LocalizationProvider>
         </div>
@@ -409,13 +486,12 @@ function page() {
           본인을 포함해 모일 최대 인원수를 입력해 주세요!
         </p>
         <div className="mt-4 flex w-full flex-row">
-          {' '}
           <NumberInput
             aria-label="Demo number input"
             placeholder="인원수"
             value={numPeople}
-            onChange={(val: any) => setNumPeople(val)}
-            min={0}
+            onChange={(val: number) => setNumPeople(val)}
+            min={2}
             max={99}
           />
         </div>
@@ -542,6 +618,7 @@ function page() {
           <button
             className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
             onClick={handlePostMeetings}
+            type="submit"
           >
             등록
           </button>
