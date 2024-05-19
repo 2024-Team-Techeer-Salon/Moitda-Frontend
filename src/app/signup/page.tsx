@@ -25,10 +25,6 @@ function Page() {
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [fadeOut, setFadeOut] = useState(false);
 
-  // const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-  //   setSelectedTheme(event.target.value);
-  // };
-
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadio(event.target.value);
   };
@@ -128,34 +124,6 @@ function Page() {
           value={location}
           onChange={(event) => setLocation(event.target.value)}
         />
-        {/* <div className="dropdown dropdown-end dropdown-bottom">
-          <div tabIndex={0} role="button" className="btn">
-            {selectedTheme}
-            <svg
-              className="inline-block h-2 w-2 fill-current opacity-60"
-              viewBox="0 0 2048 2048"
-            >
-              <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z" />
-            </svg>
-          </div>
-          <ul
-            tabIndex={0}
-            className="dropdown-content z-10 w-52 rounded-box bg-base-200 p-2 shadow-2xl"
-          >
-            {cityList.map((district, index) => (
-              <li key={`${index}`}>
-                <input
-                  type="radio"
-                  name="theme-dropdown"
-                  className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
-                  aria-label={`${district}`}
-                  value={`${district}`}
-                  onChange={handleThemeChange}
-                />
-              </li>
-            ))}
-          </ul>
-        </div> */}
       </div>
       <button
         onClick={handleSubmit}
