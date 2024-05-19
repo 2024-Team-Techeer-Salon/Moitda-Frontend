@@ -31,9 +31,5 @@ export async function searchAddress(
     return response.data;
   } catch (error) {
     console.error('searchAddress error : ', error);
-    console.log(
-      'Kakao REST API Key:',
-      process.env.NEXT_PUBLIC_KAKAO_REST_API_KEY,
-    );
   }
 }
