@@ -1,5 +1,3 @@
-// 'use server';
-
 import { Montserrat } from 'next/font/google';
 import Google from './Google.tsx';
 import Kakao from './Kakao.tsx';

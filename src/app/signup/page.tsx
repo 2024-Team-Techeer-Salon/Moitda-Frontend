@@ -1,8 +1,8 @@
-/* eslint-disable no-console */
-/* eslint-disable react-hooks/rules-of-hooks */
+/* eslint-disable quotes */
+/* eslint-disable consistent-return */
 /* eslint-disable no-unused-vars */
 /* eslint-disable lines-around-directive */
-/* eslint-disable eol-last */
+/* eslint-disable no-alert */
 'use client';
 
 import { Montserrat } from 'next/font/google';
@@ -12,60 +12,61 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { signupUserInfo } from '@/api/user.ts';
-import { useQuery } from '@tanstack/react-query';
-import test from 'node:test';
-import { sample } from '@/api/sample.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
 
 function Page() {
   const today = dayjs();
-  const [selectedTheme, setSelectedTheme] = useState<string>('지역 선택');
   const [selectedRadio, setSelectedRadio] = useState<string>('radio-1');
   const [birthDate, setBirthDate] = useState<Dayjs | null>(today);
   const [name, setName] = useState<string>('');
+  const [location, setLocation] = useState<string>('');
+  const [errorMessage, setErrorMessage] = useState<string>('');
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [fadeOut, setFadeOut] = useState(false);
 
-  const cityList = [
-    '모든 지역',
-    '서울',
-    '경기',
-    '인천',
-    '강원',
-    '대전/세종',
-    '충남',
-    '충북',
-    '대구',
-    '경북',
-    '부산',
-    '울산',
-    '경남',
-    '광주',
-    '전남',
-    '전북',
-    '제주',
-  ];
-
-  const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedTheme(event.target.value);
-  };
+  // const handleThemeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  //   setSelectedTheme(event.target.value);
+  // };
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadio(event.target.value);
   };
 
-  const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
   const handleSubmit = async () => {
-    const gender = selectedRadio === 'radio-1' ? 'M' : 'F';
-    const location = selectedTheme;
-    const formattedBirthDate = birthDate ? birthDate.format('YYYY-MM-DD') : '';
+    // 유효성 검사: 이름과 지역이 모두 입력되었는지 확인
+    if (!name.trim() || !location.trim()) {
+      // alert('이름과 지역을 설정해주세요!');
+      setShowAlert(true);
+      setErrorMessage('이름과 지역을 설정해주세요!');
+      setTimeout(() => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          setFadeOut(false);
+        }, 1000); // fadeOut 애니메이션 시간과 일치시킵니다.
+      }, 3000);
+      return;
+    }
 
-    console.log('Name:', name);
-    console.log('Birth Date:', formattedBirthDate);
-    console.log('Gender:', gender);
-    console.log('Location:', location);
+    // location의 형식이 '시'와 '구'로 이루어진지 검사
+    const locationRegex = /^[가-힣]+시 [가-힣]+구$/;
+    if (!locationRegex.test(location.trim())) {
+      // alert('지역을 "~~시 ~~구" 형식으로 입력해주세요!');
+      setShowAlert(true);
+      setErrorMessage(`지역을 '~~시 ~~구' 형식으로 입력해주세요!`);
+      setTimeout(() => {
+        setFadeOut(true);
+        setTimeout(() => {
+          setShowAlert(false);
+          setFadeOut(false);
+        }, 1000); // fadeOut 애니메이션 시간과 일치시킵니다.
+      }, 3000);
+      return; // 지역 형식이 맞지 않으면 함수 종료
+    }
+
+    const gender = selectedRadio === 'radio-1' ? 'M' : 'F';
+    const formattedBirthDate = birthDate ? birthDate.format('YYYY-MM-DD') : '';
 
     await signupUserInfo(name, formattedBirthDate, gender, location);
   };
@@ -118,10 +119,16 @@ function Page() {
           type="text"
           className="input mb-4 h-10 w-80 border border-b border-black"
           value={name}
-          onChange={handleNameChange}
+          onChange={(event) => setName(event.target.value)}
         />
-        <div className="text-[#505050]">지역</div>
-        <div className="dropdown dropdown-end dropdown-bottom">
+        <div className="mb-1 text-[#505050]">지역</div>
+        <input
+          type="text"
+          className="input mb-4 h-10 w-80 border border-b border-black"
+          value={location}
+          onChange={(event) => setLocation(event.target.value)}
+        />
+        {/* <div className="dropdown dropdown-end dropdown-bottom">
           <div tabIndex={0} role="button" className="btn">
             {selectedTheme}
             <svg
@@ -133,7 +140,7 @@ function Page() {
           </div>
           <ul
             tabIndex={0}
-            className="dropdown-content z-[1] w-52 rounded-box bg-base-200 p-2 shadow-2xl"
+            className="dropdown-content z-10 w-52 rounded-box bg-base-200 p-2 shadow-2xl"
           >
             {cityList.map((district, index) => (
               <li key={`${index}`}>
@@ -148,14 +155,35 @@ function Page() {
               </li>
             ))}
           </ul>
-        </div>
+        </div> */}
       </div>
       <button
         onClick={handleSubmit}
-        className="border-40 mt-16 h-14 w-72 border border-[#1A1A1A] bg-[#1A1A1A] font-extralight text-white"
+        className="border-40 mt-16 h-14 w-72 rounded-md border border-[#1A1A1A] bg-[#1A1A1A] font-extralight text-white"
       >
         기본 회원정보 저장
       </button>
+      {showAlert && (
+        <div
+          role="alert"
+          className={`alert-gray alert fixed top-0 mt-4 w-2/3 bg-[#ff6262] text-black ${fadeOut ? 'alert-fade-out' : ''}`}
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6 shrink-0 stroke-current"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth="2"
+              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
+            />
+          </svg>
+          <span>{errorMessage}</span>
+        </div>
+      )}
     </div>
   );
 }
