@@ -9,7 +9,7 @@ function Kakao() {
     <div>
       <button
         onClick={KakaoLogin}
-        className="relative mt-4 h-16 w-[26.5rem] border border-[#C7C7C7]"
+        className="relative mt-4 h-16 w-[26.5rem] border border-[#FFE810] bg-[#FFE810]"
       >
         <img
           src="https://i.ibb.co/X4hFqqV/2024-04-30-5-48-05.png"

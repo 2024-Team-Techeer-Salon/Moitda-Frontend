@@ -58,7 +58,16 @@ function Page() {
   };
 
   const handleSubmit = async () => {
-    signupUserInfo('진우', '2024-05-19', 'M', '경기');
+    const gender = selectedRadio === 'radio-1' ? 'M' : 'F';
+    const location = selectedTheme;
+    const formattedBirthDate = birthDate ? birthDate.format('YYYY-MM-DD') : '';
+
+    console.log('Name:', name);
+    console.log('Birth Date:', formattedBirthDate);
+    console.log('Gender:', gender);
+    console.log('Location:', location);
+
+    await signupUserInfo(name, formattedBirthDate, gender, location);
   };
 
   return (

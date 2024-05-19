@@ -9,7 +9,7 @@ function Naver() {
     <div>
       <button
         onClick={NaverLogin}
-        className="relative mt-4 h-16 w-[26.5rem] border border-[#C7C7C7]"
+        className="relative mt-4 h-16 w-[26.5rem] border border-[#04CF5E] bg-[#04CF5E]"
       >
         <img
           src="https://i.ibb.co/mzHwht8/2024-04-30-5-49-44.png"
