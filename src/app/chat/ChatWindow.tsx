@@ -1,5 +1,10 @@
-import { chatProps } from '@/types/chat.ts';
+'use client';
+
+import React, { useState } from 'react';
 import Image from 'next/image';
+import { chatProps } from '@/types/chat.ts';
+// import StompJs from '@stomp/stompjs';
+import { Client } from '@stomp/stompjs';
 
 function unreaderCountStr(unreaderCount: number) {
   if (unreaderCount < 100) {
@@ -14,6 +19,44 @@ function unreaderCountStr(unreaderCount: number) {
 function timeStr(time: string) {
   return time.slice(11, 16);
 }
+
+// 클라이언트
+const client: Client = new Client({
+  brokerURL: 'ws://localhost:8080/ws',
+  connectHeaders: {
+    login: 'user',
+    passcode: 'password',
+  },
+  debug: (str: string) => {
+    // 디버그 함수를 arrow function으로 변경하고 매개변수에 타입을 지정합니다.
+    console.log(str);
+  },
+  reconnectDelay: 5000, // 자동 재 연결
+  heartbeatIncoming: 4000,
+  heartbeatOutgoing: 4000,
+});
+
+client.onConnect = function (frame) {
+  console.log('Connected');
+};
+
+client.onStompError = function (frame) {
+  console.log('Broker reported error: ' + frame.headers['message']);
+  console.log('Additional details: ' + frame.body);
+};
+
+client.activate(); // 클라이언트 활성화
+// client.deactivate();   // 클라이언트 비활성화
+
+// 메시지 보내기
+// client.publish({
+//   destination: '/sub/chat/room/1', // 어디로 메세지를 보낼지
+//   body: 'Hello world', // 보낼 내용
+//   headers: { priority: '9' },
+// });
+
+// 메시지 받기
+// const subscription = client.subscribe('/pub/chat/room/1', callback);
 
 // 채팅창 내 나의 채팅
 function MyChat({ time, chat, unreaderCount }: chatProps) {
@@ -94,6 +137,22 @@ function DateDivider({ date }: { date: string }) {
 }
 
 function ChatWindow() {
+  const [message, setMessage] = useState('');
+
+  const handleSend = () => {
+    if (client.connected) {
+      setMessage(message);
+      client.publish({
+        destination: '/sub/chat/room/1',
+        body: message,
+        headers: { priority: '9' },
+      });
+    } else {
+      console.error('STOMP 연결이 되어 있지 않습니다.');
+    }
+    console.log('Message sent:', message);
+  };
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       {/* 채팅창 헤더 */}
@@ -111,30 +170,9 @@ function ChatWindow() {
           chat="후추가 좀 더 있었으면 좋겠어요. 향이 조금 약한게 아쉽네요 ㅠㅠ"
           unreaderCount={1}
         />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 19:55:00"
-          chat="그런데"
-          unreaderCount={1}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 19:54:00"
-          chat="확실히 맛있었어요!"
-          unreaderCount={1}
-        />
         <MyChat
           time="2024-05-04 19:53:00"
           chat="맛은 어떠셨어요??"
-          unreaderCount={0}
-          profileImage={''}
-          name={''}
-        />
-        <MyChat
-          time="2024-05-04 19:52:00"
-          chat="네 잘 들어왔습니다!"
           unreaderCount={0}
           profileImage={''}
           name={''}
@@ -146,69 +184,6 @@ function ChatWindow() {
           chat="잘 들어가셨나요?"
           unreaderCount={0}
         />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 19:35:00"
-          chat="아 잘 먹었네요"
-          unreaderCount={0}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:05:30"
-          chat="좀 이따가 뵈어요!"
-          unreaderCount={0}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:05:00"
-          chat="네 그러면 지금 바로 나갈게요!"
-          unreaderCount={0}
-        />
-        <MyChat
-          time="2024-05-04 18:04:30"
-          chat="네 괜찮습니다! 버거킹 송죽 DT점에서 만날까요?"
-          unreaderCount={0}
-          profileImage={''}
-          name={''}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:04:00"
-          chat="딱 저녁시간이네요!"
-          unreaderCount={0}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:03:30"
-          chat="그럼 지금 혹시 시간 괜찮으신가요?"
-          unreaderCount={0}
-        />
-        <MyChat
-          time="2024-05-04 18:02:58"
-          chat="네 좋아요!"
-          unreaderCount={0}
-          profileImage={''}
-          name={''}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:00:58"
-          chat="이번에 버거킹에서 와퍼 새로 나왔대요! 그래서 먹어보고 싶은데 혹시 같이 가실래요?"
-          unreaderCount={0}
-        />
-        <OpponentChat
-          profileImage="https://i.ibb.co/7CTsFJF/image.png"
-          name="정유진"
-          time="2024-05-04 18:00:58"
-          chat="안녕하세요! 반갑습니다!"
-          unreaderCount={0}
-        />
         <DateDivider date="2024-05-04" />
       </div>
 
@@ -217,9 +192,14 @@ function ChatWindow() {
         <input
           type="text"
           placeholder="메시지를 입력하세요"
+          value={message}
+          onChange={(e) => setMessage(e.target.value)}
           className="text-md flex h-3/5 w-full flex-wrap items-center justify-start rounded-full px-4 focus:outline-none"
         />
-        <button className="m-4 h-8 w-20 rounded-lg bg-black text-white">
+        <button
+          className="m-4 h-8 w-20 rounded-lg bg-black text-white"
+          onClick={handleSend}
+        >
           전송
         </button>
       </div>
