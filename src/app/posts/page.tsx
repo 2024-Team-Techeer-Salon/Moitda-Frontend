@@ -1,13 +1,12 @@
-/* eslint-disable no-console */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-undef */
-/* eslint-disable no-shadow */
 /* eslint-disable consistent-return */
-/* eslint-disable operator-linebreak */
-/* eslint-disable object-curly-newline */
+/* eslint-disable no-shadow */
+/* eslint-disable no-console */
 /* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable object-curly-newline */
+/* eslint-disable operator-linebreak */
 /* eslint-disable react-hooks/rules-of-hooks */
-/* eslint-disable no-unused-vars */
 
 'use client';
 
@@ -32,7 +31,6 @@ import timezone from 'dayjs/plugin/timezone';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAddress } from '@/api/kakao.ts';
 import category from '../../../public/category.json';
-import { NumberInput } from './NumberInput.tsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -42,31 +40,38 @@ const ReactQuill = dynamic(async () => import('react-quill'), {
 });
 
 function page() {
-  const [categoryId, setcategoryId] = useState<number>(-1);
+  const today = dayjs();
+  const renderSize = 10;
+
+  // useState 훅
+  const [categoryId, setCategoryId] = useState<number>(-1);
   const [numPeople, setNumPeople] = useState(2);
   const [needsApproval, setNeedsApproval] = useState(true);
   const [editorHtml, setEditorHtml] = useState('');
-  const [images, setImages] = useState<string[]>([]);
-  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [images, setImages] = useState<File[]>([]);
   const [hoveredIndex, setHoveredIndex] = useState<number>(-1);
   const [title, setTitle] = useState('');
-  const titleRef = useRef<string>(title);
   const [searchKeyword, setSearchKeyword] = useState<string>('');
   const [address, setAddress] = useState('');
   const [addressDetail, setAddressDetail] = useState('');
-  const addressDetailRef = useRef<string>(addressDetail);
   const [placeName, setPlaceName] = useState('');
   const [meetingAddressModalOpen, setMeetingAddressModalOpen] =
     useState<boolean>(false);
-  const { register: registerSearch, handleSubmit: handleSubmitSearch } =
-    useForm(); // 주소 검색 폼
-  const today = dayjs();
   const [meetingTime, setMeetingTime] = useState(
     dayjs(today).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm'), // 약속 날짜와 시간의 초기값, 한국 기준 현재 시간으로 설정
   );
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
+
+  // useRef 훅
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const titleRef = useRef<string>(title);
+  const addressDetailRef = useRef<string>(addressDetail);
   const loadMoreRef = useRef(null);
-  const renderSize = 10;
+
+  // useForm 훅
+  const { register: registerSearch, handleSubmit: handleSubmitSearch } =
+    useForm(); // 주소 검색 폼
+
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery({
     queryKey: ['search address'],
     queryFn: ({ pageParam = 1 }) =>
@@ -112,12 +117,12 @@ function page() {
 
   const handleImageChange = (e: any) => {
     const { files } = e.target;
-    const tempImages: string[] = [];
+    const tempImages: File[] = [];
     for (let i = 0; i < files.length; i += 1) {
       const file = files[i];
       // 이미지 파일만 추가하도록 필터링
       if (file.type.startsWith('image/')) {
-        tempImages.push(URL.createObjectURL(file));
+        tempImages.push(file);
       }
     }
     setImages((prevImages) => [
@@ -126,33 +131,16 @@ function page() {
     ]);
   };
 
-  const handleFileInputChange = () => {
-    if (fileInputRef.current) {
-      fileInputRef.current.click();
-    }
-  };
-
   const onSubmitSearch = async (data: any) => {
-    async function setSearchKeywordAsync() {
-      setSearchKeyword(data.localKeyword);
-    }
-    await setSearchKeywordAsync();
-    fetchNextPage();
+    setSearchKeyword(data.localKeyword);
+    await fetchNextPage();
     refetch();
-  };
-  const handleCategoryIdChange = (event: SelectChangeEvent) => {
-    setcategoryId(Number(event.target.value));
-  };
-
-  // 텍스트 에디터 내용이 변경될 때 호출되는 콜백 함수
-  const handleEditorChange = (html: any) => {
-    setEditorHtml(html);
   };
 
   const handleImageDelete = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
-
+  console.log(numPeople);
   // 주소 검색 모달
   function SearchAddressModal({ isOpen }: { isOpen: boolean }) {
     // 모달이 열렸을 때 body 스크롤을 막기 위한 useEffect
@@ -412,7 +400,9 @@ function page() {
             <Select
               //  value={category.category_name}
               label="카테고리"
-              onChange={handleCategoryIdChange}
+              onChange={(event) => {
+                setCategoryId(Number(event.target.value));
+              }}
               style={{ borderRadius: 0 }}
               className="flex h-full w-full"
             >
@@ -485,15 +475,52 @@ function page() {
         <p className="mt-12 flex text-sm text-zinc-300">
           본인을 포함해 모일 최대 인원수를 입력해 주세요!
         </p>
-        <div className="mt-4 flex w-full flex-row">
-          <NumberInput
-            aria-label="Demo number input"
-            placeholder="인원수"
+        <div className="mt-4 flex w-52 flex-row rounded-lg border border-solid bg-white p-1 font-sans hover:border-slate-400  focus-visible:outline-0">
+          <input
+            type="number"
+            className="w-full border-0 bg-white p-2 text-left focus:outline-none"
             value={numPeople}
-            onChange={(val: number) => setNumPeople(val)}
+            onChange={(e) => {
+              if (Number(e.target.value) < 2) {
+                setNumPeople(2);
+              } else if (Number(e.target.value) > 99) {
+                setNumPeople(99);
+              } else setNumPeople(Number(e.target.value));
+            }}
             min={2}
             max={99}
+            placeholder="인원수를 입력해 주세요"
           />
+          <div className="flex flex-col">
+            <button
+              className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-t-md border border-b-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
+              onClick={() => {
+                if (numPeople < 2) {
+                  setNumPeople(2);
+                } else if (numPeople < 100) {
+                  setNumPeople((prevNum) => prevNum + 1);
+                } else {
+                  setNumPeople(99);
+                }
+              }}
+            >
+              ▴
+            </button>
+            <button
+              className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-b-md border border-t-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
+              onClick={() => {
+                if (numPeople > 100) {
+                  setNumPeople(99);
+                } else if (numPeople > 2) {
+                  setNumPeople((prevNum) => prevNum - 1);
+                } else {
+                  setNumPeople(2);
+                }
+              }}
+            >
+              ▾
+            </button>
+          </div>
         </div>
 
         {/* 참가 방식 결정 */}
@@ -527,7 +554,9 @@ function page() {
           <ReactQuill
             theme="snow" // 에디터의 테마 설정
             value={editorHtml} // 현재 편집 중인 HTML 내용
-            onChange={handleEditorChange} // 내용이 변경될 때 호출되는 콜백 함수
+            onChange={(html: any) => {
+              setEditorHtml(html);
+            }} // 내용이 변경될 때 호출되는 콜백 함수
             className="h-96 w-full"
             placeholder="어떤 모임을 가질 지 설명해주세요!"
           />
@@ -555,7 +584,11 @@ function page() {
                 textDecoration: 'underline',
                 color: 'blue',
               }}
-              onClick={handleFileInputChange}
+              onClick={() => {
+                if (fileInputRef.current) {
+                  fileInputRef.current.click();
+                }
+              }}
             >
               <div className="border-1 m-3 flex h-28 w-28 cursor-pointer items-center justify-center border border-zinc-300 text-black">
                 <svg
@@ -575,44 +608,47 @@ function page() {
               </div>
             </label>
           )}
-          {images.map((image, index) => (
-            <div
-              key={index}
-              className="relative"
-              onMouseEnter={() => setHoveredIndex(index)}
-              onMouseLeave={() => setHoveredIndex(-1)}
-            >
-              <Image
-                src={image}
-                alt={`Uploaded ${index}`}
-                className="border-1 m-3 flex cursor-pointer border border-zinc-300"
-                width={112}
-                height={112}
-              />
-              {hoveredIndex === index && (
-                <div
-                  className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center bg-zinc-200 bg-opacity-70"
-                  onClick={() => handleImageDelete(index)}
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="h-5 w-5 text-red-500"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
+          {images.map((image, index) => {
+            const imageUrl = URL.createObjectURL(file);
+            return (
+              <div
+                key={index}
+                className="relative"
+                onMouseEnter={() => setHoveredIndex(index)}
+                onMouseLeave={() => setHoveredIndex(-1)}
+              >
+                <Image
+                  src={imageUrl}
+                  alt={`Uploaded ${index}`}
+                  className="border-1 m-3 flex cursor-pointer border border-zinc-300"
+                  width={112}
+                  height={112}
+                />
+                {hoveredIndex === index && (
+                  <div
+                    className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center bg-zinc-200 bg-opacity-70"
                     onClick={() => handleImageDelete(index)}
                   >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth="4"
-                      d="M6 18L18 6M6 6l12 12"
-                    />
-                  </svg>
-                </div>
-              )}
-            </div>
-          ))}
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="h-5 w-5 text-red-500"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                      onClick={() => handleImageDelete(index)}
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth="4"
+                        d="M6 18L18 6M6 6l12 12"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </div>
+            );
+          })}
         </div>
         <div className="mt-12 flex w-full flex-row justify-end">
           <button
