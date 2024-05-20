@@ -14,7 +14,7 @@ class MannerBar extends Component<{}, MannerBarState> {
   constructor(props: {}) {
     super(props);
     this.state = {
-      progressValue: 80     // 초기값을 A에 해당하는 숫자로 설정합니다.
+      progressValue: 80, // 초기값을 A에 해당하는 숫자로 설정합니다.
     };
   }
 
@@ -23,25 +23,36 @@ class MannerBar extends Component<{}, MannerBarState> {
     let label: string;
 
     if (progressValue === 100) {
-      label = "A";
+      label = 'A';
     } else if (progressValue === 80) {
-      label = "B";
+      label = 'B';
     } else if (progressValue === 60) {
-      label = "C";
+      label = 'C';
     } else if (progressValue === 40) {
-      label = "D";
+      label = 'D';
     } else if (progressValue === 20) {
-      label = "E";
+      label = 'E';
     } else {
-      label = "F"; // 처리되지 않은 다른 값에 대한 처리
+      label = 'F'; // 처리되지 않은 다른 값에 대한 처리
     }
 
     return (
-      <Box sx={{ width: '60%'}}>
-        <div className='mr-20'>
-        <LinearProgress variant="determinate" value={progressValue} />
-        <Typography variant="body2" color="text.secondary" >{label}</Typography>
-        <p style={{marginTop: -50, fontSize: 17, fontWeight: 600, marginLeft: 20}}>매너 스탯</p>
+      <Box sx={{ width: '60%' }}>
+        <div className="mr-20">
+          <LinearProgress variant="determinate" value={progressValue} />
+          <Typography variant="body2" color="text.secondary">
+            {label}
+          </Typography>
+          <p
+            style={{
+              marginTop: -50,
+              fontSize: 17,
+              fontWeight: 600,
+              marginLeft: 20,
+            }}
+          >
+            매너 스탯
+          </p>
         </div>
       </Box>
     );

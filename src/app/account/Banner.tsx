@@ -1,4 +1,5 @@
-"use client";
+'use client';
+
 import React, { useState } from 'react';
 import Image from 'next/image';
 
@@ -28,11 +29,11 @@ const Banner = () => {
 
   const UproadImage = () => (
     <Image
-    src="https://i.ibb.co/GVVn0zh/Vector.png" 
-    alt="upimage"
-    height={19}
-    width={15}
-    style={UproadStyle}
+      src="https://i.ibb.co/GVVn0zh/Vector.png"
+      alt="upimage"
+      height={19}
+      width={15}
+      style={UproadStyle}
     />
   ); // Use a descriptive alt text for accessibility
 
