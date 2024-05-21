@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-return-assign */
 /* eslint-disable no-undef */
 /* eslint-disable consistent-return */
@@ -30,7 +31,10 @@ import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAddress } from '@/api/kakao.ts';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 import category from '../../../public/category.json';
+import WarningAlert from '../components/WarningAlert.tsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -61,6 +65,8 @@ function page() {
     dayjs(today).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm'), // 약속 날짜와 시간의 초기값, 한국 기준 현재 시간으로 설정
   );
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  const [showAlert, setShowAlert] = useState<boolean>(false);
+  const [errorMessage, setErrorMessage] = useState<string>('');
 
   // useRef 훅
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -72,6 +78,9 @@ function page() {
   const { register: registerSearch, handleSubmit: handleSubmitSearch } =
     useForm(); // 주소 검색 폼
 
+  const router = useRouter();
+
+  // useInfiniteQuery 훅
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery({
     queryKey: ['search address'],
     queryFn: ({ pageParam = 1 }) =>
@@ -96,6 +105,8 @@ function page() {
     },
   });
 
+  // useEffect 훅
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -113,6 +124,27 @@ function page() {
     } else {
       console.error('이 브라우저에서는 Geolocation이 지원되지 않습니다.');
     }
+  }, []);
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting && searchKeyword !== '') {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null,
+        rootMargin: '0px',
+        threshold: 1.0,
+      },
+    );
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) observer.disconnect();
+    };
   }, []);
 
   const handleImageChange = (e: any) => {
@@ -140,7 +172,7 @@ function page() {
   const handleImageDelete = (index: number) => {
     setImages((prevImages) => prevImages.filter((_, i) => i !== index));
   };
-  console.log(numPeople);
+
   // 주소 검색 모달
   function SearchAddressModal({ isOpen }: { isOpen: boolean }) {
     // 모달이 열렸을 때 body 스크롤을 막기 위한 useEffect
@@ -156,27 +188,6 @@ function page() {
     }, [isOpen]);
 
     if (!isOpen) return null;
-
-    useEffect(() => {
-      if (!hasNextPage) return;
-      const observer = new IntersectionObserver(
-        (entries) => {
-          if (entries[0].isIntersecting && searchKeyword !== '') {
-            fetchNextPage();
-          }
-        },
-        {
-          root: null,
-          rootMargin: '0px',
-          threshold: 1.0,
-        },
-      );
-      if (loadMoreRef.current) observer.observe(loadMoreRef.current);
-
-      return () => {
-        if (loadMoreRef.current) observer.disconnect();
-      };
-    }, []);
 
     // 검색 결과에서 주소를 클릭했을 때 실행되는 함수
     const handleComplete = (data: any) => {
@@ -318,7 +329,7 @@ function page() {
                   )}
                 </>
               ))}
-              <div ref={loadMoreRef} />
+              <div ref={loadMoreRef} className="h-2 w-full bg-blue-200" />
             </div>
           </div>
         </div>
@@ -336,47 +347,58 @@ function page() {
   };
 
   const handlePostMeetings = () => {
-    console.log(
-      'title : ',
-      title,
-      'category : ',
-      categoryId,
-      'editorHtml : ',
-      editorHtml,
-      'placeName : ',
-      placeName,
-      'address : ',
-      address,
-      'numPeople : ',
-      numPeople,
-      'needsApproval : ',
-      needsApproval,
-      'today : ',
-      meetingTime,
-      'images : ',
-      images,
-    );
-    postMeetings(
-      categoryId,
-      title,
-      editorHtml,
-      placeName,
-      address,
-      addressDetail,
-      numPeople,
-      needsApproval,
-      meetingTime,
-      images,
-    )
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((error) => {
-        console.error(error);
-      });
+    if (title === '') {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+      setErrorMessage('제목을 입력해 주세요!');
+    } else if (categoryId === -1) {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+      setErrorMessage('카테고리를 선택해 주세요!');
+    } else if (address === '') {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+      setErrorMessage('주소를 입력해 주세요!');
+    } else if (editorHtml === '') {
+      setShowAlert(true);
+      setTimeout(() => {
+        setShowAlert(false);
+      }, 3000);
+      setErrorMessage('모임 설명을 입력해 주세요!');
+    } else {
+      postMeetings(
+        categoryId,
+        title,
+        editorHtml,
+        placeName,
+        address,
+        addressDetail,
+        numPeople,
+        needsApproval,
+        meetingTime,
+        images,
+      )
+        .then(() => {
+          Swal.fire({
+            // title: '모임이 성공적으로 생성되었습니다!',
+            text: '모임이 성공적으로 생성되었습니다!',
+            icon: 'success',
+          });
+        })
+        .then(() => {
+          router.push('/home');
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
   };
-
-  console.log('images : ', images);
 
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
@@ -385,7 +407,7 @@ function page() {
         src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
         strategy="beforeInteractive"
       />
-
+      <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div className="flex h-full w-[67.5rem] flex-col">
         {/* 제목 입력 및 카테고리 선택 */}
         <div className="flex h-12 w-full flex-row ">
@@ -400,7 +422,6 @@ function page() {
           <FormControl className="flex h-12 w-40">
             <InputLabel className="flex h-full">카테고리</InputLabel>
             <Select
-              //  value={category.category_name}
               label="카테고리"
               onChange={(event) => {
                 setCategoryId(Number(event.target.value));
@@ -656,7 +677,7 @@ function page() {
           <button
             className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
             onClick={handlePostMeetings}
-            type="submit"
+            type="button"
           >
             등록
           </button>
