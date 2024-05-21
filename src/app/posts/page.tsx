@@ -14,7 +14,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -357,8 +357,8 @@ function page() {
       images,
     );
     postMeetings(
-      title,
       categoryId,
+      title,
       editorHtml,
       placeName,
       address,
@@ -375,6 +375,8 @@ function page() {
         console.error(error);
       });
   };
+
+  console.log('images : ', images);
 
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
@@ -609,7 +611,7 @@ function page() {
             </label>
           )}
           {images.map((image, index) => {
-            const imageUrl = URL.createObjectURL(file);
+            const imageUrl = URL.createObjectURL(image);
             return (
               <div
                 key={index}
