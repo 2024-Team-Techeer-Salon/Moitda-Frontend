@@ -40,3 +40,35 @@ body {
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
 }
+
+/* Alert 컴포넌트 애니메이션 효과 */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Alert 컴포넌트 애니메이션 효과 */
+.alert-enter {
+  animation: slideDown 0.5s forwards;
+}
+
+.alert-exit {
+  animation: slideUp 0.5s forwards;
+}
