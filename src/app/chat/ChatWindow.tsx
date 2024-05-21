@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Image from 'next/image';
 import { chatProps } from '@/types/chat.ts';
 // import StompJs from '@stomp/stompjs';
-import { Client } from '@stomp/stompjs';
+import { Client, Message } from '@stomp/stompjs';
 
 function unreaderCountStr(unreaderCount: number) {
   if (unreaderCount < 100) {
@@ -46,7 +46,7 @@ client.onStompError = function (frame) {
 };
 
 client.activate(); // 클라이언트 활성화
-// client.deactivate();   // 클라이언트 비활성화
+// client.deactivate(); // 클라이언트 비활성화
 
 // 메시지 보내기
 // client.publish({
@@ -142,15 +142,21 @@ function ChatWindow() {
   const handleSend = () => {
     if (client.connected) {
       setMessage(message);
+      console.log('Message sent:', message);
       client.publish({
         destination: '/sub/chat/room/1',
         body: message,
-        headers: { priority: '9' },
+        headers: { priority: '9' }, // 우선순위 값
       });
     } else {
       console.error('STOMP 연결이 되어 있지 않습니다.');
     }
-    console.log('Message sent:', message);
+  };
+
+  const handleEnter = (event) => {
+    if (event.key === 'Enter') {
+      handleSend();
+    }
   };
 
   return (
@@ -194,6 +200,7 @@ function ChatWindow() {
           placeholder="메시지를 입력하세요"
           value={message}
           onChange={(e) => setMessage(e.target.value)}
+          onKeyPress={handleEnter}
           className="text-md flex h-3/5 w-full flex-wrap items-center justify-start rounded-full px-4 focus:outline-none"
         />
         <button
