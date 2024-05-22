@@ -72,7 +72,7 @@ function page() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const titleRef = useRef<string>(title);
   const addressDetailRef = useRef<string>(addressDetail);
-  const loadMoreRef = useRef(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   // useForm 훅
   const { register: registerSearch, handleSubmit: handleSubmitSearch } =
@@ -83,7 +83,7 @@ function page() {
   // useInfiniteQuery 훅
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery({
     queryKey: ['search address'],
-    queryFn: ({ pageParam = 1 }) =>
+    queryFn: ({ pageParam }) =>
       searchAddress(
         searchKeyword,
         center.lat,
@@ -94,14 +94,10 @@ function page() {
     initialPageParam: 1,
 
     getNextPageParam: (lastPage, allPages) => {
-      if (
-        lastPage === null ||
-        !lastPage?.documents.length ||
-        lastPage.meta.is_end
-      ) {
+      if (lastPage?.meta.is_end === true) {
         return undefined;
       }
-      return allPages.length;
+      return allPages.length + 1;
     },
   });
 
@@ -127,25 +123,31 @@ function page() {
   }, []);
 
   useEffect(() => {
-    if (!hasNextPage) return;
+    if (!loadMoreRef.current) return;
+
     const observer = new IntersectionObserver(
       (entries) => {
-        if (entries[0].isIntersecting && searchKeyword !== '') {
-          fetchNextPage();
+        if (entries[0].isIntersecting) {
+          if (hasNextPage) {
+            fetchNextPage();
+          }
         }
       },
       {
         root: null,
         rootMargin: '0px',
-        threshold: 1.0,
+        threshold: 0.1, // 타겟 요소가 10% 보이면 콜백 실행
       },
     );
-    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    observer.observe(loadMoreRef.current);
 
     return () => {
-      if (loadMoreRef.current) observer.disconnect();
+      if (loadMoreRef.current) {
+        observer.unobserve(loadMoreRef.current);
+      }
     };
-  }, []);
+  }, [fetchNextPage, hasNextPage]);
 
   const handleImageChange = (e: any) => {
     const { files } = e.target;
@@ -329,7 +331,18 @@ function page() {
                   )}
                 </>
               ))}
-              <div ref={loadMoreRef} className="h-2 w-full bg-blue-200" />
+              <div
+                className={`flex w-full cursor-pointer items-center justify-center text-zinc-500 ${hasNextPage && searchKeyword ? 'h-12 hover:bg-gray-100' : ''} cursor-pointer`}
+                ref={loadMoreRef}
+                onClick={(event: React.MouseEvent) => {
+                  event.preventDefault();
+                  if (hasNextPage && searchKeyword) {
+                    fetchNextPage();
+                  }
+                }}
+              >
+                {hasNextPage && searchKeyword ? 'Load More' : ''}
+              </div>
             </div>
           </div>
         </div>
