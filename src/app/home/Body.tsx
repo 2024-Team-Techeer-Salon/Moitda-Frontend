@@ -70,7 +70,6 @@ function Body() {
               className="border-1 flex w-32 flex-row items-center rounded-lg border border-zinc-600"
               onSubmit={handleSubmitSearch(() => {
                 setSearchLocation('localKeyword');
-                console.log('localKeyword');
               })}
             >
               <input

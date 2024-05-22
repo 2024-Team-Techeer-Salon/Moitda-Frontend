@@ -54,7 +54,6 @@ function Latest({ searchLocation }: { searchLocation: string }) {
 
   if (!data) return null;
 
-  console.log(searchLocation);
   return (
     <div className="flex flex-row flex-wrap items-center">
       {data.pages.map((page) => (
