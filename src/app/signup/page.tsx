@@ -12,6 +12,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { signupUserInfo } from '@/api/user.ts';
+import WarningAlert from '../components/WarningAlert.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
 
@@ -36,11 +37,7 @@ function Page() {
       setShowAlert(true);
       setErrorMessage('이름과 지역을 설정해주세요!');
       setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          setFadeOut(false);
-        }, 1000); // fadeOut 애니메이션 시간과 일치시킵니다.
+        setShowAlert(false);
       }, 3000);
       return;
     }
@@ -52,11 +49,7 @@ function Page() {
       setShowAlert(true);
       setErrorMessage(`지역을 '~~시 ~~구' 형식으로 입력해주세요!`);
       setTimeout(() => {
-        setFadeOut(true);
-        setTimeout(() => {
-          setShowAlert(false);
-          setFadeOut(false);
-        }, 1000); // fadeOut 애니메이션 시간과 일치시킵니다.
+        setShowAlert(false);
       }, 3000);
       return; // 지역 형식이 맞지 않으면 함수 종료
     }
@@ -69,6 +62,7 @@ function Page() {
 
   return (
     <div className="flex flex-col items-center">
+      <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div>
         <h1 className="mb-14 mt-20 flex flex-row text-3xl font-light">
           <p className={`text-center text-3xl ${mont.className}`}>MOITDA</p>에
@@ -131,27 +125,6 @@ function Page() {
       >
         기본 회원정보 저장
       </button>
-      {showAlert && (
-        <div
-          role="alert"
-          className={`alert-gray alert fixed top-0 mt-4 w-2/3 bg-[#ff6262] text-black ${fadeOut ? 'alert-fade-out' : ''}`}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 shrink-0 stroke-current"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth="2"
-              d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <span>{errorMessage}</span>
-        </div>
-      )}
     </div>
   );
 }
