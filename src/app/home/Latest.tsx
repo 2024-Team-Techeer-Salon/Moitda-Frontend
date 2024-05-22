@@ -1,3 +1,4 @@
+/* eslint-disable array-callback-return */
 /* eslint-disable no-shadow */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -8,19 +9,20 @@
 /* eslint-disable object-curly-newline */
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
+import { getMeetingList } from '@/api/meetings.ts';
 import PostComponent from '../components/Post.tsx';
-// import { getLastestMeetingList } from '@/api/meeting.ts';
+import category from '../../../public/category.json';
 
-function Latest() {
+function Latest({ searchLocation }: { searchLocation: string }) {
   const renderSize = 32;
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['Lastest Meeting List'],
-      queryFn: ({ pageParam }) => getLastestMeetingList(pageParam, renderSize),
+      queryFn: ({ pageParam }) => getMeetingList(pageParam, renderSize),
       initialPageParam: 0,
 
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.tracks.next === null) {
+        if (lastPage === null) {
           return undefined;
         }
         return allPages.length;
@@ -50,17 +52,46 @@ function Latest() {
     };
   }, [hasNextPage, fetchNextPage]);
 
+  if (!data) return null;
+
+  console.log(searchLocation);
   return (
     <div className="flex flex-row flex-wrap items-center">
-      {/* {data.pages.map((data: string) => (
-        <PostComponent
-          key={data.meeting_id}
-          titleImage={meeting.titleImage}
-          title={meeting.title}
-          meetingId={meeting.id}
-          location={meeting.location}
-        />
-      ))} */}
+      {data.pages.map((page) => (
+        <>
+          {page?.data?.map(
+            (meeting: {
+              image_url: string;
+              title: string;
+              meeting_id: number;
+              road_address_name: string;
+            }) => {
+              if (searchLocation === '') {
+                return (
+                  <PostComponent
+                    key={meeting.meeting_id}
+                    titleImage={meeting.image_url || category.category_image[1]}
+                    title={meeting.title}
+                    meetingId={meeting.meeting_id}
+                    location={meeting.road_address_name}
+                  />
+                );
+              }
+              if (searchLocation === meeting.road_address_name) {
+                return (
+                  <PostComponent
+                    key={meeting.meeting_id}
+                    titleImage={meeting.image_url || category.category_image[1]}
+                    title={meeting.title}
+                    meetingId={meeting.meeting_id}
+                    location={meeting.road_address_name}
+                  />
+                );
+              }
+            },
+          )}
+        </>
+      ))}
       {isFetchingNextPage && <div>Loading...</div>}
       <div ref={loadMoreRef} />
     </div>

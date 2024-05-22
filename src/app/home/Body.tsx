@@ -1,35 +1,18 @@
-// 메인페이지 홈 바디 컴포넌트
+/* eslint-disable operator-linebreak */
 /* eslint-disable consistent-return */
 
 'use client';
 
 import { useState } from 'react';
-import LatestComponent from './Latest.tsx';
-import DistanceComponent from './Distance.tsx';
+import { useForm } from 'react-hook-form';
+import Latest from './Latest.tsx';
+import Distance from './Distance.tsx';
 
 function Body() {
   const [activeTab, setActiveTab] = useState<string>('latest');
-  const [selectedTheme, setSelectedTheme] = useState<string>('지역 검색');
-
-  const cityList = [
-    '모든 지역',
-    '서울',
-    '경기',
-    '인천',
-    '강원',
-    '대전/세종',
-    '충남',
-    '충북',
-    '대구',
-    '경북',
-    '부산',
-    '울산',
-    '경남',
-    '광주',
-    '전남',
-    '전북',
-    '제주',
-  ];
+  const [searchLocation, setSearchLocation] = useState<string>('');
+  const { register: registerSearch, handleSubmit: handleSubmitSearch } =
+    useForm();
 
   const handleTabClick = (tabName: string) => {
     if (activeTab !== tabName) {
@@ -37,22 +20,18 @@ function Body() {
     }
   };
 
-  const handleThemeChange = (event: any) => {
-    setSelectedTheme(event.target.value);
-  };
-
   const mainBody = () => {
     if (activeTab === 'latest') {
       return (
         <div className="flex w-full items-center justify-center">
-          <LatestComponent />
+          <Latest searchLocation={searchLocation} />
         </div>
       );
     }
     if (activeTab === 'distance') {
       return (
         <div className="flex w-full items-center justify-center">
-          <DistanceComponent />
+          <Distance />
         </div>
       );
     }
@@ -84,37 +63,37 @@ function Body() {
           />
         </div>
 
-        {/* 지역 검색 드롭다운 */}
+        {/* 지역 검색 */}
         <div className="flex w-full flex-row items-center justify-end">
           {activeTab === 'latest' && (
-            <div className="dropdown dropdown-end dropdown-bottom">
-              <div tabIndex={0} role="button" className="btn">
-                {selectedTheme}
+            <form
+              className="border-1 flex w-32 flex-row items-center rounded-lg border border-zinc-600"
+              onSubmit={handleSubmitSearch(() => {
+                setSearchLocation('localKeyword');
+                console.log('localKeyword');
+              })}
+            >
+              <input
+                {...registerSearch('localKeyword', { required: true })}
+                type="text"
+                className="mx-2 h-full w-full focus:outline-none"
+                placeholder="주소 입력"
+                autoComplete="off"
+              />
+              <button type="submit">
                 <svg
-                  className="inline-block h-2 w-2 fill-current opacity-60"
-                  viewBox="0 0 2048 2048"
+                  className="m-2 h-6 w-6"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
                 >
-                  <path d="M1799 349l242 241-1017 1017L7 590l242-241 775 775 775-775z" />
+                  <path
+                    strokeWidth="2"
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
                 </svg>
-              </div>
-              <ul
-                tabIndex={0}
-                className="dropdown-content z-[1] w-52 rounded-box bg-base-200 p-2 shadow-2xl"
-              >
-                {cityList.map((district, index) => (
-                  <li key={`${index}`}>
-                    <input
-                      type="radio"
-                      name="theme-dropdown"
-                      className="theme-controller btn btn-ghost btn-sm btn-block justify-start"
-                      aria-label={`${district}`}
-                      value={`${district}`}
-                      onChange={handleThemeChange}
-                    />
-                  </li>
-                ))}
-              </ul>
-            </div>
+              </button>
+            </form>
           )}
         </div>
       </div>
@@ -122,7 +101,7 @@ function Body() {
         {mainBody()}
         {/* 강제로 지도 컴포넌트 렌더링 */}
         <div className="h-0 w-0 overflow-hidden">
-          <DistanceComponent />
+          <Distance />
         </div>
       </div>
     </div>

@@ -1,8 +1,3 @@
-/* eslint-disable quotes */
-/* eslint-disable consistent-return */
-/* eslint-disable no-unused-vars */
-/* eslint-disable lines-around-directive */
-/* eslint-disable no-alert */
 'use client';
 
 import { Montserrat } from 'next/font/google';
@@ -24,7 +19,6 @@ function Page() {
   const [location, setLocation] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showAlert, setShowAlert] = useState<boolean>(false);
-  const [fadeOut, setFadeOut] = useState(false);
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadio(event.target.value);
@@ -47,7 +41,7 @@ function Page() {
     if (!locationRegex.test(location.trim())) {
       // alert('지역을 "~~시 ~~구" 형식으로 입력해주세요!');
       setShowAlert(true);
-      setErrorMessage(`지역을 '~~시 ~~구' 형식으로 입력해주세요!`);
+      setErrorMessage("지역을 '~~시 ~~구' 형식으로 입력해주세요!");
       setTimeout(() => {
         setShowAlert(false);
       }, 3000);

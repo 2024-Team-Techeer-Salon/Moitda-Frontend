@@ -1,23 +1,19 @@
-/* eslint-disable operator-linebreak */
-/* eslint-disable @next/next/no-sync-scripts */
-
 'use client';
 
 import Script from 'next/script';
 import { Map } from 'react-kakao-maps-sdk';
-import Image from 'next/image'; // Import the Image component
+import Image from 'next/image';
 
 function Distance() {
   return (
     <div className="flex h-full w-full flex-col">
       <div className="flex flex-row items-center justify-center">
         <div className="m-4 flex h-[28rem] w-60 flex-col border border-zinc-300">
-          <div className="flex h-60 w-60">
+          <div className="relative flex h-60 w-60">
             <Image
               src="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
-              width={1000}
-              height={1000}
-              className="relative object-cover"
+              layout="fill"
+              objectFit="cover"
               alt="Image"
             />
           </div>
