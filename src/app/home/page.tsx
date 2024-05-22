@@ -2,13 +2,13 @@
 
 'use server';
 
-import Header from './Header.tsx';
+import Banner from './Banner.tsx';
 import Body from './Body.tsx';
 
 async function page() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <Header />
+      <Banner />
       <div className="flex h-full w-[67.5rem] flex-col items-center justify-center">
         <Body />
       </div>

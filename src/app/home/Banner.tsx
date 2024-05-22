@@ -5,7 +5,7 @@
 
 import { useState } from 'react';
 
-function Header() {
+function Banner() {
   const [pageIndex, setPageIndex] = useState(1);
   const [maxPageIndex] = useState(4);
 
@@ -63,4 +63,4 @@ function Header() {
   );
 }
 
-export default Header;
+export default Banner;

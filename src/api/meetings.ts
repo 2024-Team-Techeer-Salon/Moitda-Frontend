@@ -2,7 +2,7 @@
 /* eslint-disable consistent-return */
 /* eslint-disable import/prefer-default-export */
 
-import { formApi } from './axios.config.ts';
+import { formApi, api } from './axios.config.ts';
 
 export const postMeetings = async (
   categoryId: number,
@@ -44,5 +44,14 @@ export const postMeetings = async (
     return response.data;
   } catch (error) {
     console.error('postMeetings error : ', error);
+  }
+};
+
+export const getMeetingList = async (page: number, size: number) => {
+  try {
+    const response = await api.get(`/meetings?page=${page}&size=${size}`);
+    return response.data;
+  } catch (error) {
+    console.error('Meeting List Get API Error : ', error);
   }
 };
