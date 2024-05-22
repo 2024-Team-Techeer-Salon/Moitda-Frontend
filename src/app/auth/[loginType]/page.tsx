@@ -30,7 +30,11 @@ function page(props: any) {
       }
     }
   }, [accessToken, refreshToken]);
-  return <div>hi</div>;
+  return (
+    <div className="flex h-screen w-screen items-center justify-center">
+      로그인 중...
+    </div>
+  );
 }
 
 export default page;
