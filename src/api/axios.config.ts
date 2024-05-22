@@ -13,3 +13,12 @@ export const api = axios.create({
     Authorization: `Bearer ${accessToken}`,
   },
 });
+
+export const formApi = axios.create({
+  withCredentials: true,
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'multipart/form-data',
+    Authorization: `Bearer ${accessToken}`,
+  },
+});

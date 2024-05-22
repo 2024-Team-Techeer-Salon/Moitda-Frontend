@@ -18,6 +18,18 @@
   border-radius: 500px;
 }
 
+/* input 태그 타입이 number일 때 화살표 숨기기 */
+input[type='number']::-webkit-outer-spin-button,
+input[type='number']::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* For Firefox */
+input[type='number'] {
+  -moz-appearance: textfield;
+}
+
 /* 호버 상태일 때 스크롤바의 Thumb 색 변경 */
 ::-webkit-scrollbar-thumb:hover {
   background: #bbbbbb; /* 호버 시 배경색 변경 */
@@ -27,4 +39,36 @@ body {
 }
 .hide-scrollbar {
   scrollbar-width: none; /* Firefox */
+}
+
+/* Alert 컴포넌트 애니메이션 효과 */
+@keyframes slideDown {
+  0% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  0% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(-100%);
+    opacity: 0;
+  }
+}
+
+/* Alert 컴포넌트 애니메이션 효과 */
+.alert-enter {
+  animation: slideDown 0.5s forwards;
+}
+
+.alert-exit {
+  animation: slideUp 0.5s forwards;
 }
