@@ -33,7 +33,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAddress } from '@/api/kakao.ts';
 import Swal from 'sweetalert2';
 import { useRouter } from 'next/navigation';
-import category from '../../../public/category.json';
+import category from '@/util/category.json';
 import WarningAlert from '../components/WarningAlert.tsx';
 
 dayjs.extend(utc);

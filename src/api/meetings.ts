@@ -50,8 +50,35 @@ export const postMeetings = async (
 export const getMeetingsData = async (meetingId: number) => {
   try {
     const response = await api.get(`/meetings/${meetingId}`);
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error('meeting data get api request error : ', error);
+  }
+};
+
+export const postMeetingJoin = async (meetingId: number) => {
+  try {
+    const response = await api.post(`/meetings/participant/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting join api request error : ', error);
+  }
+};
+
+export const patchEndMeeting = async (meetingId: number) => {
+  try {
+    const response = await api.patch(`/meetings/end/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting end api request error : ', error);
+  }
+};
+
+export const deleteMeeting = async (meetingId: number) => {
+  try {
+    const response = await api.delete(`/meetings/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting delete api request error : ', error);
   }
 };
