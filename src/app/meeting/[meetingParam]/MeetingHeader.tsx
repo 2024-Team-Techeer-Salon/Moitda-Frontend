@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable operator-linebreak */
 import { meetingHeaderProps } from '@/types/meeting.ts';
 import Image from 'next/image';
@@ -24,7 +25,7 @@ function MeetingHeader({
   addressDetail,
   meetingDate,
   isOwner,
-  participants,
+  participants, // 참여자 수 사용 안함
   endTime,
 }: meetingHeaderProps) {
   const date = new Date(meetingDate);
@@ -121,6 +122,7 @@ function MeetingHeader({
                       }).then((result) => {
                         if (result.isConfirmed) {
                           deleteMeeting(meetingId);
+                          router.push('/home');
                           Swal.fire({
                             title: '삭제 완료!',
                             text: '모임이 삭제되었습니다.',

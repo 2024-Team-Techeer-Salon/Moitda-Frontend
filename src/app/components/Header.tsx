@@ -7,6 +7,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { SetStateAction, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
+import category from '@/util/category.json';
 import ignorePath from '../styles/ignorePath.ts';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
@@ -17,7 +18,7 @@ function Header() {
   const [openCategories, setOpenCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const router = useRouter();
-  const path = usePathname();
+  const path = usePathname() || '';
 
   if (ignorePath().includes(path)) {
     return null;
@@ -123,21 +124,19 @@ function Header() {
           <div
             className={`overflow-hidden transition-all duration-300 ${
               openCategories ? 'max-h-48' : 'max-h-0'
-            }`}
+            } overflow-y-scroll`}
           >
             <div className="flex flex-col">
-              <Link className="text-md p-2 text-gray-500" href="/category1">
-                - 카테고리 1
-              </Link>
-              <Link className="text-md p-2 text-gray-500" href="/category2">
-                - 카테고리 2
-              </Link>
-              <Link className="text-md p-2 text-gray-500" href="/category3">
-                - 카테고리 3
-              </Link>
-              <Link className="text-md p-2 text-gray-500" href="/category4">
-                - 카테고리 4
-              </Link>
+              {category.category_name.map((item: string, index: number) => (
+                <Link
+                  key={index}
+                  href={`/category/${index}`}
+                  className="text-md p-2"
+                  onClick={() => setOpenMenu(false)}
+                >
+                  {item}
+                </Link>
+              ))}
             </div>
           </div>
           <Link
