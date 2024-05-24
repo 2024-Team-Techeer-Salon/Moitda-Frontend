@@ -91,7 +91,7 @@ function Header() {
         <div className="flex h-full w-full flex-col px-4 pt-[20%]">
           <Link
             className="p-2 text-lg font-bold"
-            href="/posts"
+            href="/posts?type=create"
             onClick={() => setOpenMenu(false)}
           >
             모임 생성

@@ -26,13 +26,13 @@ import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
 import Script from 'next/script';
-import { postMeetings } from '@/api/meetings.ts';
+import { postMeetings, getMeetingsData, editMeeting } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchAddress } from '@/api/kakao.ts';
 import Swal from 'sweetalert2';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import category from '@/util/category.json';
 import WarningAlert from '../components/WarningAlert.tsx';
 
@@ -67,6 +67,8 @@ function page() {
   const [center, setCenter] = useState({ lat: 0, lng: 0 });
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
+  const [postType, setPostType] = useState<string>(''); // create or edit
+  const [meetingId, setMeetingId] = useState<number>();
 
   // useRef 훅
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -79,6 +81,7 @@ function page() {
     useForm(); // 주소 검색 폼
 
   const router = useRouter();
+  const searchParams = useSearchParams();
 
   // useInfiniteQuery 훅
   const { data, hasNextPage, fetchNextPage, refetch } = useInfiniteQuery({
@@ -105,6 +108,9 @@ function page() {
 
   useEffect(() => {
     if (navigator.geolocation) {
+      setPostType(searchParams?.get('type') || 'create');
+      setMeetingId(Number(searchParams?.get('meetingId')) || undefined);
+
       navigator.geolocation.getCurrentPosition(
         (position) => {
           // 사용자 위치를 성공적으로 가져온 경우, 지도 중심을 사용자의 현재 위치로 설정
@@ -148,6 +154,22 @@ function page() {
       }
     };
   }, [fetchNextPage, hasNextPage]);
+
+  if (postType === 'edit' && meetingId) {
+    getMeetingsData(meetingId)
+      .then((data) => {
+        setTitle(data.title);
+        setCategoryId(data.category_id);
+        setEditorHtml(data.content);
+        setNumPeople(data.max_participants_count);
+        setNeedsApproval(data.approval_required);
+        setMeetingTime(data.appointment_time);
+      })
+      .catch(() => {
+        setPostType('create');
+        setMeetingId(undefined);
+      });
+  }
 
   const handleImageChange = (e: any) => {
     const { files } = e.target;
@@ -384,6 +406,31 @@ function page() {
         setShowAlert(false);
       }, 3000);
       setErrorMessage('모임 설명을 입력해 주세요!');
+    } else if (postType === 'edit' && meetingId) {
+      editMeeting(
+        meetingId,
+        categoryId,
+        title,
+        editorHtml,
+        placeName,
+        address,
+        addressDetail,
+        numPeople,
+        meetingTime,
+      )
+        .then(() => {
+          Swal.fire({
+            title: '모임이 성공적으로 수정되었습니다!',
+            text: '모임이 성공적으로 수정되었습니다!',
+            icon: 'success',
+          });
+        })
+        .then(() => {
+          router.push(`/meeting/${meetingId}`);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } else {
       postMeetings(
         categoryId,
@@ -413,6 +460,8 @@ function page() {
     }
   };
 
+  console.log('meetingId', meetingId);
+
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
       <Script
@@ -428,6 +477,7 @@ function page() {
             type="text"
             placeholder="글 제목을 입력하세요"
             className="border-1 mr-4 flex w-full border border-zinc-300 p-2 focus:outline-none"
+            defaultValue={title}
             onChange={(e) => (titleRef.current = e.target.value)}
             onBlur={() => setTitle(titleRef.current)}
           />
@@ -443,7 +493,13 @@ function page() {
               className="flex h-full w-full"
             >
               {category.category_name.map((name, index) => (
-                <MenuItem key={index} value={index}>
+                <MenuItem
+                  key={index}
+                  value={index}
+                  onClick={() => {
+                    setCategoryId(index);
+                  }}
+                >
                   {name}
                 </MenuItem>
               ))}
@@ -560,32 +616,38 @@ function page() {
         </div>
 
         {/* 참가 방식 결정 */}
-        <p className="mt-12 flex text-sm text-zinc-300">
-          참가 방식을 선택해 주세요!
-        </p>
-        <div className="mt-4 flex h-16 w-72 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md">
-          <div
-            className="absolute h-12 w-32 items-center justify-center rounded-2xl bg-gray-100 shadow-md"
-            style={{
-              transform: needsApproval ? 'translateX(0)' : 'translateX(100%)',
-              transition: 'transform 0.3s ease-in-out',
-            }}
-          />
-          <p
-            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
-            onClick={() => setNeedsApproval(true)}
-          >
-            승인 후 참가
-          </p>
-          <p
-            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
-            onClick={() => setNeedsApproval(false)}
-          >
-            즉시 참가
-          </p>
-        </div>
+        {!(postType === 'edit' && meetingId !== undefined) && (
+          <div>
+            <p className="mt-12 flex text-sm text-zinc-300">
+              참가 방식을 선택해 주세요!
+            </p>
+            <div className="mt-4 flex h-16 w-72 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md">
+              <div
+                className="absolute h-12 w-32 items-center justify-center rounded-2xl bg-gray-100 shadow-md"
+                style={{
+                  transform: needsApproval
+                    ? 'translateX(0)'
+                    : 'translateX(100%)',
+                  transition: 'transform 0.3s ease-in-out',
+                }}
+              />
+              <p
+                className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
+                onClick={() => setNeedsApproval(true)}
+              >
+                승인 후 참가
+              </p>
+              <p
+                className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
+                onClick={() => setNeedsApproval(false)}
+              >
+                즉시 참가
+              </p>
+            </div>
+          </div>
+        )}
 
-        <div className="mt-12 flex h-full w-full flex-col">
+        <div className="mb-12 mt-12 flex h-full w-full flex-col">
           {/* React-Quill 컴포넌트 */}
           <ReactQuill
             theme="snow" // 에디터의 테마 설정
@@ -599,100 +661,104 @@ function page() {
         </div>
 
         {/* 이미지 업로드 */}
-        <p className="mt-20 flex text-sm text-zinc-300">
-          모임 대표 사진을 업로드해 주세요! (최대 8장)
-        </p>
+        {!(postType === 'edit' && meetingId !== undefined) && (
+          <div>
+            <p className="mt-8 flex text-sm text-zinc-300">
+              모임 대표 사진을 업로드해 주세요! (최대 8장)
+            </p>
 
-        <div className="flex h-auto w-full flex-row overflow-x-scroll">
-          <input
-            ref={fileInputRef}
-            type="file"
-            accept="image/*"
-            multiple
-            style={{ display: 'none' }}
-            onChange={handleImageChange}
-          />
-          {images.length < 8 && (
-            <label
-              htmlFor="fileInput"
-              style={{
-                cursor: 'pointer',
-                textDecoration: 'underline',
-                color: 'blue',
-              }}
-              onClick={() => {
-                if (fileInputRef.current) {
-                  fileInputRef.current.click();
-                }
-              }}
-            >
-              <div className="border-1 m-3 flex h-28 w-28 cursor-pointer items-center justify-center border border-zinc-300 text-black">
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="h-5 w-5"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
+            <div className="flex h-auto w-full flex-row overflow-x-scroll">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="image/*"
+                multiple
+                style={{ display: 'none' }}
+                onChange={handleImageChange}
+              />
+              {images.length < 8 && (
+                <label
+                  htmlFor="fileInput"
+                  style={{
+                    cursor: 'pointer',
+                    textDecoration: 'underline',
+                    color: 'blue',
+                  }}
+                  onClick={() => {
+                    if (fileInputRef.current) {
+                      fileInputRef.current.click();
+                    }
+                  }}
                 >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth="2"
-                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
-                  />
-                </svg>
-              </div>
-            </label>
-          )}
-          {images.map((image, index) => {
-            const imageUrl = URL.createObjectURL(image);
-            return (
-              <div
-                key={index}
-                className="relative"
-                onMouseEnter={() => setHoveredIndex(index)}
-                onMouseLeave={() => setHoveredIndex(-1)}
-              >
-                <Image
-                  src={imageUrl}
-                  alt={`Uploaded ${index}`}
-                  className="border-1 m-3 flex cursor-pointer border border-zinc-300"
-                  width={112}
-                  height={112}
-                />
-                {hoveredIndex === index && (
-                  <div
-                    className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center bg-zinc-200 bg-opacity-70"
-                    onClick={() => handleImageDelete(index)}
-                  >
+                  <div className="border-1 m-3 flex h-28 w-28 cursor-pointer items-center justify-center border border-zinc-300 text-black">
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      className="h-5 w-5 text-red-500"
+                      className="h-5 w-5"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
-                      onClick={() => handleImageDelete(index)}
                     >
                       <path
                         strokeLinecap="round"
                         strokeLinejoin="round"
-                        strokeWidth="4"
-                        d="M6 18L18 6M6 6l12 12"
+                        strokeWidth="2"
+                        d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                       />
                     </svg>
                   </div>
-                )}
-              </div>
-            );
-          })}
-        </div>
+                </label>
+              )}
+              {images.map((image, index) => {
+                const imageUrl = URL.createObjectURL(image);
+                return (
+                  <div
+                    key={index}
+                    className="relative"
+                    onMouseEnter={() => setHoveredIndex(index)}
+                    onMouseLeave={() => setHoveredIndex(-1)}
+                  >
+                    <Image
+                      src={imageUrl}
+                      alt={`Uploaded ${index}`}
+                      className="border-1 m-3 flex cursor-pointer border border-zinc-300"
+                      width={112}
+                      height={112}
+                    />
+                    {hoveredIndex === index && (
+                      <div
+                        className="absolute left-1/2 top-1/2 flex h-28 w-28 -translate-x-1/2 -translate-y-1/2 cursor-pointer items-center justify-center bg-zinc-200 bg-opacity-70"
+                        onClick={() => handleImageDelete(index)}
+                      >
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          className="h-5 w-5 text-red-500"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                          stroke="currentColor"
+                          onClick={() => handleImageDelete(index)}
+                        >
+                          <path
+                            strokeLinecap="round"
+                            strokeLinejoin="round"
+                            strokeWidth="4"
+                            d="M6 18L18 6M6 6l12 12"
+                          />
+                        </svg>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
         <div className="mt-12 flex w-full flex-row justify-end">
           <button
             className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
             onClick={handlePostMeetings}
             type="button"
           >
-            등록
+            {postType === 'edit' ? '수정하기' : '모임 등록'}
           </button>
         </div>
       </div>

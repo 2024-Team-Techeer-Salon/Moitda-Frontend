@@ -82,3 +82,31 @@ export const deleteMeeting = async (meetingId: number) => {
     console.error('meeting delete api request error : ', error);
   }
 };
+
+export const editMeeting = async (
+  meetingId: number,
+  categoryId: number,
+  title: string,
+  editorHTML: string,
+  placeName: string,
+  roadAddressName: string,
+  addressDetail: string,
+  numPeople: number,
+  meetingTime: string,
+) => {
+  try {
+    const response = await api.put(`/meetings/${meetingId}`, {
+      category_id: categoryId,
+      title,
+      content: editorHTML,
+      place_name: placeName,
+      road_address_name: roadAddressName,
+      detailed_address: addressDetail,
+      max_participants_count: numPeople,
+      appointment_time: meetingTime,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('meeting edit api request error : ', error);
+  }
+};
