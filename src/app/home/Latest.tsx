@@ -15,7 +15,11 @@ function Latest() {
     );
   }
 
-  return <div className="flex flex-row flex-wrap items-center">{postList}</div>;
+  return (
+    <div className="flex flex-row flex-wrap items-center justify-center">
+      {postList}
+    </div>
+  );
 }
 
 export default Latest;

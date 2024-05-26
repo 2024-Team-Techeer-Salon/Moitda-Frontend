@@ -26,9 +26,9 @@ function Header() {
       <img
         src="https://i.ibb.co/wL61Zx5/home-Image.png"
         alt="home-Image"
-        className="absolute w-full"
+        className="absolute h-full w-full"
       />
-      <div className="z-0 flex h-full w-1/6 items-center justify-center">
+      <div className="b 0 z-0 flex h-full w-1/6 items-center justify-center">
         <button
           className="btn btn-circle border-none bg-black bg-opacity-20 text-white hover:bg-zinc-800"
           onClick={handleBackwardClick}

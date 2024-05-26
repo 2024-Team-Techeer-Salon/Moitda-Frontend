@@ -9,7 +9,7 @@ import Image from 'next/image'; // Import the Image component
 
 function Distance() {
   return (
-    <div className="flex h-full w-full flex-col">
+    <div className="mt-[-0.5rem] flex h-full flex-col sm:w-[30rem] md:w-[43rem] lg:w-[65rem]">
       <div className="flex flex-row items-center justify-center">
         <div className="m-4 flex h-[28rem] w-60 flex-col border border-zinc-300">
           <div className="flex h-60 w-60">
@@ -21,7 +21,7 @@ function Distance() {
               alt="Image"
             />
           </div>
-          <div className="flex h-full flex-col justify-around p-2 py-8">
+          <div className="flex h-full flex-col justify-around">
             {' '}
             <p className="text-lg font-bold">4월 8일 월요일 16:00</p>
             <p className="text-xl">모각코 할 사람!</p>

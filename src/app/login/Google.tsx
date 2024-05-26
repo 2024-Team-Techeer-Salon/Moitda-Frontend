@@ -9,7 +9,7 @@ function Google() {
     <div>
       <button
         onClick={GoogleLogin}
-        className="relative mt-4 h-16 w-[26.5rem] border border-[#C7C7C7]"
+        className="relative mt-4 border border-[#C7C7C7] sm:h-12 sm:w-[16rem] lg:h-16 lg:w-[26.5rem]"
       >
         <img
           src="https://i.ibb.co/5cHq8gJ/images-1.png"
@@ -17,7 +17,7 @@ function Google() {
           alt="이미지"
         ></img>
         <div className="absolute inset-0 flex items-center justify-center">
-          <div className="flex items-center justify-center">
+          <div className="flex items-center justify-center sm:text-sm lg:text-lg">
             Google로 시작하기
           </div>
         </div>
