@@ -7,7 +7,7 @@ import ignorePath from '../styles/ignorePath.ts';
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 function Footer() {
-  const path = usePathname();
+  const path = usePathname() || '';
   if (ignorePath().includes(path) || path === '/chat') {
     return null;
   }

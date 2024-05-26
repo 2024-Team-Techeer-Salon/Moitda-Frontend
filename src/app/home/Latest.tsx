@@ -10,7 +10,7 @@ function Latest() {
         titleImage="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
         title="모각코 할 사람!"
         location="서울"
-        like={10}
+        meetingId={458}
       />,
     );
   }
