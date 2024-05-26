@@ -418,20 +418,26 @@ function page() {
         numPeople,
         meetingTime,
       )
-        .then(() => {
-          Swal.fire({
-            title: '모임이 성공적으로 수정되었습니다!',
-            text: '모임이 성공적으로 수정되었습니다!',
-            icon: 'success',
-          });
-        })
-        .then(() => {
-          router.push(`/meeting/${meetingId}`);
+        .then((res) => {
+          if (res.code === 'M001') {
+            Swal.fire({
+              title: '모임이 성공적으로 수정되었습니다!',
+              text: '모임이 성공적으로 수정되었습니다!',
+              icon: 'success',
+            });
+            router.push(`/meeting/${meetingId}`);
+          }
         })
         .catch((error) => {
+          Swal.fire({
+            title: '모임 수정 실패',
+            text: '모임 수정 실패',
+            icon: 'error',
+          });
           console.error(error);
         });
     } else {
+      console.log('실행 시작');
       postMeetings(
         categoryId,
         title,
@@ -444,19 +450,26 @@ function page() {
         meetingTime,
         images,
       )
-        .then(() => {
-          Swal.fire({
-            // title: '모임이 성공적으로 생성되었습니다!',
-            text: '모임이 성공적으로 생성되었습니다!',
-            icon: 'success',
-          });
-        })
-        .then(() => {
-          router.push('/home');
+        .then((res) => {
+          console.log('res', res);
+          if (res.code === 'M001') {
+            Swal.fire({
+              // title: '모임이 성공적으로 생성되었습니다!',
+              text: '모임이 성공적으로 생성되었습니다!',
+              icon: 'success',
+            });
+            router.push('/home');
+          }
         })
         .catch((error) => {
+          Swal.fire({
+            // title: '모임이 성공적으로 생성되었습니다!',
+            text: '모임 생성 실패',
+            icon: 'error',
+          });
           console.error(error);
         });
+      console.log('실행 끝');
     }
   };
 
