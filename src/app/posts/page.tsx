@@ -50,6 +50,7 @@ function page() {
   // useState 훅
   const [categoryId, setCategoryId] = useState<number>(-1);
   const [numPeople, setNumPeople] = useState(2);
+  const [originNumPeople, setOriginNumPeople] = useState(2);
   const [needsApproval, setNeedsApproval] = useState(true);
   const [editorHtml, setEditorHtml] = useState('');
   const [images, setImages] = useState<File[]>([]);
@@ -155,21 +156,24 @@ function page() {
     };
   }, [fetchNextPage, hasNextPage]);
 
-  if (postType === 'edit' && meetingId) {
-    getMeetingsData(meetingId)
-      .then((data) => {
-        setTitle(data.title);
-        setCategoryId(data.category_id);
-        setEditorHtml(data.content);
-        setNumPeople(data.max_participants_count);
-        setNeedsApproval(data.approval_required);
-        setMeetingTime(data.appointment_time);
-      })
-      .catch(() => {
-        setPostType('create');
-        setMeetingId(undefined);
-      });
-  }
+  useEffect(() => {
+    if (postType === 'edit' && meetingId) {
+      getMeetingsData(meetingId)
+        .then((data) => {
+          setTitle(data.title);
+          setCategoryId(data.category_id);
+          setEditorHtml(data.content);
+          setNumPeople(data.max_participants_count);
+          setOriginNumPeople(data.max_participants_count);
+          setNeedsApproval(data.approval_required);
+          setMeetingTime(data.appointment_time);
+        })
+        .catch(() => {
+          setPostType('create');
+          setMeetingId(undefined);
+        });
+    }
+  }, [meetingId, postType]);
 
   const handleImageChange = (e: any) => {
     const { files } = e.target;
@@ -419,7 +423,7 @@ function page() {
         meetingTime,
       )
         .then((res) => {
-          if (res.code === 'M001') {
+          if (res.code === 'M005') {
             Swal.fire({
               title: '모임이 성공적으로 수정되었습니다!',
               text: '모임이 성공적으로 수정되었습니다!',
@@ -586,13 +590,13 @@ function page() {
             className="w-full border-0 bg-white p-2 text-left focus:outline-none"
             value={numPeople}
             onChange={(e) => {
-              if (Number(e.target.value) < 2) {
-                setNumPeople(2);
+              if (Number(e.target.value) < originNumPeople) {
+                setNumPeople(originNumPeople);
               } else if (Number(e.target.value) > 99) {
                 setNumPeople(99);
               } else setNumPeople(Number(e.target.value));
             }}
-            min={2}
+            min={originNumPeople}
             max={99}
             placeholder="인원수를 입력해 주세요"
           />
@@ -600,8 +604,8 @@ function page() {
             <button
               className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-t-md border border-b-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
               onClick={() => {
-                if (numPeople < 2) {
-                  setNumPeople(2);
+                if (numPeople < originNumPeople) {
+                  setNumPeople(originNumPeople);
                 } else if (numPeople < 100) {
                   setNumPeople((prevNum) => prevNum + 1);
                 } else {
@@ -616,10 +620,10 @@ function page() {
               onClick={() => {
                 if (numPeople > 100) {
                   setNumPeople(99);
-                } else if (numPeople > 2) {
+                } else if (numPeople > originNumPeople) {
                   setNumPeople((prevNum) => prevNum - 1);
                 } else {
-                  setNumPeople(2);
+                  setNumPeople(originNumPeople);
                 }
               }}
             >
