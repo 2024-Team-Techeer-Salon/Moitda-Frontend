@@ -1,5 +1,8 @@
-export interface meetingImageProps {
-  imageURL: string[];
+export interface bannerImageProps {
+  imageURL: {
+    imageUrl: string;
+  }[];
+  endTime: string;
 }
 
 export interface meetingHeaderProps {
@@ -15,6 +18,22 @@ export interface meetingHeaderProps {
   addressDetail: string;
   meetingDate: string;
   isOwner: boolean;
-  participants: string[];
   endTime: string;
+  isParticipant: boolean;
+}
+
+export interface participantsProps {
+  meetingId: number;
+  participantInfo: {
+    meetingParticipantId: number;
+    username: string;
+    profileImage: string;
+  }[];
+  applicantInfo: {
+    meetingParticipantId: number;
+    username: string;
+    profileImage: string;
+  }[];
+  isOwner: boolean;
+  isFull: boolean;
 }

@@ -110,3 +110,29 @@ export const editMeeting = async (
     console.error('meeting edit api request error : ', error);
   }
 };
+
+export const getMeetingApplicants = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/meetings/${meetingId}/participants`);
+    return response.data.data;
+  } catch (error) {
+    console.error('meeting applicants get api request error : ', error);
+  }
+};
+
+export const patchMeetingApproval = async (
+  participantId: number,
+  meetingId: number,
+  isApproval: boolean,
+) => {
+  try {
+    const response = await api.patch('/meetings/participant', {
+      participant_id: participantId,
+      meeting_id: meetingId,
+      is_approval: isApproval,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('meeting approval patch api request error : ', error);
+  }
+};

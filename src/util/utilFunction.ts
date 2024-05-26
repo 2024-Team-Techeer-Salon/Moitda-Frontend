@@ -32,3 +32,8 @@ export function mannerStatTranslate(mannerStat: number) {
     return 'F+';
   }
 }
+
+export function defaultProfileImage() {
+  const image = 'https://i.ibb.co/d03Jg0k/image.png';
+  return image;
+}
