@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 import Image from 'next/image';
 import { chatListProps } from '@/types/chat.ts';
 

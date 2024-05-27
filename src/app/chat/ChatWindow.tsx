@@ -1,24 +1,39 @@
+/* eslint-disable import/no-unresolved */
+/* eslint-disable no-unused-vars */
+/* eslint-disable no-shadow */
+/* eslint-disable func-names */
+/* eslint-disable object-shorthand */
+/* eslint-disable no-console */
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
 import { useSelector } from 'react-redux';
+import { chatProps } from '@/types/chat.ts';
 
 export default function ChatRoom() {
   const [chatroomId, setChatroomId] = useState('1');
-  const [client, setClient] = useState(null);
+  const [client, setClient] = useState<any>('');
   const [chat, setChat] = useState(''); // 입력된 chat을 받을 변수
-  const [chatList, setChatList] = useState([]); // 채팅 기록
+  const [chatList, setChatList] = useState<any>([]); // 채팅 기록
   const [headerName, setHeaderName] = useState('새로 나온 와퍼 먹으러 갈 사람'); // 채팅방 이름
 
-  const userId = useSelector((state) => state.user?.userCode ?? '');
-  const [readCount, setReadCount] = useState('1');
+  const userId = useSelector<any>((state) => state.user?.userCode ?? '');
+  const [readCount, setReadCount] = useState(1);
   // const [userId, setUserId] = useState('1');
   // const userId = useSelector((state) => {
   //   return state.user.userCode;
   // });
   const [senders, setSenders] = useState('발신자');
+
+  const callback = function (message: { body?: string }) {
+    if (message.body) {
+      const msg: { [key: string]: any } = JSON.parse(message.body);
+      setChatList((chats: any[]) => [...chats, msg]);
+    }
+  };
 
   const connect = () => {
     try {
@@ -36,15 +51,9 @@ export default function ChatRoom() {
         heartbeatOutgoing: 4000,
       });
 
-      // 구독
-      clientdata.onConnect = function () {
-        clientdata.subscribe(`/sub/chat/room/${chatroomId}`, callback);
-      };
-
       // StompError 에러 났을 때
       clientdata.onStompError = function (frame) {
-        console.log('Broker reported error: ' + frame.headers['message']);
-        console.log('Additional details: ' + frame.body);
+        console.log('Additional details: ', frame.body);
       };
 
       clientdata.activate();
@@ -60,13 +69,6 @@ export default function ChatRoom() {
       return;
     }
     client.deactivate();
-  };
-
-  const callback = function (message) {
-    if (message.body) {
-      let msg = JSON.parse(message.body);
-      setChatList((chats) => [...chats, msg]);
-    }
   };
 
   const sendChat = () => {
@@ -94,18 +96,18 @@ export default function ChatRoom() {
     return () => disConnect();
   }, []);
 
-  const onChangeChat = (e) => {
+  const onChangeChat = (e: any) => {
     setChat(e.target.value);
   };
 
-  const handleSubmit = (event) => {
+  const handleSubmit = (event: any) => {
     event.preventDefault();
   };
   function timeStr(time: string) {
     return time.slice(11, 16);
   }
   // Define MyChat component
-  function MyChat({ time, chat, unreaderCount }) {
+  function MyChat({ time, chat, unreaderCount }: chatProps) {
     return (
       <div className="flex w-full flex-row items-end justify-end">
         <div className="mt-2 flex h-full w-2/3 flex-col items-end justify-center p-2">
@@ -128,7 +130,13 @@ export default function ChatRoom() {
   }
 
   // Define OpponentChat component
-  function OpponentChat({ profileImage, name, time, chat, unreaderCount }) {
+  function OpponentChat({
+    profileImage,
+    name,
+    time,
+    chat,
+    unreaderCount,
+  }: chatProps) {
     return (
       <div className="flex w-full flex-row items-start justify-start">
         <div className="m-4 flex h-12 w-12">
@@ -164,7 +172,7 @@ export default function ChatRoom() {
   }
 
   // Render chat messages using the appropriate component
-  const msgBox = chatList.map((item, idx) => {
+  const msgBox = chatList.map((item: any, idx: number) => {
     if (Number(item.sender) !== userId) {
       return (
         <OpponentChat
@@ -184,6 +192,8 @@ export default function ChatRoom() {
         time={item.send_date}
         chat={item.content}
         unreaderCount={readCount} // 임시
+        profileImage={''}
+        name={''}
       />
     );
   });

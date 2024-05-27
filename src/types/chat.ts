@@ -14,3 +14,9 @@ export interface chatProps {
   chat: string; // 채팅 내용
   unreaderCount: number; // 읽지 않은 사람 수
 }
+
+export interface chatRetrunProps {
+  sender: string; // 메시지 전송자
+  content: string; // 내용
+  readCount: string; // 읽지 않은 사람 수 (리턴값)
+}
