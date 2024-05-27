@@ -6,9 +6,10 @@
 
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import { profileCheck, bannerCheck } from '@/api/check.ts';
+import MannerStatBar from '../../components/MannerStatBar.tsx';
 
 function Profile() {
   const [uploadBannerFile, setUploadBannerFile] = useState<File | null>(null);
@@ -111,7 +112,7 @@ function Profile() {
   };
 
   const ProfileImage = () => {
-    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (event: any) => {
       const file = event.target.files?.[0] || null;
       if (file) {
         setUploadProfileFile(file);
@@ -131,9 +132,9 @@ function Profile() {
 
     return (
       <div className="flex w-[67.5rem] flex-col">
-        <div className="-mt-14 flex h-full w-full flex-row items-end justify-between">
+        <div className="-mt-14 flex h-full w-full flex-row items-end justify-start">
           {/* <ProfileImageImage /> */}
-          <div className="relative h-28 w-28 ">
+          <figure className="relative h-28 w-28 ">
             <Image
               src={profileUrl}
               alt="profile1"
@@ -141,22 +142,25 @@ function Profile() {
               objectFit="cover"
               className="border-1 absolute left-0 top-0 h-full w-full rounded-full border border-zinc-800"
             />
-          </div>
+          </figure>
           {isEdit ? (
             <input
-              className="ml-5 flex w-3/4 flex-row justify-start text-2xl font-bold"
+              className="ml-5 flex flex-row justify-start text-2xl font-bold"
               value={name}
               onChange={(e) => setName(e.target.value)}
             />
           ) : (
-            <h1 className="ml-5 flex w-3/4 flex-row justify-start text-2xl font-bold">
+            <p className="ml-3 flex min-w-16 text-2xl font-bold">
               안나경
               {/* {name} */}
-            </h1>
+            </p>
           )}
-          <div className="flex justify-end">
+          <div className="w-96">
+            <MannerStatBar mannerStat={40} />
+          </div>
+          <div className="flex w-1/2 justify-end">
             <button
-              className="h-7 w-32 rounded-md bg-gray-200 text-gray-700 "
+              className="flex h-10 w-32 items-center justify-center rounded-md bg-gray-200 text-gray-700"
               onClick={() => {
                 if (isEdit) {
                   // api호출 해야함
@@ -170,7 +174,7 @@ function Profile() {
             </button>
           </div>
         </div>
-        <div className="mt-5">
+        <div className="flex justify-start">
           {isEdit ? (
             <input
               className="ml-3 w-full text-lg"
@@ -178,7 +182,7 @@ function Profile() {
               onChange={(e) => setStatusMessage(e.target.value)}
             />
           ) : (
-            <p className="ml-3">
+            <p className="ml-3 mt-2">
               상태메시지
               {/* {statusMessage} */}
             </p>

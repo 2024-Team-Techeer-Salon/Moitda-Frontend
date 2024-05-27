@@ -1,24 +1,23 @@
-/* eslint-disable no-shadow */
+/* eslint-disable react-hooks/rules-of-hooks */
 
-import React from 'react';
-import Classification from './Classification.tsx';
-import Profile from './Profile.tsx';
-import MannerBar from './MannerBar.tsx';
+'use client';
 
-function Account() {
-  return (
-    <div>
-      <Profile />
+import { getUserId } from '@/api/user.ts';
+import { useQuery } from '@tanstack/react-query';
+import { useRouter } from 'next/navigation';
 
-      <div className="flex justify-end ">
-        <MannerBar />
-      </div>
-
-      <div className="flex justify-center">
-        <Classification />
-      </div>
-    </div>
-  );
+function page() {
+  const { data } = useQuery({
+    queryKey: ['user'],
+    queryFn: getUserId,
+  });
+  const router = useRouter();
+  if (data) {
+    router.push(`/account/${data.id}`);
+  } else {
+    router.push('/login');
+  }
+  return <div className="h-screen w-screen"></div>;
 }
 
-export default Account;
+export default page;

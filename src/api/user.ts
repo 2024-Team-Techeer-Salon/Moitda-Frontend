@@ -16,7 +16,24 @@ export async function signupUserInfo(
       gender,
       location,
     });
-    console.log(response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('users error : ', error.response);
+  }
+}
+
+export async function getUserId() {
+  try {
+    const response = await api.get('/users/me');
+    return response.data;
+  } catch (error: any) {
+    console.error('users error : ', error.response);
+  }
+}
+
+export async function getUserInfo({ userId }: { userId: number }) {
+  try {
+    const response = await api.get(`/users/${userId}`);
     return response.data;
   } catch (error: any) {
     console.error('users error : ', error.response);
