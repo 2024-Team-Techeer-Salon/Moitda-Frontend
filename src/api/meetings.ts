@@ -57,3 +57,92 @@ export const getMeetingList = async (page: number, size: number) => {
     console.error('Meeting List Get API Error : ', error);
   }
 };
+export const getMeetingsData = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/meetings/${meetingId}`);
+    return response.data.data;
+  } catch (error) {
+    console.error('meeting data get api request error : ', error);
+  }
+};
+
+export const postMeetingJoin = async (meetingId: number) => {
+  try {
+    const response = await api.post(`/meetings/participant/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting join api request error : ', error);
+  }
+};
+
+export const patchEndMeeting = async (meetingId: number) => {
+  try {
+    const response = await api.patch(`/meetings/end/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting end api request error : ', error);
+  }
+};
+
+export const deleteMeeting = async (meetingId: number) => {
+  try {
+    const response = await api.delete(`/meetings/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error('meeting delete api request error : ', error);
+  }
+};
+
+export const editMeeting = async (
+  meetingId: number,
+  categoryId: number,
+  title: string,
+  editorHTML: string,
+  placeName: string,
+  roadAddressName: string,
+  addressDetail: string,
+  numPeople: number,
+  meetingTime: string,
+) => {
+  try {
+    const response = await api.put(`/meetings/${meetingId}`, {
+      category_id: categoryId,
+      title,
+      content: editorHTML,
+      place_name: placeName,
+      road_address_name: roadAddressName,
+      detailed_address: addressDetail,
+      max_participants_count: numPeople,
+      appointment_time: meetingTime,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('meeting edit api request error : ', error);
+  }
+};
+
+export const getMeetingApplicants = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/meetings/${meetingId}/participants`);
+    return response.data.data;
+  } catch (error) {
+    console.error('meeting applicants get api request error : ', error);
+  }
+};
+
+export const patchMeetingApproval = async (
+  participantId: number,
+  meetingId: number,
+  isApproval: boolean,
+) => {
+  try {
+    const response = await api.patch('/meetings/participant', {
+      participant_id: participantId,
+      meeting_id: meetingId,
+      is_approval: isApproval,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('meeting approval patch api request error : ', error);
+  }
+};

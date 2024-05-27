@@ -16,8 +16,8 @@ function page(props: any) {
   const [refreshToken, setRefreshToken] = useState<string>('');
 
   useEffect(() => {
-    setAccessToken(searchParams.get('accessToken') || '');
-    setRefreshToken(searchParams.get('refreshToken') || '');
+    setAccessToken(searchParams?.get('accessToken') || '');
+    setRefreshToken(searchParams?.get('refreshToken') || '');
 
     if (accessToken !== '' && refreshToken !== '') {
       cookies.set('accessToken', accessToken, { path: '/' });
@@ -30,7 +30,11 @@ function page(props: any) {
       }
     }
   }, [accessToken, refreshToken]);
-  return <div>hi</div>;
+  return (
+    <div className="flex h-screen w-screen items-center justify-center">
+      로그인 중...
+    </div>
+  );
 }
 
 export default page;

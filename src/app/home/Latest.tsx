@@ -10,8 +10,8 @@
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef } from 'react';
 import { getMeetingList } from '@/api/meetings.ts';
+import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
-import category from '../../../public/category.json';
 
 function Latest({ searchLocation }: { searchLocation: string }) {
   const renderSize = 32;

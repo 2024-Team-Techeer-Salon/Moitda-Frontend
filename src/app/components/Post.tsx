@@ -6,11 +6,11 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { postProps } from '../../types/post.ts';
 
-function Post({ titleImage, title, meetingId, location }: postProps) {
+function Post({ titleImage, title, location, meetingId }: postProps) {
   return (
     <Link
       className="m-4 flex cursor-pointer flex-col justify-center"
-      href={`/meetingdetails/${meetingId}`}
+      href={`/meeting/${meetingId}`}
     >
       <div className="flex h-56 w-56">
         <Image

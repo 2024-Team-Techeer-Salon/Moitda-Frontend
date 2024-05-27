@@ -7,6 +7,8 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import dayjs, { Dayjs } from 'dayjs';
 import { signupUserInfo } from '@/api/user.ts';
+import Swal from 'sweetalert2';
+import { useRouter } from 'next/navigation';
 import WarningAlert from '../components/WarningAlert.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
@@ -19,6 +21,7 @@ function Page() {
   const [location, setLocation] = useState<string>('');
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [showAlert, setShowAlert] = useState<boolean>(false);
+  const router = useRouter();
 
   const handleRadioChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedRadio(event.target.value);
@@ -51,7 +54,20 @@ function Page() {
     const gender = selectedRadio === 'radio-1' ? 'M' : 'F';
     const formattedBirthDate = birthDate ? birthDate.format('YYYY-MM-DD') : '';
 
-    await signupUserInfo(name, formattedBirthDate, gender, location);
+    await signupUserInfo(name, formattedBirthDate, gender, location).then(
+      (response) => {
+        if (response.code === 'U001') {
+          Swal.fire({
+            icon: 'success',
+            title: '회원가입 완료!',
+            text: 'MOITDA에 오신 것을 환영합니다!',
+            showConfirmButton: false,
+            timer: 1500,
+          });
+          router.push('/home');
+        }
+      },
+    );
   };
 
   return (
