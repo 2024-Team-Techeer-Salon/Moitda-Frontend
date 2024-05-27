@@ -13,7 +13,7 @@ import { getMeetingList } from '@/api/meetings.ts';
 import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
 
-function Latest({ searchLocation }: { searchLocation: string }) {
+function Latest() {
   const renderSize = 32;
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
@@ -64,30 +64,15 @@ function Latest({ searchLocation }: { searchLocation: string }) {
               title: string;
               meeting_id: number;
               road_address_name: string;
-            }) => {
-              if (searchLocation === '') {
-                return (
-                  <PostComponent
-                    key={meeting.meeting_id}
-                    titleImage={meeting.image_url || category.category_image[1]}
-                    title={meeting.title}
-                    meetingId={meeting.meeting_id}
-                    location={meeting.road_address_name}
-                  />
-                );
-              }
-              if (searchLocation === meeting.road_address_name) {
-                return (
-                  <PostComponent
-                    key={meeting.meeting_id}
-                    titleImage={meeting.image_url || category.category_image[1]}
-                    title={meeting.title}
-                    meetingId={meeting.meeting_id}
-                    location={meeting.road_address_name}
-                  />
-                );
-              }
-            },
+            }) => (
+              <PostComponent
+                key={meeting.meeting_id}
+                titleImage={meeting.image_url || category.category_image[1]}
+                title={meeting.title}
+                meetingId={meeting.meeting_id}
+                location={meeting.road_address_name}
+              />
+            ),
           )}
         </>
       ))}

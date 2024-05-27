@@ -24,7 +24,7 @@ function Body() {
     if (activeTab === 'latest') {
       return (
         <div className="flex w-full items-center justify-center">
-          <Latest searchLocation={searchLocation} />
+          <Latest />
         </div>
       );
     }
