@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
+import { useSelector } from 'react-redux';
 
 export default function ChatRoom() {
   const [chatroomId, setChatroomId] = useState('1');
@@ -11,8 +12,12 @@ export default function ChatRoom() {
   const [chatList, setChatList] = useState([]); // 채팅 기록
   const [headerName, setHeaderName] = useState('새로 나온 와퍼 먹으러 갈 사람'); // 채팅방 이름
 
-  // const userId = useSelector((state) => state.user?.userCode ?? '');
-  const [userId, setUserId] = useState('1');
+  const userId = useSelector((state) => state.user?.userCode ?? '');
+  const [readCount, setReadCount] = useState('1');
+  // const [userId, setUserId] = useState('1');
+  // const userId = useSelector((state) => {
+  //   return state.user.userCode;
+  // });
   const [senders, setSenders] = useState('발신자');
 
   const connect = () => {
@@ -31,10 +36,12 @@ export default function ChatRoom() {
         heartbeatOutgoing: 4000,
       });
 
+      // 구독
       clientdata.onConnect = function () {
-        clientdata.subscribe('/sub/chat/room/' + chatroomId, callback);
+        clientdata.subscribe(`/sub/chat/room/${chatroomId}`, callback);
       };
 
+      // StompError 에러 났을 때
       clientdata.onStompError = function (frame) {
         console.log('Broker reported error: ' + frame.headers['message']);
         console.log('Additional details: ' + frame.body);
@@ -47,6 +54,7 @@ export default function ChatRoom() {
     }
   };
 
+  // 클라이언트 연결 해제
   const disConnect = () => {
     if (client === null) {
       return;
@@ -67,7 +75,7 @@ export default function ChatRoom() {
     }
 
     client.publish({
-      destination: '/sub/chat/room/' + chatroomId,
+      destination: `/sub/chat/room/${chatroomId}`,
       body: JSON.stringify({
         userid: userId,
         sender: senders,
@@ -162,22 +170,22 @@ export default function ChatRoom() {
         <OpponentChat
           key={idx}
           profileImage="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
+          // profileImage={item.profile_image}
           name={item.sender}
           time={item.send_date}
           chat={item.content}
-          unreaderCount={0} // 임시
-        />
-      );
-    } else {
-      return (
-        <MyChat
-          key={idx}
-          time={item.send_date}
-          chat={item.content}
-          unreaderCount={0} // 임시
+          unreaderCount={readCount} // 임시
         />
       );
     }
+    return (
+      <MyChat
+        key={idx}
+        time={item.send_date}
+        chat={item.content}
+        unreaderCount={readCount} // 임시
+      />
+    );
   });
 
   return (
@@ -187,7 +195,7 @@ export default function ChatRoom() {
         <span className="text-md ml-2 text-zinc-200">2</span>
       </div>
       <div
-        className="hide-scrollbar flex h-full w-full flex-col-reverse items-center justify-start overflow-y-auto pt-2"
+        className="hide-scrollbar flex h-full w-full flex-col-reverse justify-start overflow-y-auto pt-2"
         onSubmit={handleSubmit}
       >
         <div>{msgBox}</div>
