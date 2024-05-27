@@ -16,8 +16,8 @@ function page(props: any) {
   const [refreshToken, setRefreshToken] = useState<string>('');
 
   useEffect(() => {
-    setAccessToken(searchParams.get('accessToken') || '');
-    setRefreshToken(searchParams.get('refreshToken') || '');
+    setAccessToken(searchParams?.get('accessToken') || '');
+    setRefreshToken(searchParams?.get('refreshToken') || '');
 
     if (accessToken !== '' && refreshToken !== '') {
       cookies.set('accessToken', accessToken, { path: '/' });
