@@ -1,3 +1,5 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable no-shadow */
 /* eslint-disable operator-linebreak */
 /* eslint-disable object-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
@@ -12,6 +14,7 @@ import category from '@/util/category.json';
 import Image from 'next/image';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { getSearchData } from '@/api/search.ts';
+import Post from '../components/Post.tsx';
 
 function page() {
   const renderSize = 24;
@@ -71,10 +74,11 @@ function page() {
         return undefined;
       },
     });
+  console.log(data);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <div className="flex h-full w-[67.5rem] flex-col items-center justify-start pt-8">
+      <div className="flex h-full w-[20rem] flex-col items-center justify-center sm:w-[30rem] md:w-[42rem] lg:w-[67.5rem]">
         {searchType === 'category' ? (
           <div className="flex w-full flex-row items-center justify-start text-2xl">
             <figure className="relative m-6 flex h-32 w-32">
@@ -98,8 +102,30 @@ function page() {
             검색 결과
           </div>
         )}
-        <div className="flex h-full w-full flex-col items-center justify-center">
-          {/* <Body /> */}
+        <div className="flex flex-row flex-wrap items-center justify-center">
+          {data?.pages.map((page: any, pageIndex) =>
+            page.meeting_list.map((meeting: any, index: any) => (
+              <Post
+                key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
+                titleImage={
+                  meeting.image_url ||
+                  category.category_image[Number(searchKeyword)]
+                }
+                title={meeting.title}
+                location={meeting.road_address_name}
+                meetingId={meeting.meeting_id}
+              />
+            )),
+          )}
+          {isFetchingNextPage && <div>Loading more...</div>}
+          {hasNextPage && (
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+            >
+              Load More
+            </button>
+          )}
         </div>
       </div>
     </div>
