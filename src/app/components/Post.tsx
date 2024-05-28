@@ -12,7 +12,7 @@ function Post({ titleImage, title, location, meetingId }: postProps) {
       className="m-4 flex cursor-pointer flex-col justify-center"
       href={`/meeting/${meetingId}`}
     >
-      <figure className="relative flex h-32 w-32 sm:h-52 sm:w-52 md:h-52 md:w-52 lg:h-60 lg:w-60">
+      <figure className="relative flex h-32 w-32 sm:h-40 sm:w-40 md:h-48 md:w-48 lg:h-56 lg:w-56">
         <Image
           src={titleImage}
           alt={titleImage}
