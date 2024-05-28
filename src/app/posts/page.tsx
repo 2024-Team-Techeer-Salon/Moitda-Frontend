@@ -421,9 +421,9 @@ function page() {
         strategy="beforeInteractive"
       />
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
-      <div className="flex h-full w-[67.5rem] flex-col">
+      <div className="flex h-full w-full flex-col px-4 md:px-40 lg:px-60 xl:px-80">
         {/* 제목 입력 및 카테고리 선택 */}
-        <div className="flex h-12 w-full flex-row ">
+        <div className="flex h-12 w-full flex-row">
           <input
             type="text"
             placeholder="글 제목을 입력하세요"
@@ -452,13 +452,13 @@ function page() {
         </div>
 
         {/* 장소 선택 */}
-        <div className="mt-8 flex h-60 w-full flex-row">
+        <div className="mt-8 flex h-60 w-full flex-col sm:flex-row">
           <SearchAddressModal isOpen={meetingAddressModalOpen} />
           <div className="flex w-1/2 flex-col justify-end ">
             <p className="flex text-sm text-zinc-300">
               모임 장소를 입력해 주세요!
             </p>
-            <div className="mt-4 flex h-12 w-full flex-row">
+            <div className="mt-4 flex h-12 w-[21rem] flex-row sm:w-full">
               <input
                 className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 focus:outline-none"
                 readOnly
@@ -467,7 +467,7 @@ function page() {
                 placeholder="주소"
               />
               <button
-                className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
+                className="btn h-12 w-32 bg-[#e0e0e0] text-white hover:bg-[#0a0a0a]"
                 onClick={() => setMeetingAddressModalOpen(true)}
               >
                 주소 검색
@@ -477,12 +477,15 @@ function page() {
             <input
               type="text"
               placeholder="상세 주소"
-              className="border-1 mr-4 mt-4 flex h-12 w-full border border-zinc-300 p-2 focus:outline-none"
+              className="border-1 mr-4 mt-4 flex h-12 w-[21rem] border border-zinc-300 p-2 focus:outline-none sm:w-full"
               onChange={(e) => (addressDetailRef.current = e.target.value)}
               onBlur={() => setAddressDetail(addressDetailRef.current)}
             />
           </div>
-          <div className="ml-4 flex h-60 w-1/2 border border-zinc-300" id="map">
+          <div
+            className="b mt-2 flex h-80 w-[21rem] border border-zinc-300 sm:ml-4 sm:mt-0 sm:h-60 sm:w-1/2"
+            id="map"
+          >
             <Map // 지도를 표시할 컨테이너
               center={center} // 지도의 중심좌표
               style={{ width: '100%', height: '100%' }}
@@ -688,7 +691,7 @@ function page() {
         </div>
         <div className="mt-12 flex w-full flex-row justify-end">
           <button
-            className="btn h-12 w-32 bg-[#E6E1E1] text-white hover:bg-[#C7B7B7]"
+            className="btn h-12 w-32 bg-[#dadada] text-white hover:bg-[#202020]"
             onClick={handlePostMeetings}
             type="button"
           >

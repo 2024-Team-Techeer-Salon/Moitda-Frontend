@@ -60,11 +60,11 @@ function Body() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="mt-10 flex w-full flex-row items-center justify-between sm:p-5 md:p-2 lg:p-8">
+      <div className="mt-10 flex w-full flex-row items-center justify-between p-5 sm:p-5 md:p-2 lg:p-8">
         {/* 탭 리스트 */}
         <div
           role="tablist"
-          className="m tabs-lgsm:w-1/2 tabs tabs-bordered sm:w-1/2 md:w-1/3 lg:w-1/4"
+          className="m tabs-lgsm:w-1/2 tabs tabs-bordered w-[17rem] sm:w-1/2 md:w-1/3 lg:w-1/4"
         >
           <input
             type="radio"
@@ -88,7 +88,7 @@ function Body() {
         </div>
 
         {/* 지역 검색 드롭다운 */}
-        <div className="flex w-full flex-row items-center justify-end ">
+        <div className="h-30 flex w-56 flex-row items-center justify-end lg:w-full">
           {activeTab === 'latest' && (
             <div className="dropdown dropdown-end dropdown-bottom">
               <div tabIndex={0} role="button" className="btn">

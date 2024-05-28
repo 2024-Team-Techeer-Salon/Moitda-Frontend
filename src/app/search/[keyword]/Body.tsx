@@ -64,7 +64,7 @@ function Body() {
         {/* 탭 리스트 */}
         <div
           role="tablist"
-          className="tabs tabs-bordered tabs-lg sm:w-[20rem] md:w-1/2 lg:w-1/4"
+          className="tabs tabs-bordered tabs-lg w-[20rem] sm:w-[20rem] md:w-1/2 lg:w-1/4"
         >
           <input
             type="radio"
