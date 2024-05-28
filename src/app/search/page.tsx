@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable consistent-return */
+/* eslint-disable no-undef */
 /* eslint-disable function-paren-newline */
 /* eslint-disable no-shadow */
 /* eslint-disable operator-linebreak */
@@ -9,7 +12,7 @@
 'use client';
 
 import { useSearchParams } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import category from '@/util/category.json';
 import Image from 'next/image';
 import { useInfiniteQuery } from '@tanstack/react-query';
@@ -19,6 +22,7 @@ import Post from '../components/Post.tsx';
 function page() {
   const renderSize = 24;
   const searchParams = useSearchParams();
+  const loadMoreRef = useRef<HTMLDivElement>(null);
   const [searchType, setSearchType] = useState<string>('keyword'); // category or keyword
   const [searchKeyword, setSearchKeyword] = useState<string>(''); // keyword or category id
   const [center, setCenter] = useState<{ lat: number; lng: number }>({
@@ -54,27 +58,49 @@ function page() {
     }
   }, [searchParams]);
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ['search', searchType, searchKeyword],
-      queryFn: ({ pageParam = 1 }: { pageParam: number }) =>
-        getSearchData(
-          searchType,
-          searchKeyword,
-          center.lat,
-          center.lng,
-          pageParam,
-          renderSize,
-        ),
-      initialPageParam: 0,
-      getNextPageParam: (lastPage: { page: number; totalPages: number }) => {
-        if (lastPage.page < lastPage.totalPages) {
-          return lastPage.page + 1;
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['search', searchType, searchKeyword],
+    queryFn: ({ pageParam = 1 }: { pageParam: number }) =>
+      getSearchData(
+        searchType,
+        searchKeyword,
+        center.lat,
+        center.lng,
+        pageParam,
+        renderSize,
+      ),
+    initialPageParam: 0,
+    getNextPageParam: (lastPage: {
+      current_page: number;
+      total_page: number;
+    }) => {
+      if (lastPage && lastPage.current_page < lastPage.total_page) {
+        return lastPage.current_page + 1;
+      }
+      return undefined;
+    },
+  });
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
         }
-        return undefined;
       },
-    });
-  console.log(data);
+      {
+        root: null, // 기본적으로 브라우저 뷰포트를 root로 사용
+        rootMargin: '0px',
+        threshold: 0.1, // 타겟 요소가 10% 보이면 콜백 실행
+      },
+    );
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) observer.disconnect();
+    };
+  }, [hasNextPage, fetchNextPage]);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -102,9 +128,9 @@ function page() {
             검색 결과
           </div>
         )}
-        <div className="flex flex-row flex-wrap items-center justify-center">
+        <div className="flex flex-row flex-wrap items-center justify-start">
           {data?.pages.map((page: any, pageIndex) =>
-            page.meeting_list.map((meeting: any, index: any) => (
+            page?.meeting_list.map((meeting: any, index: any) => (
               <Post
                 key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
                 titleImage={
@@ -117,15 +143,7 @@ function page() {
               />
             )),
           )}
-          {isFetchingNextPage && <div>Loading more...</div>}
-          {hasNextPage && (
-            <button
-              onClick={() => fetchNextPage()}
-              disabled={isFetchingNextPage}
-            >
-              Load More
-            </button>
-          )}
+          <div ref={loadMoreRef} />
         </div>
       </div>
     </div>
