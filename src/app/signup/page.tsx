@@ -80,13 +80,21 @@ function Page() {
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div>
         <h1 className="mb-14 mt-20 flex flex-row text-3xl font-light">
-          <p className={`text-center text-3xl ${mont.className}`}>MOITDA</p>에
-          오신 것을 환영합니다!
+          <p
+            className={`text-center text-xl sm:text-xl lg:text-3xl ${mont.className}`}
+          >
+            MOITDA
+          </p>
+          <p className="text-xl sm:text-xl lg:text-3xl">
+            에 오신 것을 환영합니다!
+          </p>
         </h1>
       </div>
       <div className="ml-1">
-        <div className="text-[#505050]">성별</div>
-        <div className="mb-4 flex flex-row items-center">
+        <div className="text-sm text-[#505050] sm:text-sm lg:text-base">
+          성별
+        </div>
+        <div className="mb-4 flex flex-row items-center text-sm sm:text-sm lg:text-base">
           {/* 첫 번째 라디오 버튼 */}
           <p className="mr-1">남</p>
           <input
@@ -99,7 +107,7 @@ function Page() {
             onChange={handleRadioChange}
           />
           {/* 두 번째 라디오 버튼 */}
-          <p className="mr-1">여</p>
+          <p className="mr-1 text-sm sm:text-sm lg:text-base">여</p>
           <input
             type="radio"
             name="radio-1"
@@ -110,33 +118,39 @@ function Page() {
             onChange={handleRadioChange}
           />
         </div>
-        <div className="mb-1 mt-2 text-[#505050]">생년월일</div>
+        <div className="mb-1 mt-2 text-sm text-[#505050] sm:text-sm lg:text-base">
+          생년월일
+        </div>
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <DatePicker
-            className="mb-4 flex w-80"
+            className="mb-4 flex w-60 sm:w-60 lg:w-80"
             label=""
             value={birthDate}
             onChange={(date) => setBirthDate(date)}
           />
         </LocalizationProvider>
-        <div className="mb-1 text-[#505050]">이름</div>
+        <div className="mb-1 text-sm text-[#505050] sm:text-sm lg:text-base">
+          이름
+        </div>
         <input
           type="text"
-          className="input mb-4 h-10 w-80 border border-b border-black"
+          className="input mb-4 h-10 w-60 border border-b border-black sm:w-60 lg:w-80"
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
-        <div className="mb-1 text-[#505050]">지역</div>
+        <div className="mb-1 text-sm text-[#505050] sm:text-sm lg:text-base">
+          지역
+        </div>
         <input
           type="text"
-          className="input mb-4 h-10 w-80 border border-b border-black"
+          className="input mb-4 h-10 w-60 border border-b border-black sm:w-60 lg:w-80"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
         />
       </div>
       <button
         onClick={handleSubmit}
-        className="border-40 mt-16 h-14 w-72 rounded-md border border-[#1A1A1A] bg-[#1A1A1A] font-extralight text-white"
+        className="border-40 mt-16 h-14 w-60 rounded-md border border-[#1A1A1A] bg-[#1A1A1A] text-sm font-extralight text-white sm:text-sm lg:w-72 lg:text-base"
       >
         기본 회원정보 저장
       </button>
