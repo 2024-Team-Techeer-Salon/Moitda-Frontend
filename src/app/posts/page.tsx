@@ -427,13 +427,15 @@ function page() {
           <input
             type="text"
             placeholder="글 제목을 입력하세요"
-            className="border-1 mr-4 flex w-full border border-zinc-300 p-2 focus:outline-none"
+            className="border-1 mr-4 flex w-full border border-zinc-300 p-2 text-sm focus:outline-none sm:text-base"
             onChange={(e) => (titleRef.current = e.target.value)}
             onBlur={() => setTitle(titleRef.current)}
           />
 
           <FormControl className="flex h-12 w-40">
-            <InputLabel className="flex h-full">카테고리</InputLabel>
+            <InputLabel className="flex h-full text-sm sm:text-base">
+              카테고리
+            </InputLabel>
             <Select
               label="카테고리"
               onChange={(event) => {
@@ -460,14 +462,14 @@ function page() {
             </p>
             <div className="mt-4 flex h-12 w-[21rem] flex-row sm:w-full">
               <input
-                className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 focus:outline-none"
+                className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 text-sm focus:outline-none sm:text-base"
                 readOnly
                 type="text"
                 value={placeName}
                 placeholder="주소"
               />
               <button
-                className="btn h-12 w-32 bg-[#e0e0e0] text-white hover:bg-[#0a0a0a]"
+                className="btn h-12 w-32 bg-[#e0e0e0] text-sm text-white hover:bg-[#0a0a0a] sm:text-base"
                 onClick={() => setMeetingAddressModalOpen(true)}
               >
                 주소 검색
@@ -477,13 +479,13 @@ function page() {
             <input
               type="text"
               placeholder="상세 주소"
-              className="border-1 mr-4 mt-4 flex h-12 w-[21rem] border border-zinc-300 p-2 focus:outline-none sm:w-full"
+              className="border-1 mr-4 mt-4 flex h-12 w-[21rem] border border-zinc-300 p-2 text-sm focus:outline-none sm:w-full sm:text-base"
               onChange={(e) => (addressDetailRef.current = e.target.value)}
               onBlur={() => setAddressDetail(addressDetailRef.current)}
             />
           </div>
           <div
-            className="b mt-2 flex h-80 w-[21rem] border border-zinc-300 sm:ml-4 sm:mt-0 sm:h-60 sm:w-1/2"
+            className="b mt-2 flex h-96 w-[21rem] border border-zinc-300 sm:ml-4 sm:mt-0 sm:h-60 sm:w-1/2"
             id="map"
           >
             <Map // 지도를 표시할 컨테이너
@@ -517,7 +519,7 @@ function page() {
         <div className="mt-4 flex w-52 flex-row rounded-lg border border-solid bg-white p-1 font-sans hover:border-slate-400  focus-visible:outline-0">
           <input
             type="number"
-            className="w-full border-0 bg-white p-2 text-left focus:outline-none"
+            className="w-full border-0 bg-white p-2 text-left text-sm focus:outline-none sm:text-base"
             value={numPeople}
             onChange={(e) => {
               if (Number(e.target.value) < 2) {
@@ -566,22 +568,22 @@ function page() {
         <p className="mt-12 flex text-sm text-zinc-300">
           참가 방식을 선택해 주세요!
         </p>
-        <div className="mt-4 flex h-16 w-72 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md">
+        <div className="mt-4 flex h-14 w-60 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md sm:h-16 sm:w-72">
           <div
-            className="absolute h-12 w-32 items-center justify-center rounded-2xl bg-gray-100 shadow-md"
+            className="absolute h-10 w-[6.5rem] items-center justify-center rounded-2xl bg-gray-100 shadow-md sm:h-12 sm:w-32"
             style={{
               transform: needsApproval ? 'translateX(0)' : 'translateX(100%)',
               transition: 'transform 0.3s ease-in-out',
             }}
           />
           <p
-            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
+            className="z-10 flex w-1/2 cursor-pointer justify-center text-sm font-bold text-zinc-500 sm:text-base"
             onClick={() => setNeedsApproval(true)}
           >
             승인 후 참가
           </p>
           <p
-            className="z-10 flex w-1/2 cursor-pointer justify-center text-lg font-bold text-zinc-500"
+            className="z-10 flex w-1/2 cursor-pointer justify-center text-sm font-bold text-zinc-500 sm:text-base"
             onClick={() => setNeedsApproval(false)}
           >
             즉시 참가
@@ -596,7 +598,7 @@ function page() {
             onChange={(html: any) => {
               setEditorHtml(html);
             }} // 내용이 변경될 때 호출되는 콜백 함수
-            className="h-96 w-full"
+            className="h-72 w-full sm:h-96"
             placeholder="어떤 모임을 가질 지 설명해주세요!"
           />
         </div>
