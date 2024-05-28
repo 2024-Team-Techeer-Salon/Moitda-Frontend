@@ -10,6 +10,9 @@ export async function searchAddress(
   page: number,
   size: number,
 ) {
+  if (!keyword) {
+    return;
+  }
   try {
     const response = await axios.get(
       'https://dapi.kakao.com/v2/local/search/keyword.json',
