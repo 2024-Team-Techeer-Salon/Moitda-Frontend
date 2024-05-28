@@ -36,12 +36,8 @@ function Header() {
     event.preventDefault(); // 기본 제출 동작 방지
     if (searchQuery) {
       // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
-      router.push(`/search/${searchQuery}`);
+      router.push(`/search?searchType=keyword&searchKeyword=${searchQuery}`);
     }
-  };
-
-  const toggleCategories = () => {
-    setOpenCategories(!openCategories);
   };
 
   return (
@@ -105,7 +101,9 @@ function Header() {
           </Link>
           <div
             className="flex cursor-pointer flex-row items-center p-2 text-lg font-bold"
-            onClick={toggleCategories}
+            onClick={() => {
+              setOpenCategories(!openCategories);
+            }}
           >
             <p className="flex w-full">카테고리</p>
             <span

@@ -19,7 +19,6 @@ function Post({ titleImage, title, location, meetingId }: postProps) {
           className="relative rounded-lg object-cover"
           width={10000}
           height={10000}
-          //   layout="responsive"
         />
       </div>
       <p className="pt-1 text-lg font-bold">{title}</p>
