@@ -1,3 +1,4 @@
+/* eslint-disable prefer-template */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-shadow */
@@ -50,6 +51,10 @@ export default function ChatRoom() {
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
       });
+      // 구독
+      clientdata.onConnect = function () {
+        clientdata.subscribe('/sub/channels/' + chatroomId, callback);
+      };
 
       // StompError 에러 났을 때
       clientdata.onStompError = function (frame) {
