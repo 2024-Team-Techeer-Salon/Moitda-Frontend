@@ -8,7 +8,7 @@ import Body from './Body.tsx';
 async function page() {
   return (
     <div className="flex h-full w-full flex-col items-center justify-center ">
-      <Header />
+      <Banner />
       <div className="flex h-full w-[20rem] flex-col items-center justify-center sm:w-[30rem] md:w-[42rem] lg:w-[67.5rem]">
         <Body />
       </div>

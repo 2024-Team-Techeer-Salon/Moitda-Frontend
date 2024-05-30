@@ -20,7 +20,7 @@ function Post({ titleImage, title, location, meetingId }: postProps) {
           layout="fill"
           objectFit="cover"
         />
-      </div>
+      </figure>
       <p className="pt-1 text-lg font-bold">{title}</p>
       <p className="text-sm">{location}</p>
     </Link>
