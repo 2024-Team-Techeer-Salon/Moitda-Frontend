@@ -22,13 +22,13 @@ function Banner() {
   };
 
   return (
-    <div className="relative flex h-96 w-full flex-row items-center justify-center overflow-hidden bg-black opacity-90">
+    <div className="relative flex h-52 w-full flex-row items-center justify-center overflow-hidden bg-black opacity-90 sm:h-72 lg:h-96">
       <img
         src="https://i.ibb.co/wL61Zx5/home-Image.png"
         alt="home-Image"
-        className="absolute w-full"
+        className="absolute h-full w-full"
       />
-      <div className="z-0 flex h-full w-1/6 items-center justify-center">
+      <div className="b 0 z-0 flex h-full w-1/6 items-center justify-center">
         <button
           className="btn btn-circle border-none bg-black bg-opacity-20 text-white hover:bg-zinc-800"
           onClick={handleBackwardClick}
@@ -43,9 +43,13 @@ function Banner() {
         </button>
       </div>
       <div className="z-0 flex h-full w-4/6 flex-col justify-center">
-        <p className="p-2 text-4xl text-white">모임을 만들고</p>
-        <p className="p-2 text-4xl font-bold text-white">잇다</p>
-        <p className="p-2 text-2xl text-white">
+        <div>
+          <p className="text-2xl text-white lg:text-5xl">모임을 만들고</p>
+          <p className="text-2xl font-bold text-white lg:mt-2 lg:text-5xl">
+            잇다
+          </p>
+        </div>
+        <p className="mt-2 text-base text-white lg:mt-4 lg:text-2xl">
           간편 만남 서비스, <span className="font-bold">모잇다</span>
         </p>
       </div>

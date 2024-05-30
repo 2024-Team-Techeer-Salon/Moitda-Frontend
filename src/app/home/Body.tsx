@@ -39,9 +39,12 @@ function Body() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex w-full flex-row items-start justify-start p-12">
+      <div className="mt-10 flex w-full flex-row items-center justify-between p-5 sm:p-5 md:p-2 lg:p-8">
         {/* 탭 리스트 */}
-        <div role="tablist" className="tabs tabs-bordered tabs-lg w-1/4">
+        <div
+          role="tablist"
+          className="m tabs-lgsm:w-1/2 tabs tabs-bordered w-[17rem] sm:w-1/2 md:w-1/3 lg:w-1/4"
+        >
           <input
             type="radio"
             name="latestTab"
@@ -56,15 +59,15 @@ function Body() {
             type="radio"
             name="distanceTab"
             role="tab"
-            className={`tab ${activeTab === 'distance' ? 'font-bold' : ''}`}
+            className={`tab mt-4 ${activeTab === 'distance' ? 'font-bold' : ''}`}
             aria-label="거리순"
             checked={activeTab === 'distance'}
             onChange={() => handleTabClick('distance')}
           />
         </div>
 
-        {/* 지역 검색 */}
-        <div className="flex w-full flex-row items-center justify-end">
+        {/* 지역 검색 드롭다운 */}
+        <div className="h-30 flex w-56 flex-row items-center justify-end lg:w-full">
           {activeTab === 'latest' && (
             <form
               className="border-1 flex w-32 flex-row items-center rounded-lg border border-zinc-600"

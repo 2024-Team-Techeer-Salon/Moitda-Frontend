@@ -47,37 +47,9 @@ function Latest() {
     );
     if (loadMoreRef.current) observer.observe(loadMoreRef.current);
 
-    return () => {
-      if (loadMoreRef.current) observer.disconnect();
-    };
-  }, [hasNextPage, fetchNextPage]);
-
-  if (!data) return null;
-
   return (
-    <div className="flex flex-row flex-wrap items-center">
-      {data.pages.map((page) => (
-        <>
-          {page?.data?.map(
-            (meeting: {
-              image_url: string;
-              title: string;
-              meeting_id: number;
-              road_address_name: string;
-            }) => (
-              <PostComponent
-                key={meeting.meeting_id}
-                titleImage={meeting.image_url || category.category_image[1]}
-                title={meeting.title}
-                meetingId={meeting.meeting_id}
-                location={meeting.road_address_name}
-              />
-            ),
-          )}
-        </>
-      ))}
-      {isFetchingNextPage && <div>Loading...</div>}
-      <div ref={loadMoreRef} />
+    <div className="flex flex-row flex-wrap items-center justify-center">
+      {postList}
     </div>
   );
 }
