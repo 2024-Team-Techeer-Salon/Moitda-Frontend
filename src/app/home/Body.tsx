@@ -24,14 +24,14 @@ function Body() {
     if (activeTab === 'latest') {
       return (
         <div className="flex w-full items-center justify-center">
-          <Latest />
+          <Distance />
         </div>
       );
     }
     if (activeTab === 'distance') {
       return (
         <div className="flex w-full items-center justify-center">
-          <Distance />
+          <Latest />
         </div>
       );
     }

@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable array-callback-return */
 /* eslint-disable no-shadow */
@@ -9,13 +10,19 @@
 /* eslint-disable operator-linebreak */
 /* eslint-disable object-curly-newline */
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { getMeetingList } from '@/api/meetings.ts';
 import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
+import { searchMeetings } from '@/api/nearMeeting.ts';
 
 function Latest() {
-  const renderSize = 32;
+  const renderSize = 4;
+  const [latitude, setLatitude] = useState('37.5665'); // Default latitude (example: Seoul)
+  const [longitude, setLongitude] = useState('126.9780'); // Default longitude (example: Seoul)
+  const [meetings, setMeetings] = useState([]);
+  const [error, setError] = useState(null);
+
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['Lastest Meeting List'],
@@ -31,6 +38,20 @@ function Latest() {
     });
 
   const loadMoreRef = useRef(null);
+
+  useEffect(() => {
+    const fetchMeetings = async () => {
+      try {
+        const data = await searchMeetings(latitude, longitude, '1', '10', '3');
+        setMeetings(data);
+      } catch (err) {
+        setError(err);
+        console.error('Error fetching meetings:', err);
+      }
+    };
+
+    fetchMeetings();
+  }, []);
 
   useEffect(() => {
     if (!hasNextPage) return;

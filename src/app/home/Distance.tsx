@@ -1,10 +1,36 @@
+/* eslint-disable prefer-template */
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-console */
+
 'use client';
 
 import Script from 'next/script';
-import { Map } from 'react-kakao-maps-sdk';
+import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 
 function Distance() {
+  const [latitude, setLatitude] = useState(null);
+  const [longitude, setLongitude] = useState(null);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
+    function successCallback(position) {
+      console.log('Latitude: ' + position.coords.latitude);
+      console.log('Longitude: ' + position.coords.longitude);
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+    }
+
+    function errorCallback(error) {
+      console.error('Error Code = ' + error.code + ' - ' + error.message);
+    }
+  }, []);
+
+  const locPosition =
+    latitude && longitude ? { lat: latitude, lng: longitude } : null;
+
   return (
     <div className="mt-[-0.5rem] flex h-full w-[30rem] flex-col sm:w-[30rem] md:w-[43rem] lg:w-[65rem]">
       <div className="flex flex-row items-center justify-center">
@@ -36,10 +62,17 @@ function Distance() {
             src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
             strategy="beforeInteractive"
           />
-          <Map
-            center={{ lat: 33.450701, lng: 126.570667 }}
-            style={{ width: '100%', height: '100%' }}
-          ></Map>
+          {locPosition ? (
+            <Map
+              center={locPosition}
+              style={{ width: '100%', height: '100%' }}
+              level={3}
+            >
+              <MapMarker position={locPosition} />
+            </Map>
+          ) : (
+            <p className="flex items-center justify-center">Loading map...</p>
+          )}
         </div>
       </div>
     </div>
