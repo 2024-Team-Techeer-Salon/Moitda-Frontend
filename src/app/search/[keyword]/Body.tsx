@@ -60,9 +60,12 @@ function Body() {
 
   return (
     <div className="flex h-full w-full flex-col">
-      <div className="flex w-full flex-row items-start justify-start p-12">
+      <div className="mb-4 mt-10 flex w-full flex-row items-start justify-start p-2">
         {/* 탭 리스트 */}
-        <div role="tablist" className="tabs tabs-bordered tabs-lg w-1/4">
+        <div
+          role="tablist"
+          className="tabs tabs-bordered tabs-lg w-[20rem] sm:w-[20rem] md:w-1/2 lg:w-1/4"
+        >
           <input
             type="radio"
             name="latestTab"
