@@ -1,12 +1,10 @@
+/* eslint-disable no-console */
+/* eslint-disable function-paren-newline */
+/* eslint-disable operator-linebreak */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
-/* eslint-disable no-undef */
-/* eslint-disable function-paren-newline */
-/* eslint-disable no-shadow */
-/* eslint-disable operator-linebreak */
 /* eslint-disable object-curly-newline */
 /* eslint-disable implicit-arrow-linebreak */
-/* eslint-disable no-unsafe-optional-chaining */
 /* eslint-disable react-hooks/rules-of-hooks */
 
 'use client';
@@ -58,7 +56,7 @@ function page() {
     }
   }, [searchParams]);
 
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const { data, fetchNextPage, hasNextPage, isLoading } = useInfiniteQuery({
     queryKey: ['search', searchType, searchKeyword],
     queryFn: ({ pageParam = 1 }: { pageParam: number }) =>
       getSearchData(
@@ -102,10 +100,21 @@ function page() {
     };
   }, [hasNextPage, fetchNextPage]);
 
-  if (category.category_name[Number(searchKeyword)] === undefined) {
+  if (
+    category.category_name[Number(searchKeyword)] === undefined &&
+    searchType === 'category'
+  ) {
     return (
       <div className="mb-96 mt-20 flex w-full flex-row flex-wrap justify-center text-xl">
         잘못된 카테고리입니다. 올바른 카테고리를 입력해 주세요!
+      </div>
+    );
+  }
+
+  if (isLoading) {
+    return (
+      <div className="mb-96 mt-20 flex w-full flex-row flex-wrap justify-center text-xl">
+        페이지를 불러오는 중입니다..!
       </div>
     );
   }
@@ -154,8 +163,8 @@ function page() {
                 </span>
               </div>
             ))}
-          {data?.pages.map((page: any, pageIndex) =>
-            page?.meeting_list.map((meeting: any, index: any) => (
+          {data?.pages.map((pageData: any, pageIndex) =>
+            pageData?.meeting_list.map((meeting: any, index: any) => (
               <Post
                 key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
                 titleImage={
