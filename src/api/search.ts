@@ -19,9 +19,9 @@ export const getSearchData = async (
       return response.data.data;
     }
     const response = await api.get(
-      `/search/keyword/${searchKeyword}?page=${page}&size=${size}&latitude=${lat}&longitude=${lng}&sort=create_at`,
+      `/meetings/search/${searchKeyword}?page=${page}&size=${size}&latitude=${lat}&longitude=${lng}&sort=create_at`,
     );
-    return response.data;
+    return response.data.data;
   } catch (error) {
     console.error(error);
   }

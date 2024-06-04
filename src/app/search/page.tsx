@@ -50,8 +50,8 @@ function page() {
   }, []);
 
   useEffect(() => {
-    const type = searchParams?.get('searchType');
-    const keyword = searchParams?.get('searchKeyword');
+    const type = searchParams?.get('type');
+    const keyword = searchParams?.get('keyword');
     if (type && keyword) {
       setSearchType(type);
       setSearchKeyword(keyword);
@@ -128,14 +128,18 @@ function page() {
             검색 결과
           </div>
         )}
-        <div className="flex flex-row flex-wrap items-center justify-start">
+        <div className="flex w-full flex-row flex-wrap items-center justify-start">
           {data?.pages.map((page: any, pageIndex) =>
             page?.meeting_list.map((meeting: any, index: any) => (
               <Post
                 key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
                 titleImage={
                   meeting.image_url ||
-                  category.category_image[Number(searchKeyword)]
+                  category.category_image[
+                    searchType === 'category'
+                      ? Number(searchKeyword)
+                      : meeting.category_id
+                  ]
                 }
                 title={meeting.title}
                 location={meeting.road_address_name}
