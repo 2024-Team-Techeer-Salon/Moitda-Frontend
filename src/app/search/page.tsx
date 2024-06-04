@@ -102,6 +102,14 @@ function page() {
     };
   }, [hasNextPage, fetchNextPage]);
 
+  if (category.category_name[Number(searchKeyword)] === undefined) {
+    return (
+      <div className="mb-96 mt-20 flex w-full flex-row flex-wrap justify-center text-xl">
+        잘못된 카테고리입니다. 올바른 카테고리를 입력해 주세요!
+      </div>
+    );
+  }
+
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
       <div className="flex h-full w-96 flex-col items-center justify-center md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
@@ -129,6 +137,23 @@ function page() {
           </div>
         )}
         <div className="flex w-full flex-row flex-wrap items-center justify-start">
+          {!data?.pages[0] &&
+            (searchType === 'category' ? (
+              category.category_name[Number(searchKeyword)] && (
+                <div className="mb-96 mt-12 flex w-full flex-row flex-wrap justify-center text-xl">
+                  #{category.category_name[Number(searchKeyword)]} 검색 결과가
+                  없습니다.
+                </div>
+              )
+            ) : (
+              <div className="mb-96 mt-20 flex w-full flex-col items-center text-xl">
+                &quot;{searchKeyword}&quot;에 대한 검색 결과가 없습니다.
+                <br />
+                <span className="justify-center text-base text-zinc-500">
+                  다른 검색어를 입력하시거나 철자와 띄어쓰기를 확인해 보세요.
+                </span>
+              </div>
+            ))}
           {data?.pages.map((page: any, pageIndex) =>
             page?.meeting_list.map((meeting: any, index: any) => (
               <Post
