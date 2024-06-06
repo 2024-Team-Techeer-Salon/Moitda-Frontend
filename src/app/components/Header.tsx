@@ -1,17 +1,18 @@
 'use client';
 
+import { useState, ChangeEvent, FormEvent } from 'react';
 import { Montserrat } from 'next/font/google';
-import Image from 'next/image';
 import Link from 'next/link';
-import { SetStateAction, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
 import category from '@/util/category.json';
+import { useQuery } from '@tanstack/react-query';
+import { login, logout } from '@/api/user.ts';
 import ignorePath from '../styles/ignorePath.ts';
+import { removeCookie } from '../cookies.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 function Header() {
-  const [isLogin] = useState(false);
   const [openMenu, setOpenMenu] = useState(false);
   const [openCategories, setOpenCategories] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
@@ -19,17 +20,20 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
+  const { data } = useQuery({
+    queryKey: ['login'],
+    queryFn: login,
+  });
+
   if (ignorePath().includes(path)) {
     return null;
   }
 
-  const handleChange = (event: {
-    target: { value: SetStateAction<string> };
-  }) => {
+  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSubmit = (event: { preventDefault: () => void }) => {
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (searchQuery) {
       // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
@@ -153,12 +157,21 @@ function Header() {
         </div>
 
         {/* 메뉴 푸터 */}
-        <Link
-          href={isLogin ? '/logout' : '/login'}
+        <button
           className="m-8 flex h-12 w-full flex-col"
+          onClick={() => {
+            if (data) {
+              logout();
+              removeCookie('accessToken');
+              removeCookie('refreshToken');
+              window.location.reload();
+            } else {
+              router.push('/login');
+            }
+          }}
         >
-          {isLogin ? '로그아웃' : '로그인'}
-        </Link>
+          {data ? '로그아웃' : '로그인'}
+        </button>
       </div>
 
       {/* 검색 모달 */}
@@ -259,19 +272,20 @@ function Header() {
           </svg>
         </div>
         <div className="flex w-[28] items-center justify-end pr-8 sm:w-1/6 lg:w-1/6">
-          {isLogin ? (
-            <Image
-              src="https://i.ibb.co/kyrZGk4/fhrh.png"
-              alt="profile"
-              width={50}
-              height={50}
-              className="rounded-full"
-            />
-          ) : (
-            <Link href="/login" className="text-sm sm:text-sm lg:text-lg">
-              로그인
-            </Link>
-          )}
+          <button
+            onClick={() => {
+              if (data) {
+                logout();
+                removeCookie('accessToken');
+                removeCookie('refreshToken');
+                window.location.reload();
+              } else {
+                router.push('/login');
+              }
+            }}
+          >
+            {data ? '로그아웃' : '로그인'}
+          </button>
         </div>
       </div>
     </div>
