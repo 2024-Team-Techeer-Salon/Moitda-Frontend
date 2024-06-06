@@ -1,3 +1,5 @@
+/* eslint-disable import/extensions */
+/* eslint-disable operator-linebreak */
 /* eslint-disable prefer-template */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
@@ -8,6 +10,7 @@ import Script from 'next/script';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Image from 'next/image';
 import { useEffect, useState } from 'react';
+import Latest from './Latest';
 
 function Distance() {
   const [latitude, setLatitude] = useState(null);
@@ -23,7 +26,7 @@ function Distance() {
       setLongitude(position.coords.longitude);
     }
 
-    function errorCallback(error) {
+    function errorCallback(error: { code: string; message: string }) {
       console.error('Error Code = ' + error.code + ' - ' + error.message);
     }
   }, []);
@@ -75,6 +78,7 @@ function Distance() {
           )}
         </div>
       </div>
+      <Latest />
     </div>
   );
 }

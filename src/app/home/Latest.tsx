@@ -1,57 +1,62 @@
 /* eslint-disable no-console */
+/* eslint-disable prefer-template */
 /* eslint-disable import/no-unresolved */
-/* eslint-disable array-callback-return */
-/* eslint-disable no-shadow */
 /* eslint-disable consistent-return */
 /* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable operator-linebreak */
+/* eslint-disable object-curly-newline */
 
 'use client';
 
-/* eslint-disable operator-linebreak */
-/* eslint-disable object-curly-newline */
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
-import { getMeetingList } from '@/api/meetings.ts';
+import { searchMeetings } from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
-import { searchMeetings } from '@/api/nearMeeting.ts';
+import React from 'react';
 
 function Latest() {
-  const renderSize = 4;
-  const [latitude, setLatitude] = useState('37.5665'); // Default latitude (example: Seoul)
-  const [longitude, setLongitude] = useState('126.9780'); // Default longitude (example: Seoul)
-  const [meetings, setMeetings] = useState([]);
-  const [error, setError] = useState(null);
+  const [lat, setLatitude] = useState(null);
+  const [lng, setLongitude] = useState(null);
+  const [locationFetched, setLocationFetched] = useState(false);
+
+  useEffect(() => {
+    navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
+
+    function successCallback(position) {
+      console.log('Latitude: ' + position.coords.latitude);
+      console.log('Longitude: ' + position.coords.longitude);
+      setLatitude(position.coords.latitude);
+      setLongitude(position.coords.longitude);
+      setLocationFetched(true); // 위치 정보를 성공적으로 가져온 후 설정
+    }
+
+    function errorCallback(error) {
+      console.error('Error Code = ' + error.code + ' - ' + error.message);
+    }
+  }, []);
+
+  const renderSize = 32;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
-      queryKey: ['Lastest Meeting List'],
-      queryFn: ({ pageParam }) => getMeetingList(pageParam, renderSize),
-      initialPageParam: 0,
-
+      queryKey: ['Latest Meeting List', lat, lng],
+      queryFn: async ({ pageParam = 0 }) => {
+        if (lat !== null && lng !== null) {
+          return searchMeetings(lat, lng, pageParam, renderSize, 'string');
+        }
+      },
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage === null) {
           return undefined;
         }
         return allPages.length;
       },
+      enabled: locationFetched, // 위치 정보를 성공적으로 가져왔을 때만 쿼리 실행
+      initialPageParam: 0,
     });
 
   const loadMoreRef = useRef(null);
-
-  useEffect(() => {
-    const fetchMeetings = async () => {
-      try {
-        const data = await searchMeetings(latitude, longitude, '1', '10', '3');
-        setMeetings(data);
-      } catch (err) {
-        setError(err);
-        console.error('Error fetching meetings:', err);
-      }
-    };
-
-    fetchMeetings();
-  }, []);
 
   useEffect(() => {
     if (!hasNextPage) return;
