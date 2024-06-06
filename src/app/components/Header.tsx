@@ -37,7 +37,7 @@ function Header() {
     event.preventDefault();
     if (searchQuery) {
       // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
-      router.push(`/search?searchType=keyword&searchKeyword=${searchQuery}`);
+      router.push(`/search?type=keyword&keyword=${searchQuery}`);
     }
     setIsModalOpen(false); // 검색 시 모달 닫기
   };
@@ -138,7 +138,7 @@ function Header() {
               {category.category_name.map((item: string, index: number) => (
                 <Link
                   key={index}
-                  href={`search?searchType=category&searchKeyword=${index}`}
+                  href={`search?type=category&keyword=${index}`}
                   className="text-md p-2"
                   onClick={() => setOpenMenu(false)}
                 >
@@ -252,7 +252,7 @@ function Header() {
             </svg>
             <input
               type="text"
-              className="w-0 text-zinc-100 sm:w-full sm:bg-transparent md:w-full lg:w-full lg:bg-transparent lg:px-2 lg:outline-none"
+              className="w-0 text-black sm:w-full sm:bg-transparent md:w-full lg:w-full lg:bg-transparent lg:px-2 lg:outline-none"
               placeholder="어떤 모임을 찾으시나요?"
               value={searchQuery}
               onChange={handleChange}
