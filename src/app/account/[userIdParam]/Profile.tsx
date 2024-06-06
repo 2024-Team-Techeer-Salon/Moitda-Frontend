@@ -181,7 +181,7 @@ function Profile({ id }: accountIdProps) {
                       return;
                     }
                     if (!locationRegex.test(location.trim())) {
-                      setAlertMessage('위치를 입력해주세요');
+                      setAlertMessage('~시 ~구 형식으로 입력해주세요');
                       setIsAlert(true);
                       setTimeout(() => {
                         setIsAlert(false);
@@ -220,7 +220,7 @@ function Profile({ id }: accountIdProps) {
           {isEdit ? (
             <input
               className="ml-3 h-10 w-full items-center justify-center rounded-lg p-2 font-bold focus:outline-none"
-              defaultValue={data?.data.location}
+              defaultValue={location}
               onChange={(e) => (locationRef.current = e.target.value)}
               onBlur={() => {
                 if (locationRef.current !== '') {
@@ -230,7 +230,7 @@ function Profile({ id }: accountIdProps) {
             />
           ) : (
             <p className="ml-3 h-10 w-full items-center p-2 font-bold">
-              {data?.data.location}
+              {location}
             </p>
           )}
         </div>
