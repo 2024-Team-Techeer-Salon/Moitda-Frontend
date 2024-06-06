@@ -1,3 +1,9 @@
+/* eslint-disable function-paren-newline */
+/* eslint-disable operator-linebreak */
+/* eslint-disable object-curly-newline */
+/* eslint-disable no-use-before-define */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 /* eslint-disable no-console */
 /* eslint-disable prefer-template */
@@ -12,14 +18,14 @@ import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
 
 function Latest() {
-  const [lat, setLatitude] = useState(null);
-  const [lng, setLongitude] = useState(null);
+  const [lat, setLatitude] = useState<number | null>(null);
+  const [lng, setLongitude] = useState<number | null>(null);
   const [locationFetched, setLocationFetched] = useState(false);
 
   useEffect(() => {
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
 
-    function successCallback(position) {
+    function successCallback(position: any) {
       console.log('Latitude: ' + position.coords.latitude);
       console.log('Longitude: ' + position.coords.longitude);
       setLatitude(position.coords.latitude);
@@ -27,7 +33,7 @@ function Latest() {
       setLocationFetched(true); // 위치 정보를 성공적으로 가져온 후 설정
     }
 
-    function errorCallback(error) {
+    function errorCallback(error: any) {
       console.error('Error Code = ' + error.code + ' - ' + error.message);
     }
   }, []);
@@ -52,7 +58,7 @@ function Latest() {
       initialPageParam: 0,
     });
 
-  const loadMoreRef = useRef(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!hasNextPage) return;
@@ -79,24 +85,26 @@ function Latest() {
 
   return (
     <div className="my-20 flex flex-row flex-wrap items-center">
-      {data.pages.flatMap((page) =>
-        page.data.meeting_list.map(
-          (meeting: {
-            image_url: string;
-            title: string;
-            meeting_id: number;
-            road_address_name: string;
-          }) => (
-            <PostComponent
-              key={meeting.meeting_id}
-              titleImage={meeting.image_url || category.basic_image[0]}
-              title={meeting.title}
-              meetingId={meeting.meeting_id}
-              location={meeting.road_address_name}
-            />
+      {data.pages
+        .filter((page) => page && page.data && page.data.meeting_list)
+        .flatMap((page) =>
+          page.data.meeting_list.map(
+            (meeting: {
+              image_url: string;
+              title: string;
+              meeting_id: number;
+              road_address_name: string;
+            }) => (
+              <PostComponent
+                key={meeting.meeting_id}
+                titleImage={meeting.image_url || category.basic_image[0]}
+                title={meeting.title}
+                meetingId={meeting.meeting_id}
+                location={meeting.road_address_name}
+              />
+            ),
           ),
-        ),
-      )}
+        )}
       {isFetchingNextPage && <div>Loading...</div>}
       <div ref={loadMoreRef} />
     </div>
