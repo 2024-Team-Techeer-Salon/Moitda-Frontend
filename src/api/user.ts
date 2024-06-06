@@ -4,6 +4,7 @@
 /* eslint-disable no-console */
 import { api, formApi } from './axios.config.ts';
 
+// 회원가입시 정보 입력
 export async function signupUserInfo(
   username: string,
   dateOfBirth: string,
@@ -23,15 +24,7 @@ export async function signupUserInfo(
   }
 }
 
-export async function getUserId() {
-  try {
-    const response = await api.get('/users/me');
-    return response.data;
-  } catch (error: any) {
-    console.error('users error : ', error.response);
-  }
-}
-
+// 유저 정보 조회(마이페이지)
 export async function getUserInfo(userId: number) {
   try {
     const response = await api.get(`/users/${userId}`);
@@ -41,6 +34,7 @@ export async function getUserInfo(userId: number) {
   }
 }
 
+// 유저 정보 수정
 export async function putUserInfo(
   name: string,
   gender: string,
@@ -87,22 +81,48 @@ export async function putUserInfo(
   }
 }
 
-// 로그인 관련 api
+// 본인 ID 조회
 export async function login() {
   try {
     const response = await api.get('/users/me');
     return response.data;
   } catch (error) {
-    console.error('sample error : ', error);
+    console.error('Get User ID Error : ', error);
   }
 }
 
-// 로그아웃 관련 api
+// 로그아웃
 export async function logout() {
   try {
     const response = await api.post('/logout');
     return response.data;
   } catch (error) {
-    console.error('sample error : ', error);
+    console.error('Logout Error : ', error);
+  }
+}
+
+// 참여한 모임 리스트 조회
+export async function getMyMeetingList(
+  tab: string,
+  userId: number,
+  end: boolean,
+  page: number,
+  size: number,
+) {
+  try {
+    if (tab === 'joined') {
+      const response = await api.get(
+        `/users/${userId}/records/participated?end=${end}&page=${page}&size=${size}`,
+      );
+      return response.data;
+    }
+    if (tab === 'created') {
+      const response = await api.get(
+        `/users/${userId}/records/created?end=${end}&page=${page}&size=${size}`,
+      );
+      return response.data;
+    }
+  } catch (error) {
+    console.error('Get Participant List Error : ', error);
   }
 }

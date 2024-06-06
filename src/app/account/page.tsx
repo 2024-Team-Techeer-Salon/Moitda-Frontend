@@ -2,7 +2,7 @@
 
 'use client';
 
-import { getUserId } from '@/api/user.ts';
+import { login } from '@/api/user.ts';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
 
@@ -11,7 +11,7 @@ function page() {
 
   useEffect(() => {
     const fetchUserId = async () => {
-      const userId = await getUserId();
+      const userId = await login();
       return userId;
     };
     fetchUserId().then((data) => {
