@@ -450,6 +450,8 @@ function page() {
         placeName,
         address,
         addressDetail,
+        center.lat,
+        center.lng,
         numPeople,
         needsApproval,
         meetingTime,

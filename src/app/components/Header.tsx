@@ -32,13 +32,10 @@ function Header() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (searchQuery) {
-      router.push(`/search/${searchQuery}`);
-      setIsModalOpen(false); // 검색 시 모달 닫기
+      // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
+      router.push(`/search?searchType=keyword&searchKeyword=${searchQuery}`);
     }
-  };
-
-  const toggleCategories = () => {
-    setOpenCategories(!openCategories);
+    setIsModalOpen(false); // 검색 시 모달 닫기
   };
 
   const openModal = () => {
@@ -110,7 +107,9 @@ function Header() {
           </Link>
           <div
             className="flex cursor-pointer flex-row items-center p-2 text-lg font-bold"
-            onClick={toggleCategories}
+            onClick={() => {
+              setOpenCategories(!openCategories);
+            }}
           >
             <p className="flex w-full">카테고리</p>
             <span
@@ -135,7 +134,7 @@ function Header() {
               {category.category_name.map((item: string, index: number) => (
                 <Link
                   key={index}
-                  href={`/category/${index}`}
+                  href={`search?searchType=category&searchKeyword=${index}`}
                   className="text-md p-2"
                   onClick={() => setOpenMenu(false)}
                 >
