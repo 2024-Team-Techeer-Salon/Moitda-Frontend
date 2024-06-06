@@ -20,7 +20,7 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['login'],
     queryFn: login,
   });
@@ -272,20 +272,22 @@ function Header() {
           </svg>
         </div>
         <div className="flex w-[28] items-center justify-end pr-8 sm:w-1/6 lg:w-1/6">
-          <button
-            onClick={() => {
-              if (data) {
-                logout();
-                removeCookie('accessToken');
-                removeCookie('refreshToken');
-                window.location.reload();
-              } else {
-                router.push('/login');
-              }
-            }}
-          >
-            {data ? '로그아웃' : '로그인'}
-          </button>
+          {!isLoading && (
+            <button
+              onClick={() => {
+                if (data) {
+                  logout();
+                  removeCookie('accessToken');
+                  removeCookie('refreshToken');
+                  window.location.reload();
+                } else {
+                  router.push('/login');
+                }
+              }}
+            >
+              {data ? '로그아웃' : '로그인'}
+            </button>
+          )}
         </div>
       </div>
     </div>
