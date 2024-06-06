@@ -1,3 +1,4 @@
+/* eslint-disable import/extensions */
 /* eslint-disable import/prefer-default-export */
 /* eslint-disable no-console */
 /* eslint-disable consistent-return */

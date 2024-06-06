@@ -20,6 +20,8 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchMeetings } from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
+import { format } from 'date-fns';
+import { ko } from 'date-fns/locale';
 
 function Distance() {
   const [latitude, setLatitude] = useState<number | null>(null);
@@ -94,27 +96,25 @@ function Distance() {
     return () => {
       if (loadMoreRef.current) observer.disconnect();
     };
-  }, [hasNextPage, fetchNextPage]);
+  }, [hasNextPage, fetchNextPage, loadMoreRef.current]);
 
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedTitle, setSelectedTitle] = useState<string>('');
   const [selectedAddress, setSelectedAddress] = useState<string>('');
+  const [selectedImg, setSelectedImg] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
-  // 선택했을 때
-  // useEffect(() => {
-  //   if (data && latitude && longitude) {
-  //     const closestMeeting = getClosestMeeting(
-  //       data.pages.flatMap((page) => page.data.meeting_list),
-  //     );
-  //     if (closestMeeting) {
-  //       setSelectedTime(closestMeeting.appointment_time);
-  //       setSelectedTitle(closestMeeting.title);
-  //       setSelectedAddress(closestMeeting.road_address_name);
-  //       setSelectedCategory(closestMeeting.category_id);
-  //     }
-  //   }
-  // }, [data, latitude, longitude]);
+  const handleMain = (marker: any) => {
+    setSelectedTime(
+      format(new Date(marker.time), 'PPP EEEE', {
+        locale: ko,
+      }),
+    );
+    setSelectedTitle(marker.mainTitle);
+    setSelectedAddress(marker.address);
+    setSelectedCategory(marker.category_id);
+    setSelectedImg(marker.mainImg);
+  };
 
   const markers =
     data?.pages
@@ -128,6 +128,8 @@ function Distance() {
             road_address_name: string;
             latitude: number;
             longitude: number;
+            appointment_time: string;
+            category_id: number;
           }) => ({
             lat: meeting.latitude,
             lng: meeting.longitude,
@@ -135,6 +137,8 @@ function Distance() {
             mainTitle: meeting.title,
             address: meeting.road_address_name,
             mainImg: meeting.image_url,
+            time: meeting.appointment_time,
+            category_id: meeting.category_id,
           }),
         ),
       ) || [];
@@ -143,9 +147,13 @@ function Distance() {
     <div className="mt-[-0.5rem] flex h-full w-[30rem] flex-col sm:w-[30rem] md:w-[43rem] lg:w-[65rem]">
       <div className="flex flex-row items-center justify-center">
         <div className="m-4 flex h-[28rem] w-60 flex-col border border-zinc-300">
-          <div className="relative flex h-60 w-60">
+          <div className="relative flex h-80 w-60">
             <Image
-              src="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
+              src={
+                selectedImg !== null || selectedImg !== undefined
+                  ? selectedImg
+                  : category.basic_image[3]
+              }
               layout="fill"
               objectFit="cover"
               alt="Image"
@@ -156,7 +164,9 @@ function Distance() {
             <p className="text-xl">{selectedTitle}</p>
             <p className="text-sm text-zinc-400">{selectedAddress}</p>
             {/* <p className="text-sm text-zinc-400">({selectedAddressName})</p> */}
-            <p className="text-sm text-zinc-400">#{selectedCategory}</p>
+            <p className="text-sm text-zinc-400">
+              {selectedCategory !== null ? `#${selectedCategory}` : ''}
+            </p>
           </div>
         </div>
         <div
@@ -178,7 +188,8 @@ function Distance() {
                 <MapMarker
                   key={index}
                   position={{ lat: marker.lat, lng: marker.lng }}
-                ></MapMarker>
+                  onClick={() => handleMain(marker)}
+                />
               ))}
             </Map>
           ) : (
@@ -196,10 +207,14 @@ function Distance() {
                 title: string;
                 meeting_id: number;
                 road_address_name: string;
+                category_id: number;
               }) => (
                 <PostComponent
                   key={meeting.meeting_id}
-                  titleImage={meeting.image_url || category.basic_image[0]}
+                  titleImage={
+                    meeting.image_url ||
+                    category.category_image[meeting.category_id]
+                  }
                   title={meeting.title}
                   meetingId={meeting.meeting_id}
                   location={meeting.road_address_name}
