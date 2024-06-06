@@ -36,7 +36,8 @@ const Classification = ({ id }: accountIdProps) => {
   };
 
   return (
-    <div className="flex w-full flex-col justify-center">
+    <div className="flex w-[67.5rem] flex-col justify-center">
+      {/* 탭 버튼 */}
       <div className="flex w-full flex-row justify-center p-20">
         <div
           className={`${commonFontStyle} ${customStyle} ${joinedMeetfont}`}
@@ -53,9 +54,8 @@ const Classification = ({ id }: accountIdProps) => {
         </div>
       </div>
 
-      <div className="ml-16">
-        <ClassBody />
-      </div>
+      {/* 모임 리스트 */}
+      <div className="flex flex-row flex-wrap items-center justify-start"></div>
     </div>
   );
 };

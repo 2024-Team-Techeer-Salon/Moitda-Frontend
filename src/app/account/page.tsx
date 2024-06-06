@@ -21,7 +21,7 @@ function page() {
         router.push('/login');
       }
     });
-  }, []);
+  }, [router]);
 
   return <div className="h-screen w-screen"></div>;
 }
