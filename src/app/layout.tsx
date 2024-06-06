@@ -27,8 +27,8 @@ export default function RootLayout({
           href="https://i.ibb.co/dgzmhY2/Moitda-Logo.png"
           sizes="any"
         />
-        <Header />
         <QueryProviders>
+          <Header />
           <StoreProvider>{children}</StoreProvider>
         </QueryProviders>
         <Footer />

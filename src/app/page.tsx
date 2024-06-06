@@ -2,9 +2,6 @@
 
 import { redirect } from 'next/navigation';
 
-export default function page() {
+export default async function page() {
   redirect('/home');
-  // permanentRedirect('/home');
-  redirect('/review');
-  return <div>Redirecting...</div>;
 }
