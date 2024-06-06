@@ -10,25 +10,10 @@ export const searchMeetings = async (
   size: number,
   sort: any,
 ) => {
-  const headers = {
-    'Content-Type': 'application/json',
-  };
-
-  const pageable = {
-    page,
-    size,
-    sort,
-  };
-
   try {
-    const response = await api.get('/api/v1/meetings/search/', {
-      headers,
-      params: {
-        latitude,
-        longitude,
-        pageable,
-      },
-    });
+    const response = await api.get(
+      `/meetings/search/?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}&sort=${sort}`,
+    );
     return response.data;
   } catch (error) {
     console.error('searchMeetings error:', error);

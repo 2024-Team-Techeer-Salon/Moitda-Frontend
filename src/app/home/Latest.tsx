@@ -1,10 +1,7 @@
+/* eslint-disable consistent-return */
 /* eslint-disable no-console */
 /* eslint-disable prefer-template */
 /* eslint-disable import/no-unresolved */
-/* eslint-disable consistent-return */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable operator-linebreak */
-/* eslint-disable object-curly-newline */
 
 'use client';
 
@@ -13,7 +10,6 @@ import { useEffect, useRef, useState } from 'react';
 import { searchMeetings } from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import PostComponent from '../components/Post.tsx';
-import React from 'react';
 
 function Latest() {
   const [lat, setLatitude] = useState(null);
@@ -36,14 +32,14 @@ function Latest() {
     }
   }, []);
 
-  const renderSize = 32;
+  const renderSize = 8;
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['Latest Meeting List', lat, lng],
       queryFn: async ({ pageParam = 0 }) => {
         if (lat !== null && lng !== null) {
-          return searchMeetings(lat, lng, pageParam, renderSize, 'string');
+          return searchMeetings(lat, lng, pageParam, renderSize, 'asc');
         }
       },
       getNextPageParam: (lastPage, allPages) => {
@@ -82,27 +78,25 @@ function Latest() {
   if (!data) return null;
 
   return (
-    <div className="flex flex-row flex-wrap items-center">
-      {data.pages.map((page) => (
-        <>
-          {page?.data?.map(
-            (meeting: {
-              image_url: string;
-              title: string;
-              meeting_id: number;
-              road_address_name: string;
-            }) => (
-              <PostComponent
-                key={meeting.meeting_id}
-                titleImage={meeting.image_url || category.category_image[1]}
-                title={meeting.title}
-                meetingId={meeting.meeting_id}
-                location={meeting.road_address_name}
-              />
-            ),
-          )}
-        </>
-      ))}
+    <div className="my-20 flex flex-row flex-wrap items-center">
+      {data.pages.flatMap((page) =>
+        page.data.meeting_list.map(
+          (meeting: {
+            image_url: string;
+            title: string;
+            meeting_id: number;
+            road_address_name: string;
+          }) => (
+            <PostComponent
+              key={meeting.meeting_id}
+              titleImage={meeting.image_url || category.basic_image[0]}
+              title={meeting.title}
+              meetingId={meeting.meeting_id}
+              location={meeting.road_address_name}
+            />
+          ),
+        ),
+      )}
       {isFetchingNextPage && <div>Loading...</div>}
       <div ref={loadMoreRef} />
     </div>
