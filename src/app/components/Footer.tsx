@@ -12,7 +12,7 @@ function Footer() {
     return null;
   }
   return (
-    <div className="mt-0 flex h-60 w-full flex-col justify-center bg-zinc-200 px-10 sm:px-20 md:px-40 lg:px-64">
+    <div className="mt-20 flex h-60 w-full flex-col justify-center bg-zinc-200 px-10 sm:px-20 md:px-40 lg:px-64">
       <h1 className={mont.className}>
         <span className="text-lg sm:text-lg md:text-2xl">MOITDA</span>
       </h1>
