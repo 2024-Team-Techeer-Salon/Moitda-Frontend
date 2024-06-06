@@ -3,20 +3,26 @@
 'use client';
 
 import { getUserId } from '@/api/user.ts';
-import { useQuery } from '@tanstack/react-query';
 import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
 function page() {
-  const { data } = useQuery({
-    queryKey: ['user'],
-    queryFn: getUserId,
-  });
   const router = useRouter();
-  if (data) {
-    router.push(`/account/${data.id}`);
-  } else {
-    router.push('/login');
-  }
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await getUserId();
+      return userId;
+    };
+    fetchUserId().then((data) => {
+      if (data.code === 'U003') {
+        router.push(`/account/${data.data.user_id}`);
+      } else {
+        router.push('/login');
+      }
+    });
+  }, []);
+
   return <div className="h-screen w-screen"></div>;
 }
 

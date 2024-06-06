@@ -35,7 +35,7 @@ import Swal from 'sweetalert2';
 import { useRouter, useSearchParams } from 'next/navigation';
 import category from '@/util/category.json';
 import WarningAlert from '../components/WarningAlert.tsx';
-import { Gps } from '../components/Icon.tsx';
+import { GpsIcon } from '../components/Icon.tsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -262,7 +262,7 @@ function page() {
             handleComplete(data);
           }}
         >
-          <Gps className="mx-4 h-6 w-6" />
+          <GpsIcon className="mx-4 h-6 w-6" />
           <div className="flex flex-col">
             <p className="text-lg text-black">{title}</p>
             <p className="text-sm text-zinc-700">{roadName}</p>

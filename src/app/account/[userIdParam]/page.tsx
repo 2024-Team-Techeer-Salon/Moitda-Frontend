@@ -3,12 +3,13 @@
 import Classification from './Classification.tsx';
 import Profile from './Profile.tsx';
 
-function Account() {
+function Account(props: any) {
+  const userId = Number(decodeURIComponent(props.params.userIdParam));
+
   return (
     <div>
-      <Profile />
-
-      <Classification />
+      <Profile id={userId} />
+      <Classification id={userId} />
     </div>
   );
 }
