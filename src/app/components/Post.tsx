@@ -17,8 +17,8 @@ function Post({ titleImage, title, location, meetingId, endTime }: postProps) {
           src={titleImage}
           alt={titleImage}
           className="relative rounded-lg object-cover "
-          layout="fill"
-          objectFit="cover"
+          fill
+          sizes="100vm"
         />
         {endTime && (
           <div className="absolute z-10 flex h-full w-full items-center justify-center rounded-lg bg-black bg-opacity-70 text-xl text-zinc-200">
