@@ -35,6 +35,7 @@ import Swal from 'sweetalert2';
 import { useRouter, useSearchParams } from 'next/navigation';
 import category from '@/util/category.json';
 import WarningAlert from '../components/WarningAlert.tsx';
+import { GpsIcon } from '../components/Icon.tsx';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -154,7 +155,7 @@ function page() {
         observer.unobserve(loadMoreRef.current);
       }
     };
-  }, [fetchNextPage, hasNextPage]);
+  }, [fetchNextPage, hasNextPage, loadMoreRef.current]);
 
   useEffect(() => {
     if (postType === 'edit' && meetingId) {
@@ -261,18 +262,7 @@ function page() {
             handleComplete(data);
           }}
         >
-          <svg className="m-2 mx-8 h-10 w-10" viewBox="0 0 72 72" fill="none">
-            <path
-              d="M22.1275 14.5775C25.9665 10.8591 30.5906 9 36 9C41.4094 9 46.0117 10.838 49.807 14.5141C53.6024 18.1902 55.5 22.6479 55.5 27.8873C55.5 30.5071 54.8238 33.507 53.4715 36.8873C52.1191 40.2676 50.4832 43.4366 48.5638 46.3944C46.6443 49.3521 44.7467 52.1197 42.8708 54.6972C40.995 57.2747 39.4027 59.3239 38.094 60.8451L36 63C35.4765 62.4084 34.7785 61.6268 33.906 60.6549C33.0336 59.6831 31.4631 57.7395 29.1946 54.8239C26.9262 51.9084 24.9413 49.0775 23.2399 46.331C21.5386 43.5845 19.9899 40.4789 18.594 37.0141C17.198 33.5493 16.5 30.5071 16.5 27.8873C16.5 22.6479 18.3758 18.2113 22.1275 14.5775Z"
-              stroke="black"
-              strokeWidth="6"
-            />
-            <path
-              d="M39 28.5C39 30.1569 37.6569 31.5 36 31.5C34.3431 31.5 33 30.1569 33 28.5C33 26.8431 34.3431 25.5 36 25.5C37.6569 25.5 39 26.8431 39 28.5Z"
-              stroke="black"
-              strokeWidth="4"
-            />
-          </svg>
+          <GpsIcon className="mx-4 h-6 w-6" />
           <div className="flex flex-col">
             <p className="text-lg text-black">{title}</p>
             <p className="text-sm text-zinc-700">{roadName}</p>
@@ -357,16 +347,7 @@ function page() {
                   )}
                 </>
               ))}
-              <div
-                className={`flex w-full cursor-pointer items-center justify-center text-zinc-500 ${hasNextPage && searchKeyword ? 'h-12 hover:bg-gray-100' : ''} cursor-pointer`}
-                ref={loadMoreRef}
-                onClick={(event: React.MouseEvent) => {
-                  event.preventDefault();
-                  if (hasNextPage && searchKeyword) {
-                    fetchNextPage();
-                  }
-                }}
-              >
+              <div ref={loadMoreRef}>
                 {hasNextPage && searchKeyword ? 'Load More' : ''}
               </div>
             </div>
@@ -495,8 +476,7 @@ function page() {
           <input
             type="text"
             placeholder="글 제목을 입력하세요"
-
-            className="border-1 mr-4 flex w-full border border-zinc-300 p-2 focus:outline-none text-sm sm:text-base"
+            className="border-1 mr-4 flex w-full border border-zinc-300 p-2 text-sm focus:outline-none sm:text-base"
             defaultValue={title}
             onChange={(e) => (titleRef.current = e.target.value)}
             onBlur={() => setTitle(titleRef.current)}

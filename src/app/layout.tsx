@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './styles/globals.css';
@@ -28,10 +28,12 @@ export default function RootLayout({
           sizes="any"
         />
         <QueryProviders>
-          <Header />
-          <StoreProvider>{children}</StoreProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Header />
+            <StoreProvider>{children}</StoreProvider>
+            <Footer />
+          </Suspense>
         </QueryProviders>
-        <Footer />
       </body>
     </html>
   );

@@ -6,7 +6,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { postProps } from '../../types/post.ts';
 
-function Post({ titleImage, title, location, meetingId }: postProps) {
+function Post({ titleImage, title, location, meetingId, endTime }: postProps) {
   return (
     <Link
       className="m-4 flex cursor-pointer flex-col justify-center"
@@ -20,6 +20,11 @@ function Post({ titleImage, title, location, meetingId }: postProps) {
           layout="fill"
           objectFit="cover"
         />
+        {endTime && (
+          <div className="absolute z-10 flex h-full w-full items-center justify-center rounded-lg bg-black bg-opacity-70 text-xl text-zinc-200">
+            이미 종료된 모임입니다.
+          </div>
+        )}
       </figure>
       <p className="pt-1 text-lg font-bold">{title}</p>
       <p className="text-sm">{location}</p>
