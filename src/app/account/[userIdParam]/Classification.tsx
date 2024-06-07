@@ -15,14 +15,14 @@ import Post from '@/app/components/Post.tsx';
 import category from '@/util/category.json';
 
 const Classification = ({ id }: accountIdProps) => {
-  const [activeTab, setActiveTab] = useState<'joined' | 'created'>('created');
+  const [activeTab, setActiveTab] = useState<'joined' | 'created'>('joined');
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
     queryKey: ['myMeetingList'],
     queryFn: ({ pageParam = 0 }: { pageParam: number }) =>
-      getMyMeetingList(activeTab, id, false, pageParam, 24),
+      getMyMeetingList(activeTab, id, pageParam, 24),
     initialPageParam: 0,
     getNextPageParam: (lastPage: {
       data: {
@@ -105,6 +105,7 @@ const Classification = ({ id }: accountIdProps) => {
               title={meeting.title}
               location={meeting.road_address_name}
               meetingId={meeting.meeting_id}
+              endTime={meeting.end_time}
             />
           )),
         )}

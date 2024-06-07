@@ -11,6 +11,7 @@ function Latest() {
         title="모각코 할 사람!"
         location="서울"
         meetingId={458}
+        endTime=""
       />,
     );
   }

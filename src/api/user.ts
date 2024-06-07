@@ -105,20 +105,19 @@ export async function logout() {
 export async function getMyMeetingList(
   tab: string,
   userId: number,
-  end: boolean,
   page: number,
   size: number,
 ) {
   try {
     if (tab === 'joined') {
       const response = await api.get(
-        `/users/${userId}/records/participated?end=${end}&page=${page}&size=${size}`,
+        `/users/${userId}/records/participated?page=${page}&size=${size}`,
       );
       return response.data;
     }
     if (tab === 'created') {
       const response = await api.get(
-        `/users/${userId}/records/created?end=${end}&page=${page}&size=${size}`,
+        `/users/${userId}/records/created?page=${page}&size=${size}`,
       );
       return response.data;
     }
