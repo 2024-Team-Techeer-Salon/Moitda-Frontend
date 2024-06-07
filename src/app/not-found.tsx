@@ -8,7 +8,7 @@ const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 export default function Notfound() {
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-blue-200">
+    <div className="-mb-20 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-blue-200">
       <Head>
         <link
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
@@ -17,7 +17,7 @@ export default function Notfound() {
       </Head>
       <div className={mont.className}>
         <div className="text-center">
-          <h1 className="font-montserrat animate-bounce text-9xl text-black">
+          <h1 className="animate-bounce font-montserrat text-9xl text-black">
             404
           </h1>
           <h2 className="font-montserrat text-5xl text-black">

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './styles/globals.css';
@@ -27,11 +27,13 @@ export default function RootLayout({
           href="https://i.ibb.co/dgzmhY2/Moitda-Logo.png"
           sizes="any"
         />
-        <Header />
         <QueryProviders>
-          <StoreProvider>{children}</StoreProvider>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Header />
+            <StoreProvider>{children}</StoreProvider>
+            <Footer />
+          </Suspense>
         </QueryProviders>
-        <Footer />
       </body>
     </html>
   );

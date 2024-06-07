@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 /* eslint-disable no-undef */
@@ -140,6 +141,7 @@ function page() {
                 title={meeting.title}
                 location={meeting.road_address_name}
                 meetingId={meeting.meeting_id}
+                endTime={meeting.end_time}
               />
             )),
           )}

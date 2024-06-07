@@ -3,4 +3,5 @@ export interface postProps {
   title: string;
   meetingId: number;
   location: string;
+  endTime: string;
 }

@@ -37,3 +37,8 @@ export function defaultProfileImage() {
   const image = 'https://i.ibb.co/d03Jg0k/image.png';
   return image;
 }
+
+export function defaultBannerImage() {
+  const image = 'https://i.ibb.co/m4XzXbn/banner.jpg';
+  return image;
+}
