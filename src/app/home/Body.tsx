@@ -18,11 +18,13 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchMeetings } from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import Post from '../components/Post.tsx';
+import { useRouter } from 'next/navigation';
 
 function Distance() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
   const [locationFetched, setLocationFetched] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     function successCallback(position: any) {
@@ -96,8 +98,12 @@ function Distance() {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedTitle, setSelectedTitle] = useState<string>('');
   const [selectedAddress, setSelectedAddress] = useState<string>('');
+  const [selectedAddressName, setSelectedAddressName] = useState<string>('');
   const [selectedImg, setSelectedImg] = useState<string>('');
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedMeetingId, setSelectedMeetingId] = useState<number | null>(
+    null,
+  );
 
   const handleMain = (marker: any) => {
     setSelectedTime(
@@ -107,8 +113,10 @@ function Distance() {
     );
     setSelectedTitle(marker.mainTitle);
     setSelectedAddress(marker.address);
+    setSelectedAddressName(marker.place_name);
     setSelectedCategory(marker.category_id);
     setSelectedImg(marker.mainImg);
+    setSelectedMeetingId(marker.meetingId);
   };
 
   const markers =
@@ -125,6 +133,7 @@ function Distance() {
             longitude: number;
             appointment_time: string;
             category_id: number;
+            place_name: string;
           }) => ({
             lat: meeting.latitude,
             lng: meeting.longitude,
@@ -134,6 +143,7 @@ function Distance() {
             mainImg: meeting.image_url,
             time: meeting.appointment_time,
             category_id: meeting.category_id,
+            place_name: meeting.place_name,
           }),
         ),
       ) || [];
@@ -141,10 +151,23 @@ function Distance() {
   return (
     <div className="mt-[-0.5rem] flex h-full w-[30rem] flex-col sm:w-[30rem] md:w-[43rem] lg:w-[65rem]">
       <div className="flex flex-row items-center justify-center">
-        <div className="m-4 flex h-[28rem] w-60 flex-col border border-zinc-300">
+        <div
+          className={`m-4 flex h-[28rem] w-60 flex-col border border-zinc-300 ${selectedMeetingId ? 'cursor-pointer' : ''}`}
+          onClick={() => {
+            if (selectedMeetingId) {
+              router.push(`/meeting/${selectedMeetingId}`);
+            }
+            console.log(selectedMeetingId);
+          }}
+        >
           <figure className="relative flex min-h-60 min-w-60">
             <Image
-              src={selectedImg || category.basic_image[4]}
+              src={
+                selectedImg ||
+                (selectedCategory !== null
+                  ? category.category_image[selectedCategory]
+                  : category.basic_image[4])
+              }
               fill
               alt="Image"
               sizes="100vm"
@@ -159,10 +182,12 @@ function Distance() {
                 </span>
               )}
             </p>
-            <p className="text-sm text-zinc-400">{selectedAddress}</p>
-            {/* <p className="text-sm text-zinc-400">({selectedAddressName})</p> */}
-            <p className="text-sm text-zinc-400">
-              {selectedCategory !== null ? `#${selectedCategory}` : ''}
+            <p className="mt-2 text-sm text-zinc-400">{selectedAddress}</p>
+            <p className="text-sm text-zinc-400">{selectedAddressName}</p>
+            <p className="mt-3 text-sm text-zinc-400">
+              {selectedCategory !== null
+                ? `#${category.category_name[selectedCategory]}`
+                : ''}
             </p>
           </div>
         </div>
@@ -180,12 +205,18 @@ function Distance() {
               style={{ width: '100%', height: '100%' }}
               level={3}
             >
-              <MapMarker position={locPosition} />
+              {/* 내위치 */}
+              {/* <MapMarker position={locPosition} /> */}
               {markers.map((marker, index) => (
                 <MapMarker
                   key={index}
                   position={{ lat: marker.lat, lng: marker.lng }}
                   onClick={() => handleMain(marker)}
+                  image={{
+                    src: 'https://i.ibb.co/Cnwf3x8/image.png',
+                    size: { width: 64, height: 70 },
+                    options: { offset: { x: 27, y: 69 } },
+                  }}
                 />
               ))}
             </Map>
