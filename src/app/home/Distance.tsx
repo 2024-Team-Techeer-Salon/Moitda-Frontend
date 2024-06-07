@@ -220,7 +220,7 @@ function Distance() {
                   title={meeting.title}
                   meetingId={meeting.meeting_id}
                   location={meeting.road_address_name}
-                  endTime={meeting.end_time}
+                  // endTime={meeting.end_time}
                 />
               ),
             ),
