@@ -1,3 +1,5 @@
+/* eslint-disable import/no-extraneous-dependencies */
+/* eslint-disable import/order */
 /* eslint-disable no-unused-vars */
 /* eslint-disable object-curly-newline */
 /* eslint-disable react-hooks/exhaustive-deps */
@@ -101,7 +103,7 @@ function Distance() {
   const [selectedTime, setSelectedTime] = useState<string>('');
   const [selectedTitle, setSelectedTitle] = useState<string>('');
   const [selectedAddress, setSelectedAddress] = useState<string>('');
-  const [selectedImg, setSelectedImg] = useState<string>('');
+  const [selectedImg, setSelectedImg] = useState<string>(null);
   const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
 
   const handleMain = (marker: any) => {
@@ -150,7 +152,7 @@ function Distance() {
           <div className="relative flex h-80 w-60">
             <Image
               src={
-                selectedImg !== null || selectedImg !== undefined
+                selectedImg !== null || undefined
                   ? selectedImg
                   : category.basic_image[3]
               }
@@ -218,6 +220,7 @@ function Distance() {
                   title={meeting.title}
                   meetingId={meeting.meeting_id}
                   location={meeting.road_address_name}
+                  endTime={meeting.end_time}
                 />
               ),
             ),
