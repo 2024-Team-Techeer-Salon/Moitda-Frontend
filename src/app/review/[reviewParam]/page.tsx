@@ -219,7 +219,14 @@ const page = (props: any) => {
               }),
             );
 
-            await postMeetingReview(meetingId, reviews);
+            await postMeetingReview(meetingId, reviews).then(() => {
+              router.push('/home');
+              Swal.fire({
+                icon: 'success',
+                title: '리뷰 작성 완료',
+                text: '리뷰가 성공적으로 작성되었습니다.',
+              });
+            });
           }}
         >
           등록
