@@ -22,7 +22,7 @@ function page(props: any) {
     if (accessToken !== '' && refreshToken !== '') {
       cookies.set('accessToken', accessToken, { path: '/' });
       cookies.set('refreshToken', refreshToken, { path: '/' });
-      router.push('/home');
+
       if (loginType === 'signup') {
         router.push('/signup');
       } else {
