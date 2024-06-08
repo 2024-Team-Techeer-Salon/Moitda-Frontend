@@ -33,7 +33,7 @@ function Participants({
         router.push(`/account/${id}`);
       }}
     >
-      <figure className="relative h-14 w-14 rounded-full bg-pink-100">
+      <figure className="relative h-14 w-14 rounded-full">
         <Image
           src={image || defaultProfileImage()}
           alt="user image"

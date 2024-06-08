@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, ChangeEvent, FormEvent } from 'react';
+import { useState } from 'react';
 import { Montserrat } from 'next/font/google';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,7 +8,7 @@ import category from '@/util/category.json';
 import { useQuery } from '@tanstack/react-query';
 import { login, logout } from '@/api/user.ts';
 import ignorePath from '../styles/ignorePath.ts';
-import { removeCookie } from '../cookies.tsx';
+import { getCookie, removeCookie } from '../cookies.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -20,20 +20,27 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['login'],
     queryFn: login,
   });
+
+  // 토큰이 있는데 401 에러가 발생하면 새로고침
+  if (isError && getCookie('accessToken')) {
+    setTimeout(() => {
+      window.location.reload();
+    }, 100);
+  }
 
   if (ignorePath().includes(path)) {
     return null;
   }
 
-  const handleChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const handleChange = (event: { target: { value: string } }) => {
     setSearchQuery(event.target.value);
   };
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (searchQuery) {
       // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
@@ -271,7 +278,7 @@ function Header() {
             />
           </svg>
         </div>
-        <div className="flex w-[28] items-center justify-end pr-8 sm:w-1/6 lg:w-1/6">
+        <div className="flex items-center justify-end pr-8 sm:w-1/6 lg:w-1/6">
           {!isLoading && (
             <button
               onClick={() => {
