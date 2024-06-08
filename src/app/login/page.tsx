@@ -7,7 +7,7 @@ const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 async function page() {
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full flex-col items-center">
       <h1
         className={`mt-28 text-center text-6xl sm:text-6xl lg:text-8xl ${mont.className}`}
       >

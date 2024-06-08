@@ -17,8 +17,8 @@ import { ko } from 'date-fns/locale';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import { searchMeetings } from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
-import Post from '../components/Post.tsx';
 import { useRouter } from 'next/navigation';
+import Post from '../components/Post.tsx';
 
 function Distance() {
   const [latitude, setLatitude] = useState<number | null>(null);
