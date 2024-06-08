@@ -213,8 +213,8 @@ const page = (props: any) => {
           className="h-9 w-28 rounded-lg border-2 border-white bg-red-400 pb-1 pt-1 text-center text-white"
           onClick={async () => {
             const reviews = data?.participant_list.map(
-              (userId: number, index: number) => ({
-                userId,
+              (userId: { userId: number }, index: number) => ({
+                userId: userId.userId,
                 rating: ratingScore[index],
               }),
             );
