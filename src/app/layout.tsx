@@ -28,9 +28,11 @@ export default function RootLayout({
           sizes="any"
         />
         <QueryProviders>
-          <Suspense fallback={<div>Loading...</div>}>
+          <Suspense fallback={<div>로딩중인데요?ㅋㅋ</div>}>
             <Header />
-            <StoreProvider>{children}</StoreProvider>
+            <StoreProvider>
+              <div className="flex min-h-screen">{children}</div>
+            </StoreProvider>
             <Footer />
           </Suspense>
         </QueryProviders>
