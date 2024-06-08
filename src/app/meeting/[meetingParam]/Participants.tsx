@@ -58,18 +58,18 @@ function Participants({
           {participantInfo.map((participant, index) => (
             <li
               className="m-1 flex flex-row justify-between pr-2"
-              key={participant.meetingParticipantId}
+              key={participant.userId}
             >
               <ProfileCard
                 name={participant.username}
                 image={participant.profileImage}
-                id={participant.meetingParticipantId}
+                id={participant.userId}
               />
               {isOwner && index !== 0 && (
                 <button
                   onClick={() => {
                     patchMeetingApproval(
-                      participant.meetingParticipantId,
+                      participant.userId,
                       meetingId,
                       false,
                     ).then(() => {
