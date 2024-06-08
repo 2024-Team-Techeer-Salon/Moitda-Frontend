@@ -31,6 +31,8 @@ function page() {
     lng: 0,
   });
 
+  console.log('searchParams', searchParams);
+
   useEffect(() => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(
@@ -51,8 +53,8 @@ function page() {
   }, []);
 
   useEffect(() => {
-    const type = searchParams?.get('searchType');
-    const keyword = searchParams?.get('searchKeyword');
+    const type = searchParams?.get('type');
+    const keyword = searchParams?.get('keyword');
     if (type && keyword) {
       setSearchType(type);
       setSearchKeyword(keyword);
