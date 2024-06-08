@@ -7,7 +7,7 @@ function Account(props: any) {
   const userId = Number(decodeURIComponent(props.params.userIdParam));
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex w-full flex-col items-center justify-center">
       <Profile id={userId} />
       <Classification id={userId} />
     </div>

@@ -6,15 +6,25 @@
 import { useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
-import { getMeetingsData, postMeetingReview } from '@/api/meetings.ts';
+import {
+  getMeetingsData,
+  postMeetingReview,
+  getReviewParticipation,
+} from '@/api/meetings.ts';
 import { useRouter } from 'next/navigation';
 import Swal from 'sweetalert2';
 import Image from 'next/image';
 import category from '@/util/category.json';
+import { defaultProfileImage } from '@/util/utilFunction.ts';
 
 const page = (props: any) => {
   const meetingId = Number(decodeURIComponent(props.params.reviewParam));
   const router = useRouter();
+
+  const { data: reviewParticipation } = useQuery({
+    queryKey: ['reviewParticipation'],
+    queryFn: () => getReviewParticipation(meetingId),
+  });
 
   const { data, isLoading } = useQuery({
     queryKey: ['meetings'],
@@ -30,7 +40,14 @@ const page = (props: any) => {
     return <div>Loading...</div>;
   }
 
-  console.log('ratingScore', ratingScore);
+  if (reviewParticipation && reviewParticipation.data) {
+    router.push('/home');
+    Swal.fire({
+      icon: 'info',
+      title: '모임 평가 완료',
+      text: '이미 모임 평가를 완료하셨습니다.',
+    });
+  }
 
   if (data && !data.end_time) {
     router.push('/home');
@@ -172,7 +189,7 @@ const page = (props: any) => {
             {/* 프로필 사진 */}
             <figure className="relative h-20 w-20 rounded-full border-2 border-zinc-800">
               <Image
-                src={participant.profileImage}
+                src={participant.profileImage || defaultProfileImage()}
                 alt="profile1"
                 fill
                 sizes="100vm"
@@ -196,8 +213,8 @@ const page = (props: any) => {
           className="h-9 w-28 rounded-lg border-2 border-white bg-red-400 pb-1 pt-1 text-center text-white"
           onClick={async () => {
             const reviews = data?.participant_list.map(
-              (participant: any, index: number) => ({
-                userId: 1,
+              (userId: number, index: number) => ({
+                userId,
                 rating: ratingScore[index],
               }),
             );

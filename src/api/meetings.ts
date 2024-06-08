@@ -171,3 +171,16 @@ export const postMeetingReview = async (
     console.error('meeting review post api request error : ', error);
   }
 };
+
+// 리뷰 참여 여부 확인
+export const getReviewParticipation = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/meetings/reviews/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'meeting review participation get api request error : ',
+      error,
+    );
+  }
+};
