@@ -218,7 +218,7 @@ const page = (props: any) => {
                 rating: ratingScore[index],
               }),
             );
-            await console.log('reviews : ', reviews);
+
             await postMeetingReview(meetingId, reviews);
           }}
         >
