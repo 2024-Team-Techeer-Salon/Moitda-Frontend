@@ -199,7 +199,7 @@ function MeetingHeader({
                 router.push(`/account/${userId}`);
               }}
             >
-              <figure className="relative ml-8 h-14 w-14 cursor-pointer rounded-full bg-pink-100">
+              <figure className="relative ml-8 h-14 w-14 cursor-pointer rounded-full">
                 <Image
                   src={userImage}
                   alt="user image"
