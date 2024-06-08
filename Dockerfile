@@ -5,7 +5,7 @@ FROM node:20.14.0
 USER root
 
 # Set the working directory inside the container
-WORKDIR /usr/src/app
+WORKDIR /frontend
 
 # Copy the package.json and yarn.lock files first to leverage Docker cache
 COPY package.json yarn.lock ./
@@ -18,3 +18,6 @@ COPY . .
 
 # Run the build command
 RUN yarn build
+
+# Start the application
+CMD ["node_modules/.bin/next", "start"]
