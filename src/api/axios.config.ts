@@ -1,3 +1,4 @@
+/* eslint-disable import/no-unresolved */
 /* eslint-disable import/prefer-default-export */
 import axios from 'axios';
 import { getCookie } from '@/app/cookies.tsx';

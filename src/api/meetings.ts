@@ -51,6 +51,18 @@ export const postMeetings = async (
   }
 };
 
+export const getMeetingList = async (page: number, size: number) => {
+  try {
+    const response = await api.get(
+      `/meetings/search/latest?page=${page}&size=${size}`,
+    );
+    console.log('response.data : ', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Meeting List Get API Error : ', error);
+  }
+};
+
 export const getMeetingsData = async (meetingId: number) => {
   try {
     const response = await api.get(`/meetings/${meetingId}`);

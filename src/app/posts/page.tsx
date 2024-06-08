@@ -66,7 +66,7 @@ function page() {
   const [meetingTime, setMeetingTime] = useState(
     dayjs(today).tz('Asia/Seoul').format('YYYY-MM-DDTHH:mm'), // 약속 날짜와 시간의 초기값, 한국 기준 현재 시간으로 설정
   );
-  const [center, setCenter] = useState({ lat: 0, lng: 0 });
+  const [center, setCenter] = useState({ lat: 0, lng: 0 }); // 사용자 위치를 저장할 상태
   const [showAlert, setShowAlert] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string>('');
   const [postType, setPostType] = useState<string>(''); // create or edit
@@ -109,9 +109,10 @@ function page() {
   // useEffect 훅
 
   useEffect(() => {
+    // 사용자 위치 정보를 가져오는 함수
     if (navigator.geolocation) {
-      setPostType(searchParams?.get('type') || 'create');
-      setMeetingId(Number(searchParams?.get('meetingId')) || undefined);
+      setPostType(searchParams?.get('type') || 'create'); // URL 쿼리 파라미터로 postType 상태 초기화
+      setMeetingId(Number(searchParams?.get('meetingId')) || undefined); // URL 쿼리 파라미터로 meetingId 상태 초기화
 
       navigator.geolocation.getCurrentPosition(
         (position) => {
