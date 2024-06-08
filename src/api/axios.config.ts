@@ -1,12 +1,41 @@
-/* eslint-disable import/no-unresolved */
-/* eslint-disable import/prefer-default-export */
+/* eslint-disable no-underscore-dangle */
+/* eslint-disable consistent-return */
 import axios from 'axios';
-import { getCookie } from '@/app/cookies.tsx';
+import { getCookie, setCookie } from '@/app/cookies.tsx';
 
 const accessToken = getCookie('accessToken');
 const BASE_URL = `${process.env.NEXT_PUBLIC_BASE_URL}/api/v1`;
 
-export const api = axios.create({
+const reIssuedToken = async () => {
+  try {
+    const response = await axios.post(
+      `${BASE_URL}/reissue`,
+      {
+        access_token: getCookie('accessToken'), // 액세스 토큰을 사용하고 있으나, 일반적으로는 사용하지 않습니다.
+        refresh_token: getCookie('refreshToken'), // 리프레시 토큰
+      },
+      {
+        headers: {
+          'Content-Type': 'application/json', // 요청의 본문 타입을 지정
+          Authorization: `Bearer ${accessToken}`,
+        },
+        withCredentials: true, // CORS 요청 시 쿠키를 포함
+      },
+    );
+    if (response.data.data.access_token) {
+      setCookie('accessToken', response.data.data.access_token);
+    }
+    if (response.data.data.refresh_token) {
+      setCookie('refreshToken', response.data.data.refresh_token);
+    }
+    return response.data;
+  } catch (error) {
+    console.error('Token reissue error:', error);
+    throw error; // 오류를 상위로 전파하여 호출자가 이를 처리할 수 있도록 합니다.
+  }
+};
+
+const api = axios.create({
   withCredentials: true,
   baseURL: BASE_URL, // 기본 URL 설정
   headers: {
@@ -14,6 +43,31 @@ export const api = axios.create({
     Authorization: `Bearer ${accessToken}`,
   },
 });
+
+api.interceptors.response.use(
+  (response) => response, // 성공 응답은 그대로 반환
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true; // 재요청 플래그를 설정하여 무한 루프 방지
+      try {
+        const data = await reIssuedToken(); // 토큰 재발급 함수 호출
+        // 재발급 받은 토큰으로 요청 헤더 설정
+        api.defaults.headers.common.Authorization = `Bearer ${data.data.access_token}`;
+        originalRequest.headers.Authorization = `Bearer ${data.data.access_token}`;
+
+        return api(originalRequest); // 원래 요청 재시도
+      } catch (refreshError) {
+        console.error('Failed to refresh token:', refreshError);
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export { api };
 
 export const formApi = axios.create({
   withCredentials: true,
