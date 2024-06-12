@@ -2,6 +2,42 @@
 @tailwind components;
 @tailwind utilities;
 
+/* 기본 라이트 모드 스타일 */
+body,
+button,
+input,
+textarea,
+select {
+  background-color: #ffffff; /* 백색 배경 */
+  color: #000000; /* 검정색 텍스트 */
+  border-color: #cccccc; /* 회색 테두리 */
+}
+
+a {
+  color: #000000; /* 기본 링크 색상 */
+}
+
+/* 추가적인 요소에 대한 스타일 정의가 필요할 수 있습니다. */
+
+/* 시스템이 다크 모드 설정이라도 라이트 모드 스타일을 강제 적용 */
+@media (prefers-color-scheme: dark) {
+  body,
+  button,
+  input,
+  textarea,
+  select {
+    background-color: #ffffff; /* 백색 배경 */
+    color: #000000; /* 검정색 텍스트 */
+    border-color: #cccccc; /* 회색 테두리 */
+  }
+
+  a {
+    color: #000000; /* 기본 링크 색상 */
+  }
+
+  /* 추가적인 요소에 대한 스타일을 미디어 쿼리 내에서도 동일하게 재정의합니다. */
+}
+
 /* 웹킷(Chrome, Safari 등) 브라우저의 스크롤바 */
 ::-webkit-scrollbar {
   width: 0.4rem; /* 스크롤바의 너비 */

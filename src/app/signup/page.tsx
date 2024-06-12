@@ -71,10 +71,10 @@ function Page() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div>
-        <h1 className="mb-14 mt-20 flex flex-row text-3xl font-light">
+        <h1 className="mb-14 flex flex-row text-3xl font-light">
           <p
             className={`text-center text-xl sm:text-xl lg:text-3xl ${mont.className}`}
           >
