@@ -526,7 +526,7 @@ function page() {
                 placeholder="주소"
               />
               <button
-                className="btn h-12 w-32 bg-[#e0e0e0] text-sm text-white hover:bg-[#0a0a0a] sm:text-base"
+                className="btn h-12 w-32 border-none bg-gray-200 text-sm text-zinc-500 hover:bg-gray-300 sm:text-base"
                 onClick={() => setMeetingAddressModalOpen(true)}
               >
                 주소 검색
@@ -761,7 +761,7 @@ function page() {
         )}
         <div className="mt-12 flex w-full flex-row justify-end">
           <button
-            className="btn h-12 w-32 bg-[#dadada] text-white hover:bg-[#202020]"
+            className="btn h-12 w-32 border-none bg-gray-200 text-sm text-zinc-500 hover:bg-gray-300 sm:text-base"
             onClick={handlePostMeetings}
             type="button"
           >
