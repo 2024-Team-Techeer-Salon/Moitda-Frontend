@@ -8,10 +8,15 @@
   button,
   input,
   textarea,
+  input,
   select {
     background-color: #ffffff; /* 백색 배경 */
     color: #000000; /* 검정색 텍스트 */
     border-color: #cccccc; /* 회색 테두리 */
+  }
+  .radio:checked {
+    background-color: white; /* 배경색 */
+    border: 1px solid #ccc; /* 테두리 색상 */
   }
 
   a {
