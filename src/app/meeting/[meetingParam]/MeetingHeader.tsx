@@ -101,7 +101,7 @@ function MeetingHeader({
               ref={detailsRef}
               className="dropdown dropdown-end dropdown-bottom"
             >
-              <summary className="btn btn-circle mt-1">
+              <summary className="btn btn-circle mt-1 border-none bg-zinc-100 hover:bg-zinc-200">
                 {' '}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +116,7 @@ function MeetingHeader({
                   <circle cx="12" cy="18" r="1.5" fill="currentColor" />
                 </svg>
               </summary>
-              <ul className="menu dropdown-content z-[10] w-52 rounded-box bg-base-100 p-2 shadow">
+              <ul className="menu dropdown-content z-[10] w-52 rounded-box bg-white p-2 shadow">
                 {!endTime && (
                   <li>
                     <a
