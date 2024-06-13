@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 'use client';
 
 import { Montserrat } from 'next/font/google';
@@ -13,7 +15,7 @@ import WarningAlert from '../components/WarningAlert.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
 
-function Page() {
+function page() {
   const today = dayjs();
   const [selectedRadio, setSelectedRadio] = useState<string>('radio-1');
   const [birthDate, setBirthDate] = useState<Dayjs | null>(today);
@@ -71,10 +73,10 @@ function Page() {
   };
 
   return (
-    <div className="flex flex-col items-center">
+    <div className="flex h-screen w-screen flex-col items-center justify-center">
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div>
-        <h1 className="mb-14 mt-20 flex flex-row text-3xl font-light">
+        <h1 className="mb-14 flex flex-row text-3xl font-light">
           <p
             className={`text-center text-xl sm:text-xl lg:text-3xl ${mont.className}`}
           >
@@ -96,7 +98,7 @@ function Page() {
             type="radio"
             name="radio-1"
             style={{ width: '18px', height: '18px' }}
-            className="radio mr-2"
+            className="radio mr-2 text-white"
             value="radio-1"
             checked={selectedRadio === 'radio-1'}
             onChange={handleRadioChange}
@@ -129,7 +131,7 @@ function Page() {
         </div>
         <input
           type="text"
-          className="input mb-4 h-10 w-60 border border-b border-black sm:w-60 lg:w-80"
+          className="input mb-4 h-10 w-60 border border-b border-zinc-400 bg-white sm:w-60 lg:w-80"
           value={name}
           onChange={(event) => setName(event.target.value)}
         />
@@ -138,7 +140,7 @@ function Page() {
         </div>
         <input
           type="text"
-          className="input mb-4 h-10 w-60 border border-b border-black sm:w-60 lg:w-80"
+          className="border- input mb-4 h-10 w-60 border border-zinc-400 bg-white sm:w-60 lg:w-80"
           value={location}
           onChange={(event) => setLocation(event.target.value)}
         />
@@ -153,4 +155,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default page;
