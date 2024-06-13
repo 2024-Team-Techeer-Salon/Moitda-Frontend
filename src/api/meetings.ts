@@ -11,6 +11,8 @@ export const postMeetings = async (
   placeName: string,
   roadAddressName: string,
   addressDetail: string,
+  lat: number,
+  lng: number,
   numPeople: number,
   needsApproval: boolean,
   meetingTime: string,
@@ -28,6 +30,8 @@ export const postMeetings = async (
           place_name: placeName,
           road_address_name: roadAddressName,
           detailed_address: addressDetail,
+          latitude: lat,
+          longitude: lng,
           max_participants_count: numPeople,
           approval_required: needsApproval,
           appointment_time: meetingTime,
@@ -44,6 +48,18 @@ export const postMeetings = async (
     return response.data;
   } catch (error) {
     console.error('postMeetings error : ', error);
+  }
+};
+
+export const getMeetingList = async (page: number, size: number) => {
+  try {
+    const response = await api.get(
+      `/meetings/search/latest?page=${page}&size=${size}`,
+    );
+    console.log('response.data : ', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Meeting List Get API Error : ', error);
   }
 };
 
@@ -134,5 +150,37 @@ export const patchMeetingApproval = async (
     return response.data;
   } catch (error) {
     console.error('meeting approval patch api request error : ', error);
+  }
+};
+
+export const postMeetingReview = async (
+  meetingId: number,
+  reviews: {
+    userId: number;
+    rating: number;
+  }[],
+) => {
+  console.log('reviews', reviews);
+  try {
+    const response = await api.post('/meetings/reviews', {
+      meeting_id: meetingId,
+      reviews,
+    });
+    return response.data;
+  } catch (error) {
+    console.error('meeting review post api request error : ', error);
+  }
+};
+
+// 리뷰 참여 여부 확인
+export const getReviewParticipation = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/meetings/reviews/${meetingId}`);
+    return response.data;
+  } catch (error) {
+    console.error(
+      'meeting review participation get api request error : ',
+      error,
+    );
   }
 };

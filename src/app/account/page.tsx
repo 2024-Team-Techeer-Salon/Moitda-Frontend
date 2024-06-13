@@ -1,28 +1,29 @@
-import React from 'react';
-import Banner from './Banner.tsx';
-import Classification from './Classification.tsx';
-import Profile from './Profile.tsx';
-import MannerBar from './MannerBar.tsx';
+/* eslint-disable react-hooks/rules-of-hooks */
 
-function Account() {
-  return (
-    <div>
-      <Banner />
+'use client';
 
-      <div className="-mt-20">
-      <Profile />
-      </div>
+import { login } from '@/api/user.ts';
+import { useRouter } from 'next/navigation';
+import { useEffect } from 'react';
 
-      <div className="flex justify-end ">
-      <MannerBar/>
-      </div>
+function page() {
+  const router = useRouter();
 
-      <div className="flex justify-center">
-        <Classification />
-      </div>
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await login();
+      return userId;
+    };
+    fetchUserId().then((data) => {
+      if (data.code === 'U003') {
+        router.push(`/account/${data.data.user_id}`);
+      } else {
+        router.push('/login');
+      }
+    });
+  }, [router]);
 
-    </div>
-  );
+  return <div className="h-screen w-screen"></div>;
 }
 
-export default Account;
+export default page;

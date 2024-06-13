@@ -25,7 +25,7 @@ export interface meetingHeaderProps {
 export interface participantsProps {
   meetingId: number;
   participantInfo: {
-    meetingParticipantId: number;
+    userId: number;
     username: string;
     profileImage: string;
   }[];
