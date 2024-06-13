@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+
 'use client';
 
 import { Montserrat } from 'next/font/google';
@@ -13,7 +15,7 @@ import WarningAlert from '../components/WarningAlert.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['400'] });
 
-function Page() {
+function page() {
   const today = dayjs();
   const [selectedRadio, setSelectedRadio] = useState<string>('radio-1');
   const [birthDate, setBirthDate] = useState<Dayjs | null>(today);
@@ -153,4 +155,4 @@ function Page() {
   );
 }
 
-export default Page;
+export default page;
