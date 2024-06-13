@@ -1,4 +1,5 @@
 import { iconClassnameProps } from '@/types/component.ts';
+import Image from 'next/image';
 
 export function GpsIcon({ className }: iconClassnameProps) {
   return (
@@ -70,4 +71,15 @@ export function CameraIcon({ className }: iconClassnameProps) {
       />
     </svg>
   );
+}
+
+export function Marker({ className }: iconClassnameProps) {
+  <figure className={`relative ${className}`}>
+    <Image
+      src="https://i.ibb.co/sCQvt3z/Group-2608599.png"
+      alt=""
+      fill
+      sizes="100vw"
+    />
+  </figure>;
 }
