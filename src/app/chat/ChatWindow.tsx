@@ -1,3 +1,5 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable import/order */
 /* eslint-disable prefer-template */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable no-unused-vars */
@@ -8,12 +10,13 @@
 
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { use, useEffect, useState } from 'react';
 import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
 import { useSelector } from 'react-redux';
 import { chatProps } from '@/types/chat.ts';
 import Cookies from 'js-cookie';
+import { login } from '@/api/user';
 
 export default function ChatRoom() {
   const [chatroomId, setChatroomId] = useState<number>(1);
@@ -22,9 +25,9 @@ export default function ChatRoom() {
   const [chatList, setChatList] = useState<any>([]); // 채팅 기록
   const [headerName, setHeaderName] = useState('새로 나온 와퍼 먹으러 갈 사람'); // 채팅방 이름
 
-  const userId = useSelector<any>((state) => state.user?.userCode ?? '');
+  // const userId = useSelector<any>((state) => state.user?.userCode ?? '');
   const [readCount, setReadCount] = useState(1);
-  // const [userId, setUserId] = useState('1');
+  const [userId, setUserId] = useState(null);
   // const userId = useSelector((state) => {
   //   return state.user.userCode;
   // });
@@ -95,7 +98,8 @@ export default function ChatRoom() {
       body: JSON.stringify({
         userid: userId,
         sender: senders,
-        profile_image: null,
+        profile_image:
+          'https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg',
         content: chat,
         send_date: new Date().toISOString(),
       }),
@@ -103,6 +107,21 @@ export default function ChatRoom() {
 
     setChat('');
   };
+
+  useEffect(() => {
+    const fetchUserId = async () => {
+      const userId = await login();
+      return userId;
+    };
+    fetchUserId().then((data) => {
+      if (data.code === 'U003') {
+        setUserId(data.data.user_id);
+        console.log(userId);
+      } else {
+        console.error('id값 읽기 실패');
+      }
+    });
+  }, [connect]);
 
   useEffect(() => {
     connect();
@@ -187,12 +206,12 @@ export default function ChatRoom() {
 
   // Render chat messages using the appropriate component
   const msgBox = chatList.map((item: any, idx: number) => {
-    if (Number(item.sender) !== userId) {
+    if (userId !== Number(item.userid)) {
       return (
         <OpponentChat
           key={idx}
-          profileImage="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
-          // profileImage={item.profile_image}
+          // profileImage="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
+          profileImage={item.profile_image}
           name={item.sender}
           time={item.send_date}
           chat={item.content}
