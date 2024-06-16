@@ -13,9 +13,10 @@ import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
 import { useSelector } from 'react-redux';
 import { chatProps } from '@/types/chat.ts';
+import Cookies from 'js-cookie';
 
 export default function ChatRoom() {
-  const [chatroomId, setChatroomId] = useState('1');
+  const [chatroomId, setChatroomId] = useState<number>(1);
   const [client, setClient] = useState<any>('');
   const [chat, setChat] = useState(''); // 입력된 chat을 받을 변수
   const [chatList, setChatList] = useState<any>([]); // 채팅 기록
@@ -38,11 +39,13 @@ export default function ChatRoom() {
 
   const connect = () => {
     try {
+      const token = Cookies.get('accessToken');
+      console.log('쿠키에 저장된 액세스 토큰:', token);
+
       const clientdata = new StompJs.Client({
         brokerURL: 'ws://localhost:8080/ws',
         connectHeaders: {
-          login: '',
-          passcode: 'password',
+          Authorization: `Bearer ${token}`,
         },
         debug: function (str) {
           console.log(str);
@@ -53,7 +56,8 @@ export default function ChatRoom() {
       });
       // 구독
       clientdata.onConnect = function () {
-        clientdata.subscribe('/sub/channels/' + chatroomId, callback);
+        clientdata.subscribe(`/sub/chat/room/${chatroomId}`, callback);
+        setClient(clientdata); // 클라이언트 설정 완료 후 상태 업데이트
       };
 
       // StompError 에러 났을 때
@@ -62,7 +66,7 @@ export default function ChatRoom() {
       };
 
       clientdata.activate();
-      setClient(clientdata);
+      // setClient(clientdata);
     } catch (err) {
       console.log(err);
     }
@@ -78,6 +82,11 @@ export default function ChatRoom() {
 
   const sendChat = () => {
     if (chat === '') {
+      return;
+    }
+
+    if (!client.connected) {
+      console.log('STOMP client is not connected.');
       return;
     }
 
@@ -111,7 +120,7 @@ export default function ChatRoom() {
   function timeStr(time: string) {
     return time.slice(11, 16);
   }
-  // Define MyChat component
+  // 내 채팅
   function MyChat({ time, chat, unreaderCount }: chatProps) {
     return (
       <div className="flex w-full flex-row items-end justify-end">
@@ -134,7 +143,7 @@ export default function ChatRoom() {
     );
   }
 
-  // Define OpponentChat component
+  // 상대 채팅
   function OpponentChat({
     profileImage,
     name,
