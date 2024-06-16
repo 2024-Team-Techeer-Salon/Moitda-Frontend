@@ -50,6 +50,10 @@ function MeetingHeader({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const closeChatRoom = () => {
+    router.push('/home');
+  };
   return (
     <div className="flex h-full w-full flex-col items-center">
       {/* 모임 정보 상단 */}
