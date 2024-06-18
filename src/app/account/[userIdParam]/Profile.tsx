@@ -247,6 +247,7 @@ function Profile({ id }: accountIdProps) {
                   setStatusMessage(statusMessageRef.current);
                 }
               }}
+              placeholder="소개 메세지를 입력해주세요."
             />
           ) : (
             <p className="h-10 w-full items-center border-2 border-white p-2">
