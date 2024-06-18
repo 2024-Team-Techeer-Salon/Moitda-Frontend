@@ -138,7 +138,11 @@ function page() {
                 key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
                 titleImage={
                   meeting.image_url ||
-                  category.category_image[Number(searchKeyword)]
+                  category.category_image[
+                    searchType === 'category'
+                      ? Number(searchKeyword)
+                      : meeting.category_id
+                  ]
                 }
                 title={meeting.title}
                 location={meeting.road_address_name}
