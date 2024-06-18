@@ -86,7 +86,7 @@ function page() {
 
   const noResult = () => (
     <div className="flex w-full flex-col items-center justify-center">
-      <span className="text-2xl">검색 결과가 없습니다. ㅠㅠ</span>
+      <span className="text-2xl">검색 결과가 없습니다. 😢</span>
     </div>
   );
 
@@ -113,30 +113,34 @@ function page() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
+      <div className="mb-12 flex h-48 w-screen items-center justify-center bg-zinc-100">
+        <div className="flex h-full w-96 flex-col items-center justify-center md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
+          {searchType === 'category' ? (
+            <div className="flex w-full flex-row items-center justify-start text-2xl">
+              <figure className="relative m-6 flex h-32 w-32">
+                <Image
+                  src={category.category_image[Number(searchKeyword)]}
+                  alt="category icon"
+                  className="rounded-full border border-gray-300"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </figure>
+              <span className="text-4xl font-bold">
+                #{category.category_name[Number(searchKeyword)]}
+              </span>
+            </div>
+          ) : (
+            <div className="flex w-full flex-row items-center justify-start text-2xl">
+              <span className="text-4xl font-bold">
+                &quot;{searchKeyword}&quot;&nbsp;
+              </span>
+              검색 결과
+            </div>
+          )}
+        </div>
+      </div>
       <div className="flex h-full w-96 flex-col flex-nowrap items-start justify-start md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
-        {searchType === 'category' ? (
-          <div className="flex w-full flex-row items-center justify-start text-2xl">
-            <figure className="relative m-6 flex h-32 w-32">
-              <Image
-                src={category.category_image[Number(searchKeyword)]}
-                alt="category icon"
-                className="rounded-full border border-gray-300"
-                layout="fill"
-                objectFit="cover"
-              />
-            </figure>
-            <span className="text-4xl font-bold">
-              #{category.category_name[Number(searchKeyword)]}
-            </span>
-          </div>
-        ) : (
-          <div className="flex w-full flex-row items-center justify-center text-2xl">
-            <span className="text-4xl font-bold">
-              &quot;{searchKeyword}&quot;&nbsp;
-            </span>
-            검색 결과
-          </div>
-        )}
         <div className="flex flex-row flex-wrap items-center justify-start">
           {data?.pages.map((page: any, pageIndex) =>
             page?.meeting_list.map((meeting: any, index: any) => (
