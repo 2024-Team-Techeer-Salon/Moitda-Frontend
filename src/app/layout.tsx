@@ -31,9 +31,7 @@ export default function RootLayout({
           <Suspense fallback={<div>로딩중인데요?ㅋㅋ</div>}>
             <Header />
             <StoreProvider>
-              <div className="flex min-h-screen min-w-full justify-center">
-                {children}
-              </div>
+              <div className="flex min-h-screen min-w-full">{children}</div>
             </StoreProvider>
             <Footer />
           </Suspense>
