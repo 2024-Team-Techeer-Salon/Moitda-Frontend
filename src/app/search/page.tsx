@@ -107,7 +107,7 @@ function page() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <div className="flex h-full w-96 flex-col items-center justify-center md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
+      <div className="flex h-full w-96 flex-col flex-nowrap items-start justify-start md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
         {searchType === 'category' ? (
           <div className="flex w-full flex-row items-center justify-start text-2xl">
             <figure className="relative m-6 flex h-32 w-32">
