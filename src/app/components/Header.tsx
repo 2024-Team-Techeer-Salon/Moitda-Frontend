@@ -145,7 +145,7 @@ function Header() {
               {category.category_name.map((item: string, index: number) => (
                 <Link
                   key={index}
-                  href={`search?type=category&keyword=${index}`}
+                  href={`/search?type=category&keyword=${index}`}
                   className="text-md p-2"
                   onClick={() => setOpenMenu(false)}
                 >
