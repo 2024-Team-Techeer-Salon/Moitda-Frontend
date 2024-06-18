@@ -84,6 +84,12 @@ function page() {
     },
   });
 
+  const noResult = () => (
+    <div className="flex w-full flex-col items-center justify-center">
+      <span className="text-2xl">검색 결과가 없습니다. ㅠㅠ</span>
+    </div>
+  );
+
   useEffect(() => {
     if (!hasNextPage) return;
     const observer = new IntersectionObserver(
@@ -134,23 +140,26 @@ function page() {
         <div className="flex flex-row flex-wrap items-center justify-start">
           {data?.pages.map((page: any, pageIndex) =>
             page?.meeting_list.map((meeting: any, index: any) => (
-              <Post
-                key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
-                titleImage={
-                  meeting.image_url ||
-                  category.category_image[
-                    searchType === 'category'
-                      ? Number(searchKeyword)
-                      : meeting.category_id
-                  ]
-                }
-                title={meeting.title}
-                location={meeting.road_address_name}
-                meetingId={meeting.meeting_id}
-                endTime={meeting.end_time}
-              />
+              <>
+                <Post
+                  key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
+                  titleImage={
+                    meeting.image_url ||
+                    category.category_image[
+                      searchType === 'category'
+                        ? Number(searchKeyword)
+                        : meeting.category_id
+                    ]
+                  }
+                  title={meeting.title}
+                  location={meeting.road_address_name}
+                  meetingId={meeting.meeting_id}
+                  endTime={meeting.end_time}
+                />
+              </>
             )),
           )}
+          {data?.pages.length === 1 && noResult()}
           <div ref={loadMoreRef} />
         </div>
       </div>
