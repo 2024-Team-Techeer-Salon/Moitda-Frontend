@@ -27,9 +27,9 @@ function Header() {
 
   // 토큰이 있는데 401 에러가 발생하면 새로고침
   if (isError && getCookie('accessToken')) {
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
+    // setTimeout(() => {
+    //   window.location.reload();
+    // }, 100);
   }
 
   if (ignorePath().includes(path)) {
@@ -145,7 +145,7 @@ function Header() {
               {category.category_name.map((item: string, index: number) => (
                 <Link
                   key={index}
-                  href={`search?type=category&keyword=${index}`}
+                  href={`/search?type=category&keyword=${index}`}
                   className="text-md p-2"
                   onClick={() => setOpenMenu(false)}
                 >
