@@ -8,7 +8,6 @@
 
 'use client';
 
-import Script from 'next/script';
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
@@ -195,10 +194,6 @@ function Distance() {
           className="m-4 h-[28rem] w-[50rem] border border-zinc-300"
           id="map"
         >
-          <Script
-            src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
-            strategy="beforeInteractive"
-          />
           {locPosition ? (
             <Map
               center={locPosition}
@@ -221,7 +216,9 @@ function Distance() {
               ))}
             </Map>
           ) : (
-            <p className="flex items-center justify-center">Loading map...</p>
+            <p className="flex items-center justify-center">
+              GPS 기능을 활성화 해 주세요.
+            </p>
           )}
         </div>
       </div>

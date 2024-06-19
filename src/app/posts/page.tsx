@@ -25,7 +25,6 @@ import { DateTimePicker } from '@mui/x-date-pickers';
 import 'react-quill/dist/quill.snow.css';
 import dynamic from 'next/dynamic';
 import Image from 'next/image';
-import Script from 'next/script';
 import { postMeetings, getMeetingsData, editMeeting } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
@@ -465,11 +464,6 @@ function page() {
 
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
-      <Script
-        type="text/javascript"
-        src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
-        strategy="beforeInteractive"
-      />
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
       <div className="flex h-full w-full flex-col px-4 md:px-40 lg:px-60 xl:px-80">
         {/* 제목 입력 및 카테고리 선택 */}
