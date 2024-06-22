@@ -465,7 +465,7 @@ function page() {
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
-      <div className="flex h-full w-full flex-col px-4 md:px-40 lg:px-60 xl:px-80">
+      <div className="flex h-full w-full flex-col px-60 md:px-60 lg:px-80 xl:px-[32rem]">
         {/* 제목 입력 및 카테고리 선택 */}
         <div className="flex h-12 w-full flex-row">
           <input
@@ -503,123 +503,142 @@ function page() {
             </Select>
           </FormControl>
         </div>
+        <div className="mt-4 flex w-full flex-row">
+          <div className="flex w-1/2 flex-col pr-4">
+            {/* 장소 선택 */}
+            <div className="mt-8 flex w-full flex-col sm:flex-row">
+              <SearchAddressModal isOpen={meetingAddressModalOpen} />
+              <div className="flex w-full flex-col justify-start">
+                <p className="text-bold flex text-sm font-bold">
+                  모임 장소를 입력해 주세요!
+                </p>
+                <div className="mt-4 flex h-12 w-full flex-row sm:w-full">
+                  <input
+                    className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 text-sm focus:outline-none sm:text-base"
+                    readOnly
+                    type="text"
+                    value={placeName}
+                    placeholder="주소"
+                  />
+                  <button
+                    className="btn h-12 w-32 border-none bg-gray-200 text-sm text-zinc-500 hover:bg-gray-300 sm:text-base"
+                    onClick={() => setMeetingAddressModalOpen(true)}
+                  >
+                    주소 검색
+                  </button>
+                </div>
 
-        {/* 장소 선택 */}
-        <div className="mt-8 flex h-60 w-full flex-col sm:flex-row">
-          <SearchAddressModal isOpen={meetingAddressModalOpen} />
-          <div className="flex w-1/2 flex-col justify-end ">
-            <p className="flex text-sm text-zinc-300">
-              모임 장소를 입력해 주세요!
-            </p>
-            <div className="mt-4 flex h-12 w-[21rem] flex-row sm:w-full">
-              <input
-                className="border-1 mr-4 flex w-full items-center justify-start border border-zinc-300 pl-2 text-sm focus:outline-none sm:text-base"
-                readOnly
-                type="text"
-                value={placeName}
-                placeholder="주소"
-              />
-              <button
-                className="btn h-12 w-32 border-none bg-gray-200 text-sm text-zinc-500 hover:bg-gray-300 sm:text-base"
-                onClick={() => setMeetingAddressModalOpen(true)}
-              >
-                주소 검색
-              </button>
+                <input
+                  type="text"
+                  placeholder="상세 주소"
+                  className="border-1 mt-4 flex h-12 w-[21rem] border border-zinc-300 p-2 text-sm focus:outline-none sm:w-full sm:text-base"
+                  onChange={(e) => (addressDetailRef.current = e.target.value)}
+                  onBlur={() => setAddressDetail(addressDetailRef.current)}
+                />
+              </div>
             </div>
 
-            <input
-              type="text"
-              placeholder="상세 주소"
-              className="border-1 mr-4 mt-4 flex h-12 w-[21rem] border border-zinc-300 p-2 text-sm focus:outline-none sm:w-full sm:text-base"
-              onChange={(e) => (addressDetailRef.current = e.target.value)}
-              onBlur={() => setAddressDetail(addressDetailRef.current)}
-            />
+            {/* 날짜 선택 */}
+            <p className="text-bold mt-12 flex text-sm font-bold">
+              약속 날짜를 입력해 주세요!
+            </p>
+            <div className="mt-4 flex w-full">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DateTimePicker
+                  className="flex w-full"
+                  label="날짜 선택"
+                  value={dayjs(meetingTime)}
+                  onChange={handleDateChange}
+                />
+              </LocalizationProvider>
+            </div>
+
+            {/* 인원수 선택 */}
+            <p className="text-bold mt-12 flex text-sm font-bold">
+              본인을 포함해 모일 최대 인원수를 입력해 주세요!
+            </p>
+            <div className="mt-4 flex w-full flex-row rounded-lg border border-solid bg-white p-1 font-sans hover:border-slate-400  focus-visible:outline-0">
+              <input
+                type="number"
+                className="w-full border-0 bg-white p-2 text-left text-sm focus:outline-none sm:text-base"
+                value={numPeople}
+                onChange={(e) => {
+                  if (Number(e.target.value) < originNumPeople) {
+                    setNumPeople(originNumPeople);
+                  } else if (Number(e.target.value) > 99) {
+                    setNumPeople(99);
+                  } else setNumPeople(Number(e.target.value));
+                }}
+                min={originNumPeople}
+                max={99}
+                placeholder="인원수를 입력해 주세요"
+              />
+              <div className="flex flex-col">
+                <button
+                  className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-t-md border border-b-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
+                  onClick={() => {
+                    if (numPeople < originNumPeople) {
+                      setNumPeople(originNumPeople);
+                    } else if (numPeople < 100) {
+                      setNumPeople((prevNum) => prevNum + 1);
+                    } else {
+                      setNumPeople(99);
+                    }
+                  }}
+                >
+                  ▴
+                </button>
+                <button
+                  className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-b-md border border-t-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
+                  onClick={() => {
+                    if (numPeople > 100) {
+                      setNumPeople(99);
+                    } else if (numPeople > originNumPeople) {
+                      setNumPeople((prevNum) => prevNum - 1);
+                    } else {
+                      setNumPeople(originNumPeople);
+                    }
+                  }}
+                >
+                  ▾
+                </button>
+              </div>
+            </div>
           </div>
-          <div
-            className="b mt-2 flex h-96 w-[21rem] border border-zinc-300 sm:ml-4 sm:mt-0 sm:h-60 sm:w-1/2"
-            id="map"
-          >
-            <Map // 지도를 표시할 컨테이너
-              center={center} // 지도의 중심좌표
-              style={{ width: '100%', height: '100%' }}
+          <div className="flex w-1/2 flex-col pl-4">
+            <div
+              className="b mt-16 flex h-5/6 w-full border border-zinc-300"
+              id="map"
             >
-              <MapMarker position={center} /> {/* 사용자의 위치에 마커 표시 */}
-            </Map>
+              <Map // 지도를 표시할 컨테이너
+                center={center} // 지도의 중심좌표
+                style={{ width: '100%', height: '100%' }}
+              >
+                <MapMarker position={center} />{' '}
+                {/* 사용자의 위치에 마커 표시 */}
+              </Map>
+            </div>
           </div>
         </div>
 
-        {/* 날짜 선택 */}
-        <p className="mt-12 flex text-sm text-zinc-300">
-          약속 날짜를 입력해 주세요!
-        </p>
-        <div className="mt-4 flex w-full">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DateTimePicker
-              className="flex w-80"
-              label="날짜 선택"
-              value={dayjs(meetingTime)}
-              onChange={handleDateChange}
-            />
-          </LocalizationProvider>
-        </div>
-
-        {/* 인원수 선택 */}
-        <p className="mt-12 flex text-sm text-zinc-300">
-          본인을 포함해 모일 최대 인원수를 입력해 주세요!
-        </p>
-        <div className="mt-4 flex w-52 flex-row rounded-lg border border-solid bg-white p-1 font-sans hover:border-slate-400  focus-visible:outline-0">
-          <input
-            type="number"
-            className="w-full border-0 bg-white p-2 text-left text-sm focus:outline-none sm:text-base"
-            value={numPeople}
-            onChange={(e) => {
-              if (Number(e.target.value) < originNumPeople) {
-                setNumPeople(originNumPeople);
-              } else if (Number(e.target.value) > 99) {
-                setNumPeople(99);
-              } else setNumPeople(Number(e.target.value));
-            }}
-            min={originNumPeople}
-            max={99}
-            placeholder="인원수를 입력해 주세요"
+        <div className="mb-12 mt-12 flex h-full w-full flex-col">
+          {/* React-Quill 컴포넌트 */}
+          <ReactQuill
+            theme="snow" // 에디터의 테마 설정
+            value={editorHtml} // 현재 편집 중인 HTML 내용
+            onChange={(html: any) => {
+              setEditorHtml(html);
+            }} // 내용이 변경될 때 호출되는 콜백 함수
+            className="h-72 w-full sm:h-96"
+            placeholder="어떤 모임을 가질 지 설명해주세요!"
           />
-          <div className="flex flex-col">
-            <button
-              className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-t-md border border-b-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
-              onClick={() => {
-                if (numPeople < originNumPeople) {
-                  setNumPeople(originNumPeople);
-                } else if (numPeople < 100) {
-                  setNumPeople((prevNum) => prevNum + 1);
-                } else {
-                  setNumPeople(99);
-                }
-              }}
-            >
-              ▴
-            </button>
-            <button
-              className="flex h-5 w-5 cursor-pointer flex-row items-center justify-center rounded-b-md border border-t-0 border-slate-200 bg-slate-50 font-[system-ui] transition-all duration-300 hover:bg-indigo-500 hover:text-slate-50"
-              onClick={() => {
-                if (numPeople > 100) {
-                  setNumPeople(99);
-                } else if (numPeople > originNumPeople) {
-                  setNumPeople((prevNum) => prevNum - 1);
-                } else {
-                  setNumPeople(originNumPeople);
-                }
-              }}
-            >
-              ▾
-            </button>
-          </div>
         </div>
 
         {/* 참가 방식 결정 */}
 
         {!(postType === 'edit' && meetingId !== undefined) && (
           <div>
-            <p className="mt-12 flex text-sm text-zinc-300">
+            <p className="text-bold mt-8 flex text-sm font-bold">
               참가 방식을 선택해 주세요!
             </p>
             <div className="mt-4 flex h-14 w-60 flex-row items-center justify-start rounded-2xl bg-gray-200 p-4 shadow-md sm:h-16 sm:w-72">
@@ -648,27 +667,14 @@ function page() {
           </div>
         )}
 
-        <div className="mb-12 mt-12 flex h-full w-full flex-col">
-          {/* React-Quill 컴포넌트 */}
-          <ReactQuill
-            theme="snow" // 에디터의 테마 설정
-            value={editorHtml} // 현재 편집 중인 HTML 내용
-            onChange={(html: any) => {
-              setEditorHtml(html);
-            }} // 내용이 변경될 때 호출되는 콜백 함수
-            className="h-72 w-full sm:h-96"
-            placeholder="어떤 모임을 가질 지 설명해주세요!"
-          />
-        </div>
-
         {/* 이미지 업로드 */}
         {!(postType === 'edit' && meetingId !== undefined) && (
           <div>
-            <p className="mt-8 flex text-sm text-zinc-300">
+            <p className="text-bold mt-8 flex text-sm font-bold">
               모임 대표 사진을 업로드해 주세요! (최대 8장)
             </p>
 
-            <div className="flex h-auto w-full flex-row overflow-x-scroll">
+            <div className="flex h-auto w-full flex-row">
               <input
                 ref={fileInputRef}
                 type="file"
