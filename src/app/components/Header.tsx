@@ -165,7 +165,7 @@ function Header() {
 
         {/* 메뉴 푸터 */}
         <button
-          className="m-8 flex h-12 w-full flex-col"
+          className="mb-8 flex h-12 w-full flex-col p-8"
           onClick={() => {
             if (data) {
               logout();
