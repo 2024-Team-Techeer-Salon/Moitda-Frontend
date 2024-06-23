@@ -8,7 +8,7 @@ import category from '@/util/category.json';
 import { useQuery } from '@tanstack/react-query';
 import { login, logout } from '@/api/user.ts';
 import ignorePath from '../styles/ignorePath.ts';
-import { getCookie, removeCookie } from '../cookies.tsx';
+import { removeCookie } from '../cookies.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -20,17 +20,10 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['login'],
     queryFn: login,
   });
-
-  // 토큰이 있는데 401 에러가 발생하면 새로고침
-  if (isError && getCookie('accessToken')) {
-    // setTimeout(() => {
-    //   window.location.reload();
-    // }, 100);
-  }
 
   if (ignorePath().includes(path)) {
     return null;
