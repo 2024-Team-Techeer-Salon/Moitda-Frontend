@@ -1,3 +1,5 @@
+/* eslint-disable no-param-reassign */
+/* eslint-disable implicit-arrow-linebreak */
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable consistent-return */
 import axios from 'axios';
@@ -40,9 +42,22 @@ const api = axios.create({
   baseURL: BASE_URL, // 기본 URL 설정
   headers: {
     'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`,
+    // Authorization: `Bearer ${accessToken}`,
   },
 });
+
+api.interceptors.request.use(
+  (config) => {
+    const token = getCookie('accessToken'); // 요청 직전에 액세스 토큰을 쿠키에서 가져옵니다.
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`; // 헤더에 액세스 토큰을 설정합니다.
+    }
+    return config;
+  },
+  (error) =>
+    // 요청 에러가 발생했을 경우 처리
+    Promise.reject(error),
+);
 
 api.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 반환
@@ -69,7 +84,7 @@ api.interceptors.response.use(
 
 export { api };
 
-export const formApi = axios.create({
+const formApi = axios.create({
   withCredentials: true,
   baseURL: BASE_URL,
   headers: {
@@ -77,3 +92,38 @@ export const formApi = axios.create({
     Authorization: `Bearer ${accessToken}`,
   },
 });
+
+formApi.interceptors.request.use(
+  (config) => {
+    const token = getCookie('accessToken');
+    if (token) {
+      config.headers.Authorization = `Bearer ${token}`;
+    }
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+formApi.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    const originalRequest = error.config;
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+      try {
+        const data = await reIssuedToken();
+        formApi.defaults.headers.common.Authorization = `Bearer ${data.data.access_token}`;
+        originalRequest.headers.Authorization = `Bearer ${data.data.access_token}`;
+
+        return formApi(originalRequest);
+      } catch (refreshError) {
+        console.error('Failed to refresh token:', refreshError);
+        return Promise.reject(refreshError);
+      }
+    }
+
+    return Promise.reject(error);
+  },
+);
+
+export { formApi };
