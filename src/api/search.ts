@@ -1,9 +1,6 @@
-/* eslint-disable no-console */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable consistent-return */
 import { api } from './axios.config.ts';
 
-export const getSearchData = async (
+const getSearchData = async (
   searchType: string,
   searchKeyword: string,
   lat: number,
@@ -23,6 +20,8 @@ export const getSearchData = async (
     );
     return response.data.data;
   } catch (error) {
-    console.error(error);
+    throw new Error('search api request error : ', error || '');
   }
 };
+
+export default getSearchData;

@@ -1,10 +1,6 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-import { api } from './axios.config';
+import { api } from './axios.config.ts';
 
-export const searchMeetings = async (
+const searchMeetings = async (
   latitude: number,
   longitude: number,
   page: number,
@@ -17,6 +13,8 @@ export const searchMeetings = async (
     );
     return response.data;
   } catch (error) {
-    console.error('searchMeetings error:', error);
+    throw new Error('meeting search api request error : ', error || '');
   }
 };
+
+export default searchMeetings;
