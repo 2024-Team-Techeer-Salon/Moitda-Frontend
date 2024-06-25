@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable object-curly-newline */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable function-paren-newline */

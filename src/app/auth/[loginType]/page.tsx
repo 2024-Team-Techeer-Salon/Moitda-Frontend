@@ -1,13 +1,22 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable react-hooks/rules-of-hooks */
 
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable react-hooks/rules-of-hooks */
+
 'use client';
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Cookies } from 'react-cookie';
 
-function page(props: any) {
+type Props = {
+  params: {
+    loginType: string;
+  };
+};
+
+function Page(props: Props) {
   const loginType = decodeURIComponent(props.params.loginType);
   const cookies = new Cookies();
   const searchParams = useSearchParams();
@@ -30,6 +39,7 @@ function page(props: any) {
       }
     }
   }, [accessToken, refreshToken]);
+
   return (
     <div className="flex h-screen w-screen items-center justify-center">
       로그인 중...
@@ -37,4 +47,4 @@ function page(props: any) {
   );
 }
 
-export default page;
+export default Page;

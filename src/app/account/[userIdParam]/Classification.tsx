@@ -13,6 +13,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getMyMeetingList } from '@/api/user.ts';
 import Post from '@/app/components/Post.tsx';
 import category from '@/util/category.json';
+import { meetingListProps, pageDataProps } from '@/types/meeting.ts';
 
 const Classification = ({ id }: accountIdProps) => {
   const [activeTab, setActiveTab] = useState<'joined' | 'created'>('joined');
@@ -94,20 +95,23 @@ const Classification = ({ id }: accountIdProps) => {
 
       {/* 모임 리스트 */}
       <div className="flex flex-row flex-wrap items-center justify-start">
-        {data?.pages.map((pageData: any, pageIndex) =>
-          pageData?.data.meeting_list.map((meeting: any, index: any) => (
-            <Post
-              key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
-              titleImage={
-                meeting.image_url ||
-                category.category_image[meeting.category_id]
-              }
-              title={meeting.title}
-              location={meeting.road_address_name}
-              meetingId={meeting.meeting_id}
-              endTime={meeting.end_time}
-            />
-          )),
+        {(data as any)?.pages.map(
+          (pageData: pageDataProps, pageIndex: number) =>
+            pageData?.data.meeting_list.map(
+              (meeting: meetingListProps, index: number) => (
+                <Post
+                  key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
+                  titleImage={
+                    meeting.image_url ||
+                    category.category_image[meeting.category_id]
+                  }
+                  title={meeting.title}
+                  location={meeting.road_address_name}
+                  meetingId={meeting.meeting_id}
+                  endTime={meeting.end_time}
+                />
+              ),
+            ),
         )}
         <div ref={loadMoreRef} />
       </div>
