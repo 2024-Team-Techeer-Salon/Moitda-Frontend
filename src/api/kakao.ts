@@ -1,9 +1,6 @@
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable consistent-return */
-/* eslint-disable no-console */
 import axios from 'axios';
 
-export async function searchAddress(
+export default async function searchAddress(
   keyword: string,
   lat: number,
   lng: number,
@@ -11,7 +8,7 @@ export async function searchAddress(
   size: number,
 ) {
   if (!keyword) {
-    return;
+    return null;
   }
   try {
     const response = await axios.get(
@@ -30,9 +27,8 @@ export async function searchAddress(
         },
       },
     );
-    console.log('searchAddress response : ', response.data);
     return response.data;
   } catch (error) {
-    console.error('searchAddress error : ', error);
+    throw new Error('kakao search address api request error : ', error || '');
   }
 }

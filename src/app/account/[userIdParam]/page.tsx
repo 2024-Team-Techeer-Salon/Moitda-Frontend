@@ -1,9 +1,10 @@
+/* eslint-disable eol-last */
 /* eslint-disable no-shadow */
 
 import Classification from './Classification.tsx';
 import Profile from './Profile.tsx';
 
-function Account(props: any) {
+function Account(props: { params: { userIdParam: string } }) {
   const userId = Number(decodeURIComponent(props.params.userIdParam));
 
   return (

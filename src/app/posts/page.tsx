@@ -29,10 +29,11 @@ import { postMeetings, getMeetingsData, editMeeting } from '@/api/meetings.ts';
 import utc from 'dayjs/plugin/utc'; // UTC 플러그인을 사용
 import timezone from 'dayjs/plugin/timezone';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { searchAddress } from '@/api/kakao.ts';
+import searchAddress from '@/api/kakao.ts';
 import Swal from 'sweetalert2';
 import { useRouter, useSearchParams } from 'next/navigation';
 import category from '@/util/category.json';
+import { formValuesProps } from '@/types/post.ts';
 import WarningAlert from '../components/WarningAlert.tsx';
 import { GpsIcon } from '../components/Icon.tsx';
 
@@ -79,7 +80,7 @@ function page() {
 
   // useForm 훅
   const { register: registerSearch, handleSubmit: handleSubmitSearch } =
-    useForm(); // 주소 검색 폼
+    useForm<formValuesProps>(); // 주소 검색 폼
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -176,8 +177,9 @@ function page() {
     }
   }, [meetingId, postType]);
 
-  const handleImageChange = (e: any) => {
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { files } = e.target;
+    if (!files) return;
     const tempImages: File[] = [];
     for (let i = 0; i < files.length; i += 1) {
       const file = files[i];
@@ -192,7 +194,7 @@ function page() {
     ]);
   };
 
-  const onSubmitSearch = async (data: any) => {
+  const onSubmitSearch = async (data: formValuesProps) => {
     setSearchKeyword(data.localKeyword);
     await fetchNextPage();
     refetch();
@@ -219,7 +221,11 @@ function page() {
     if (!isOpen) return null;
 
     // 검색 결과에서 주소를 클릭했을 때 실행되는 함수
-    const handleComplete = (data: any) => {
+    const handleComplete = (data: {
+      address_name: string;
+      place_name: string;
+      road_address_name: string;
+    }) => {
       setAddress(
         data.road_address_name ? data.road_address_name : data.address_name,
       );
@@ -259,7 +265,11 @@ function page() {
         <div
           className="flex h-20 w-full cursor-pointer flex-row items-center justify-start p-2 hover:bg-gray-100"
           onClick={() => {
-            handleComplete(data);
+            handleComplete({
+              address_name: title,
+              place_name: title,
+              road_address_name: roadName,
+            });
           }}
         >
           <GpsIcon className="mx-4 h-6 w-6" />
@@ -327,7 +337,7 @@ function page() {
                         place_name: string;
                         road_address_name: string;
                       },
-                      docIndex: any,
+                      docIndex: number,
                     ) => (
                       <div
                         key={`${pageIndex}-${docIndex}`}
@@ -357,7 +367,7 @@ function page() {
     );
   }
 
-  const handleDateChange = (newValue: any) => {
+  const handleDateChange = (newValue: dayjs.Dayjs | null) => {
     // newValue를 ISO 문자열 형식으로 변환하여 상태 업데이트
     setMeetingTime(
       newValue
@@ -626,7 +636,7 @@ function page() {
           <ReactQuill
             theme="snow" // 에디터의 테마 설정
             value={editorHtml} // 현재 편집 중인 HTML 내용
-            onChange={(html: any) => {
+            onChange={(html) => {
               setEditorHtml(html);
             }} // 내용이 변경될 때 호출되는 콜백 함수
             className="h-72 w-full sm:h-96"

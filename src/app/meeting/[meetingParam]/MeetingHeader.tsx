@@ -37,10 +37,10 @@ function MeetingHeader({
   const detailsRef = useRef(null);
 
   useEffect(() => {
-    function handleClickOutside(event: any) {
+    function handleClickOutside(event: MouseEvent) {
       if (
         detailsRef.current &&
-        !(detailsRef.current as HTMLElement).contains(event.target)
+        !(detailsRef.current as HTMLElement).contains(event.target as Node)
       ) {
         (detailsRef.current as HTMLElement).removeAttribute('open');
       }

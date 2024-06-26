@@ -1,7 +1,3 @@
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-/* eslint-disable import/prefer-default-export */
-
 import { formApi, api } from './axios.config.ts';
 
 export const postMeetings = async (
@@ -47,7 +43,7 @@ export const postMeetings = async (
     const response = await formApi.post('/meetings', formData);
     return response.data;
   } catch (error) {
-    console.error('postMeetings error : ', error);
+    throw new Error('meeting post api request error : ', error || '');
   }
 };
 
@@ -56,10 +52,9 @@ export const getMeetingList = async (page: number, size: number) => {
     const response = await api.get(
       `/meetings/search/latest?page=${page}&size=${size}`,
     );
-    console.log('response.data : ', response.data);
     return response.data;
   } catch (error) {
-    console.error('Meeting List Get API Error : ', error);
+    throw new Error('meeting list get api request error : ', error || '');
   }
 };
 
@@ -68,7 +63,7 @@ export const getMeetingsData = async (meetingId: number) => {
     const response = await api.get(`/meetings/${meetingId}`);
     return response.data.data;
   } catch (error) {
-    console.error('meeting data get api request error : ', error);
+    throw new Error('meeting data get api request error : ', error || '');
   }
 };
 
@@ -77,7 +72,7 @@ export const postMeetingJoin = async (meetingId: number) => {
     const response = await api.post(`/meetings/participant/${meetingId}`);
     return response.data;
   } catch (error) {
-    console.error('meeting join api request error : ', error);
+    throw new Error('meeting join post api request error : ', error || '');
   }
 };
 
@@ -86,7 +81,7 @@ export const patchEndMeeting = async (meetingId: number) => {
     const response = await api.patch(`/meetings/end/${meetingId}`);
     return response.data;
   } catch (error) {
-    console.error('meeting end api request error : ', error);
+    throw new Error('meeting end patch api request error : ', error || '');
   }
 };
 
@@ -95,7 +90,7 @@ export const deleteMeeting = async (meetingId: number) => {
     const response = await api.delete(`/meetings/${meetingId}`);
     return response.data;
   } catch (error) {
-    console.error('meeting delete api request error : ', error);
+    throw new Error('meeting delete api request error : ', error || '');
   }
 };
 
@@ -123,7 +118,7 @@ export const editMeeting = async (
     });
     return response.data;
   } catch (error) {
-    console.error('meeting edit api request error : ', error);
+    throw new Error('meeting edit api request error : ', error || '');
   }
 };
 
@@ -132,7 +127,7 @@ export const getMeetingApplicants = async (meetingId: number) => {
     const response = await api.get(`/meetings/${meetingId}/participants`);
     return response.data.data;
   } catch (error) {
-    console.error('meeting applicants get api request error : ', error);
+    throw new Error('meeting applicants get api request error : ', error || '');
   }
 };
 
@@ -149,7 +144,7 @@ export const patchMeetingApproval = async (
     });
     return response.data;
   } catch (error) {
-    console.error('meeting approval patch api request error : ', error);
+    throw new Error('meeting approval patch api request error : ', error || '');
   }
 };
 
@@ -160,7 +155,6 @@ export const postMeetingReview = async (
     rating: number;
   }[],
 ) => {
-  console.log('reviews', reviews);
   try {
     const response = await api.post('/meetings/reviews', {
       meeting_id: meetingId,
@@ -168,7 +162,7 @@ export const postMeetingReview = async (
     });
     return response.data;
   } catch (error) {
-    console.error('meeting review post api request error : ', error);
+    throw new Error('meeting review post api request error : ', error || '');
   }
 };
 
@@ -178,9 +172,9 @@ export const getReviewParticipation = async (meetingId: number) => {
     const response = await api.get(`/meetings/reviews/${meetingId}`);
     return response.data;
   } catch (error) {
-    console.error(
+    throw new Error(
       'meeting review participation get api request error : ',
-      error,
+      error || '',
     );
   }
 };

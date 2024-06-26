@@ -5,8 +5,7 @@ export const deleteChat = async (chatId: number) => {
     const response = await api.delete(`chattings/rooms/${chatId}`);
     return response.data;
   } catch (error) {
-    console.error('chat delete api request error : ', error);
-    throw error;
+    throw new Error('chat delete api request error : ', error || '');
   }
 };
 
@@ -15,7 +14,6 @@ export const getChats = async (meetingId: number) => {
     const response = await api.get(`/chats/${meetingId}`);
     return response.data.data;
   } catch (error) {
-    console.error('chat get api request error : ', error);
-    throw error;
+    throw new Error('chat get api request error : ', error || '');
   }
 };

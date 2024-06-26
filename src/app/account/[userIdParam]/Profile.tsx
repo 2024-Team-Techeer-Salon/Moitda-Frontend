@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { getUserInfo, putUserInfo } from '@/api/user.ts';
 import { useQuery } from '@tanstack/react-query';
@@ -58,7 +58,7 @@ function Profile({ id }: accountIdProps) {
   }, [data]);
 
   const BannerImage = () => {
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0] || null;
       if (file) {
         setPreviewBanner(file);
@@ -101,7 +101,7 @@ function Profile({ id }: accountIdProps) {
   };
 
   const ProfileImage = () => {
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0] || null;
       if (file) {
         setPreviewProfile(file);

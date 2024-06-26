@@ -5,3 +5,7 @@ export interface postProps {
   location: string;
   endTime: string;
 }
+
+export interface formValuesProps {
+  localKeyword: string;
+}
