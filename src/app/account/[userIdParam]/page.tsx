@@ -4,13 +4,7 @@
 import Classification from './Classification.tsx';
 import Profile from './Profile.tsx';
 
-type AccountProps = {
-  params: {
-    userIdParam: string;
-  };
-};
-
-function Account(props: AccountProps) {
+function Account(props: { params: { userIdParam: string } }) {
   const userId = Number(decodeURIComponent(props.params.userIdParam));
 
   return (

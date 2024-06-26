@@ -10,13 +10,7 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { Cookies } from 'react-cookie';
 
-type Props = {
-  params: {
-    loginType: string;
-  };
-};
-
-function Page(props: Props) {
+function Page(props: { params: { loginType: string } }) {
   const loginType = decodeURIComponent(props.params.loginType);
   const cookies = new Cookies();
   const searchParams = useSearchParams();
