@@ -2,7 +2,7 @@ import Image from 'next/image';
 import { chatListProps } from '@/types/chat.ts';
 
 // 마지막 채팅 시간을 문자열로 변환하는 함수 ( "yyyy-MM-dd HH:mm:ss" 형식의 문자열을 입력받음 )
-function lastTimeStr(lastTime: any) {
+function lastTimeStr(lastTime: string) {
   const lastTimeDate = new Date(lastTime);
   const now = new Date();
 

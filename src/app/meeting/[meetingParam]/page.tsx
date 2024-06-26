@@ -13,7 +13,7 @@ import BannerImage from './BannerImage.tsx';
 import MeetingHeader from './MeetingHeader.tsx';
 import Participants from './Participants.tsx';
 
-function page(props: any) {
+function page(props: { params: { meetingParam: string } }) {
   const meetingId = Number(decodeURIComponent(props.params.meetingParam));
 
   const { isLoading, data } = useQuery({

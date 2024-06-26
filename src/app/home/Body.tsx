@@ -15,7 +15,7 @@ import { useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { searchMeetings } from '@/api/nearMeeting.ts';
+import searchMeetings from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import { useRouter } from 'next/navigation';
 import Post from '../components/Post.tsx';
@@ -27,7 +27,9 @@ function Distance() {
   const router = useRouter();
 
   useEffect(() => {
-    function successCallback(position: any) {
+    function successCallback(position: {
+      coords: { latitude: number; longitude: number };
+    }) {
       // 완료 되면 콘솔 지우기!!
       console.log('Latitude: ', position.coords.latitude);
       console.log('Longitude: ', position.coords.longitude);
@@ -36,7 +38,7 @@ function Distance() {
       setLocationFetched(true); // 위치 정보를 성공적으로 가져온 후 설정
     }
 
-    function errorCallback(error: any) {
+    function errorCallback(error: { code: number; message: string }) {
       // 함수 매개변수의 타입 지정
       console.error('Error Code = ', error.code, ' - ', error.message);
     }
@@ -105,7 +107,15 @@ function Distance() {
     null,
   );
 
-  const handleMain = (marker: any) => {
+  const handleMain = (marker: {
+    time: string;
+    mainTitle: string;
+    address: string;
+    place_name: string;
+    category_id: number;
+    mainImg: string;
+    meetingId: number;
+  }) => {
     setSelectedTime(
       format(new Date(marker.time), 'PPP EEEE', {
         locale: ko,

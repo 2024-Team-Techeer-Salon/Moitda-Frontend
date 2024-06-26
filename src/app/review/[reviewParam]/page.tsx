@@ -17,7 +17,7 @@ import Image from 'next/image';
 import category from '@/util/category.json';
 import { defaultProfileImage } from '@/util/utilFunction.ts';
 
-const page = (props: any) => {
+const page = (props: { params: { reviewParam: string } }) => {
   const meetingId = Number(decodeURIComponent(props.params.reviewParam));
   const router = useRouter();
 
@@ -181,25 +181,33 @@ const page = (props: any) => {
       </div>
 
       <div className="mt-6 flex flex-col items-center justify-center">
-        {data?.participant_list.map((participant: any, index: number) => (
-          <div
-            className="mb-5 flex w-full flex-row items-center justify-center"
-            key={index}
-          >
-            {/* 프로필 사진 */}
-            <figure className="relative h-20 w-20 rounded-full border-2 border-zinc-800">
-              <Image
-                src={participant.profileImage || defaultProfileImage()}
-                alt="profile1"
-                fill
-                sizes="100vm"
-              />
-            </figure>
-            {/* 닉네임 */}
-            <p className="ml-8 mr-16 text-gray-600">{participant.username}</p>
-            <HeartRating index={index} />
-          </div>
-        ))}
+        {data?.participant_list.map(
+          (
+            participant: {
+              profileImage: string;
+              username: string;
+            },
+            index: number,
+          ) => (
+            <div
+              className="mb-5 flex w-full flex-row items-center justify-center"
+              key={index}
+            >
+              {/* 프로필 사진 */}
+              <figure className="relative h-20 w-20 rounded-full border-2 border-zinc-800">
+                <Image
+                  src={participant.profileImage || defaultProfileImage()}
+                  alt="profile1"
+                  fill
+                  sizes="100vm"
+                />
+              </figure>
+              {/* 닉네임 */}
+              <p className="ml-8 mr-16 text-gray-600">{participant.username}</p>
+              <HeartRating index={index} />
+            </div>
+          ),
+        )}
       </div>
 
       <div className="mt-10 flex flex-row items-center justify-center">
