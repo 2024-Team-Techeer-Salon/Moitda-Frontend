@@ -5,7 +5,7 @@ const searchMeetings = async (
   longitude: number,
   page: number,
   size: number,
-  sort: any,
+  sort: string,
 ) => {
   try {
     const response = await api.get(

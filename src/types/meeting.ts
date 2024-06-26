@@ -46,9 +46,3 @@ export interface meetingListProps {
   category_id: number;
   image_url: string;
 }
-
-export interface pageDataProps {
-  data: {
-    meeting_list: meetingListProps[];
-  };
-}
