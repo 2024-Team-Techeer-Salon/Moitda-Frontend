@@ -5,7 +5,7 @@
 /* eslint-disable no-template-curly-in-string */
 /* eslint-disable no-console */
 
-import { api } from './axios.config';
+import { api } from './axios.config.ts';
 
 export const chatlists = async (
   room_id: number,
@@ -19,5 +19,23 @@ export const chatlists = async (
     return response.data;
   } catch (error) {
     console.error('sample error : ', error);
+  }
+};
+
+export const deleteChat = async (chatId: number) => {
+  try {
+    const response = await api.delete(`chattings/rooms/${chatId}`);
+    return response.data;
+  } catch (error) {
+    throw new Error('chat delete api request error : ', error || '');
+  }
+};
+
+export const getChats = async (meetingId: number) => {
+  try {
+    const response = await api.get(`/chats/${meetingId}`);
+    return response.data.data;
+  } catch (error) {
+    throw new Error('chat get api request error : ', error || '');
   }
 };

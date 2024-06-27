@@ -8,7 +8,7 @@
 
 'use client';
 
-import { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import Image from 'next/image';
 import { getUserInfo, putUserInfo } from '@/api/user.ts';
 import { useQuery } from '@tanstack/react-query';
@@ -58,7 +58,7 @@ function Profile({ id }: accountIdProps) {
   }, [data]);
 
   const BannerImage = () => {
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0] || null;
       if (file) {
         setPreviewBanner(file);
@@ -101,7 +101,7 @@ function Profile({ id }: accountIdProps) {
   };
 
   const ProfileImage = () => {
-    const handleFileChange = (event: any) => {
+    const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
       const file = event.target.files?.[0] || null;
       if (file) {
         setPreviewProfile(file);
@@ -110,7 +110,7 @@ function Profile({ id }: accountIdProps) {
 
     return (
       <div className="z-10 flex w-[67.5rem] flex-col">
-        <div className="-mt-2 flex h-full w-full flex-row items-end justify-start">
+        <div className="-mt-2 mb-3 flex h-full w-full flex-row items-end justify-start">
           <div className="flex w-2/3 flex-row items-center justify-start">
             <figure className="relative -mt-12 flex min-h-28 min-w-28 rounded-full bg-white">
               {isEdit && (
@@ -247,10 +247,11 @@ function Profile({ id }: accountIdProps) {
                   setStatusMessage(statusMessageRef.current);
                 }
               }}
+              placeholder="소개 메세지를 입력해주세요."
             />
           ) : (
             <p className="h-10 w-full items-center border-2 border-white p-2">
-              {statusMessage}
+              {statusMessage || `${name}님의 프로필입니다.`}
             </p>
           )}
         </div>
@@ -259,7 +260,7 @@ function Profile({ id }: accountIdProps) {
   };
 
   return (
-    <div className="flex h-full w-full flex-col items-center justify-center">
+    <div className="flex w-full flex-col items-center justify-start">
       <WarningAlert showAlert={isAlert} errorMessage={alertMessage} />
       <BannerImage />
       <ProfileImage />

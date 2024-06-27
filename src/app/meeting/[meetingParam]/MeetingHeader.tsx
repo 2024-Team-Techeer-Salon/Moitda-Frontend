@@ -11,6 +11,7 @@ import {
   patchEndMeeting,
   deleteMeeting,
 } from '@/api/meetings.ts';
+import { deleteChat } from '@/api/chat.ts';
 import Swal from 'sweetalert2';
 import { useEffect, useRef } from 'react';
 
@@ -36,10 +37,10 @@ function MeetingHeader({
   const detailsRef = useRef(null);
 
   useEffect(() => {
-    function handleClickOutside(event: any) {
+    function handleClickOutside(event: MouseEvent) {
       if (
         detailsRef.current &&
-        !(detailsRef.current as HTMLElement).contains(event.target)
+        !(detailsRef.current as HTMLElement).contains(event.target as Node)
       ) {
         (detailsRef.current as HTMLElement).removeAttribute('open');
       }
@@ -50,6 +51,13 @@ function MeetingHeader({
       document.removeEventListener('mousedown', handleClickOutside);
     };
   }, []);
+
+  const closeChatRoom = async () => {
+    await deleteChat(meetingId).then((data) => {
+      console.log('채팅방 삭제 성공 : ', data);
+    });
+  };
+
   return (
     <div className="flex h-full w-full flex-col items-center">
       {/* 모임 정보 상단 */}
@@ -101,7 +109,7 @@ function MeetingHeader({
               ref={detailsRef}
               className="dropdown dropdown-end dropdown-bottom"
             >
-              <summary className="btn btn-circle mt-1">
+              <summary className="btn btn-circle mt-1 border-none bg-zinc-100 hover:bg-zinc-200">
                 {' '}
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -116,7 +124,7 @@ function MeetingHeader({
                   <circle cx="12" cy="18" r="1.5" fill="currentColor" />
                 </svg>
               </summary>
-              <ul className="menu dropdown-content z-[10] w-52 rounded-box bg-base-100 p-2 shadow">
+              <ul className="menu dropdown-content z-[10] w-52 rounded-box bg-white p-2 shadow">
                 {!endTime && (
                   <li>
                     <a
@@ -143,6 +151,7 @@ function MeetingHeader({
                         }).then((result) => {
                           if (result.isConfirmed) {
                             patchEndMeeting(meetingId);
+                            closeChatRoom();
                             window.location.reload();
                             Swal.fire({
                               title: '모임 종료!',
@@ -171,6 +180,7 @@ function MeetingHeader({
                       }).then((result) => {
                         if (result.isConfirmed) {
                           deleteMeeting(meetingId);
+                          closeChatRoom();
                           router.push('/home');
                           Swal.fire({
                             title: '삭제 완료!',

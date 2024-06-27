@@ -1,5 +1,4 @@
 /* eslint-disable no-underscore-dangle */
-/* eslint-disable consistent-return */
 import axios from 'axios';
 import { getCookie, setCookie } from '@/app/cookies.tsx';
 
@@ -30,8 +29,7 @@ const reIssuedToken = async () => {
     }
     return response.data;
   } catch (error) {
-    console.error('Token reissue error:', error);
-    throw error; // 오류를 상위로 전파하여 호출자가 이를 처리할 수 있도록 합니다.
+    throw new Error('토큰 재발급 로직 에러 : ', error || '');
   }
 };
 
@@ -58,7 +56,6 @@ api.interceptors.response.use(
 
         return api(originalRequest); // 원래 요청 재시도
       } catch (refreshError) {
-        console.error('Failed to refresh token:', refreshError);
         return Promise.reject(refreshError);
       }
     }

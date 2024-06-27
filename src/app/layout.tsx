@@ -2,6 +2,7 @@ import React, { Suspense } from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import './styles/globals.css';
+import Script from 'next/script';
 import StoreProvider from './StoreProvider.tsx';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
@@ -31,7 +32,12 @@ export default function RootLayout({
           <Suspense fallback={<div>로딩중인데요?ㅋㅋ</div>}>
             <Header />
             <StoreProvider>
-              <div className="flex min-h-screen w-full">{children}</div>
+              <Script
+                type="text/javascript"
+                src={process.env.NEXT_PUBLIC_KAKAO_SDK_URL}
+                strategy="beforeInteractive"
+              ></Script>
+              <div className="flex min-h-screen min-w-full">{children}</div>
             </StoreProvider>
             <Footer />
           </Suspense>
