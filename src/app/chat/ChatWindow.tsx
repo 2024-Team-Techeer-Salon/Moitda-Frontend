@@ -1,3 +1,7 @@
+/* eslint-disable consistent-return */
+/* eslint-disable arrow-body-style */
+/* eslint-disable operator-linebreak */
+/* eslint-disable object-curly-newline */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable import/order */
 /* eslint-disable prefer-template */
@@ -10,13 +14,15 @@
 
 'use client';
 
-import React, { use, useEffect, useState } from 'react';
+import React, { use, useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
 import { useSelector } from 'react-redux';
 import { chatProps } from '@/types/chat.ts';
 import Cookies from 'js-cookie';
 import { login } from '@/api/user';
+import { useInfiniteQuery } from '@tanstack/react-query';
+import { chatlists } from '@/api/chat.ts';
 
 export default function ChatRoom() {
   const [chatroomId, setChatroomId] = useState<number>(1);
@@ -116,7 +122,7 @@ export default function ChatRoom() {
     fetchUserId().then((data) => {
       if (data.code === 'U003') {
         setUserId(data.data.user_id);
-        console.log(userId);
+        // console.log(userId);
       } else {
         console.error('id값 읽기 실패');
       }
@@ -139,6 +145,50 @@ export default function ChatRoom() {
   function timeStr(time: string) {
     return time.slice(11, 16);
   }
+
+  // 채팅 불러오기
+
+  const roomId = 1; // 필요한 room_id 값 설정
+  const pageSize = 20; // 페이지 크기 설정
+
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
+    useInfiniteQuery({
+      queryKey: ['Chat List', roomId],
+      queryFn: async ({ pageParam = 0 }) => {
+        return chatlists(roomId, pageParam, pageSize);
+      },
+      getNextPageParam: (lastPage, allPages) => {
+        if (!lastPage || null) {
+          return undefined;
+        }
+        return allPages.length;
+      },
+      initialPageParam: 0,
+    });
+
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    if (!hasNextPage) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0].isIntersecting) {
+          fetchNextPage();
+        }
+      },
+      {
+        root: null, // 기본적으로 브라우저 뷰포트를 root로 사용
+        rootMargin: '0px',
+        threshold: 0.2, // 타겟 요소가 10% 보이면 콜백 실행
+      },
+    );
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    return () => {
+      if (loadMoreRef.current) observer.disconnect();
+    };
+  }, [hasNextPage, fetchNextPage, loadMoreRef.current]);
+
   // 내 채팅
   function MyChat({ time, chat, unreaderCount }: chatProps) {
     return (
@@ -237,11 +287,16 @@ export default function ChatRoom() {
         <span className="font-bold">{headerName}</span>
         <span className="text-md ml-2 text-zinc-200">2</span>
       </div>
+      <div ref={loadMoreRef} />
       <div
         className="hide-scrollbar flex h-full w-full flex-col-reverse justify-start overflow-y-auto pt-2"
         onSubmit={handleSubmit}
       >
-        <div>{msgBox}</div>
+        <div>
+          {msgBox}
+          {isFetchingNextPage && <div>Loading...</div>}
+          <div ref={loadMoreRef} />
+        </div>
       </div>
 
       <div className="m-2 flex h-52 w-[99%] flex-col items-end justify-start rounded-2xl border border-zinc-200">
