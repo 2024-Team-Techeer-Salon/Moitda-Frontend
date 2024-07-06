@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Montserrat } from 'next/font/google';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -25,9 +25,15 @@ function Header() {
     queryFn: login,
   });
 
-  if (!getCookie('accessToken') && !getCookie('refreshToken')) {
-    router.push('/login');
-  }
+  const checkAuthentication = async () => {
+    if (!getCookie('accessToken') && !getCookie('refreshToken')) {
+      await router.push('/login');
+    }
+  };
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
   if (ignorePath().includes(path)) {
     return null;
