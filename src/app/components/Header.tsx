@@ -8,7 +8,7 @@ import category from '@/util/category.json';
 import { useQuery } from '@tanstack/react-query';
 import { login, logout } from '@/api/user.ts';
 import ignorePath from '../styles/ignorePath.ts';
-import { removeCookie } from '../cookies.tsx';
+import { getCookie, removeCookie } from '../cookies.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -24,6 +24,10 @@ function Header() {
     queryKey: ['login'],
     queryFn: login,
   });
+
+  if (!getCookie('accessToken') && !getCookie('refreshToken')) {
+    router.push('/login');
+  }
 
   if (ignorePath().includes(path)) {
     return null;
