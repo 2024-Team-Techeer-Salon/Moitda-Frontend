@@ -42,3 +42,8 @@ export function defaultBannerImage() {
   const image = 'https://i.ibb.co/m4XzXbn/banner.jpg';
   return image;
 }
+
+export function currentMarkerImage() {
+  const image = 'https://i.ibb.co/W0QMzQC/human-body.png';
+  return image;
+}

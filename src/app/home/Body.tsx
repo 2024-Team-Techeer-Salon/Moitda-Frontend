@@ -18,6 +18,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import searchMeetings from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
 import { useRouter } from 'next/navigation';
+import { currentMarkerImage } from '@/util/utilFunction.ts';
 import Post from '../components/Post.tsx';
 
 function Distance() {
@@ -30,9 +31,6 @@ function Distance() {
     function successCallback(position: {
       coords: { latitude: number; longitude: number };
     }) {
-      // 완료 되면 콘솔 지우기!!
-      console.log('Latitude: ', position.coords.latitude);
-      console.log('Longitude: ', position.coords.longitude);
       setLatitude(position.coords.latitude);
       setLongitude(position.coords.longitude);
       setLocationFetched(true); // 위치 정보를 성공적으로 가져온 후 설정
@@ -40,7 +38,7 @@ function Distance() {
 
     function errorCallback(error: { code: number; message: string }) {
       // 함수 매개변수의 타입 지정
-      console.error('Error Code = ', error.code, ' - ', error.message);
+      throw new Error(`Error(${error.code}): ${error.message}`);
     }
     navigator.geolocation.getCurrentPosition(successCallback, errorCallback);
   }, []);
@@ -167,7 +165,6 @@ function Distance() {
             if (selectedMeetingId) {
               router.push(`/meeting/${selectedMeetingId}`);
             }
-            console.log(selectedMeetingId);
           }}
         >
           <figure className="relative flex min-h-60 min-w-60">
@@ -212,7 +209,14 @@ function Distance() {
               level={3}
             >
               {/* 내위치 */}
-              {/* <MapMarker position={locPosition} /> */}
+              <MapMarker
+                position={locPosition}
+                image={{
+                  src: currentMarkerImage(),
+                  size: { width: 64, height: 70 },
+                  options: { offset: { x: 27, y: 69 } },
+                }}
+              />
               {markers.map((marker, index) => (
                 <MapMarker
                   key={index}
