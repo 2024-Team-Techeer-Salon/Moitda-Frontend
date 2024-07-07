@@ -21,7 +21,7 @@ const Classification = ({ id }: accountIdProps) => {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   const { data, fetchNextPage, hasNextPage, refetch } = useInfiniteQuery({
-    queryKey: ['myMeetingList'],
+    queryKey: ['My Meeting List', activeTab],
     queryFn: ({ pageParam = 0 }: { pageParam: number }) =>
       getMyMeetingList(activeTab, id, pageParam, 24),
     initialPageParam: 0,
