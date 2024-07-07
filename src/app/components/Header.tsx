@@ -1,3 +1,6 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable operator-linebreak */
+
 'use client';
 
 import { useEffect, useState } from 'react';
@@ -26,7 +29,12 @@ function Header() {
   });
 
   const checkAuthentication = async () => {
-    if (!getCookie('accessToken') && !getCookie('refreshToken')) {
+    if (
+      !getCookie('accessToken') &&
+      !getCookie('refreshToken') &&
+      path !== '/auth/login' &&
+      path !== '/auth/signup'
+    ) {
       await router.push('/login');
     }
   };
