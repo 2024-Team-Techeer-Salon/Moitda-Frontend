@@ -87,9 +87,9 @@ export async function login() {
     const response = await api.get('/users/me');
     return response.data;
   } catch (error) {
-    console.error('Get User ID Error : ', error);
     removeCookie('accessToken');
     removeCookie('refreshToken');
+    throw new Error('users error : ', error || '');
   }
 }
 

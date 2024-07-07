@@ -187,7 +187,7 @@ function Header() {
             }
           }}
         >
-          {data ? '로그아웃' : '로그인'}
+          로그아웃
         </button>
       </div>
 
@@ -302,7 +302,7 @@ function Header() {
                 }
               }}
             >
-              {data ? '로그아웃' : '로그인'}
+              로그아웃
             </button>
           )}
         </div>
