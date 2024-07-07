@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 /* eslint-disable consistent-return */
 /* eslint-disable no-underscore-dangle */
 import axios from 'axios';
@@ -37,11 +38,18 @@ const reIssuedToken = async () => {
 const api = axios.create({
   withCredentials: true,
   baseURL: BASE_URL, // 기본 URL 설정
-  headers: {
-    'Content-Type': 'application/json',
-    Authorization: `Bearer ${accessToken}`,
-  },
 });
+
+// 요청 인터셉터를 추가하여 모든 요청에 최신 토큰을 포함시킵니다.
+api.interceptors.request.use(
+  (config) => {
+    const token = getCookie('accessToken'); // 요청 직전에 액세스 토큰을 쿠키에서 가져옵니다.
+    config.headers.Authorization = `Bearer ${token}`;
+    config.headers['Content-Type'] = 'application/json';
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
 
 api.interceptors.response.use(
   (response) => response, // 성공 응답은 그대로 반환
