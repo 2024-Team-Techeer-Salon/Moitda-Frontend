@@ -37,3 +37,12 @@ export interface participantsProps {
   isOwner: boolean;
   isFull: boolean;
 }
+
+export interface meetingListProps {
+  title: string;
+  road_address_name: string;
+  meeting_id: number;
+  end_time: string;
+  category_id: number;
+  image_url: string;
+}

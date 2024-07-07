@@ -17,7 +17,8 @@ import { useEffect, useState, useRef } from 'react';
 import category from '@/util/category.json';
 import Image from 'next/image';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import { getSearchData } from '@/api/search.ts';
+import getSearchData from '@/api/search.ts';
+import { meetingListProps } from '@/types/meeting.ts';
 import Post from '../components/Post.tsx';
 
 function page() {
@@ -74,6 +75,7 @@ function page() {
       ),
     initialPageParam: 0,
     getNextPageParam: (lastPage: {
+      meeting_list: meetingListProps[];
       current_page: number;
       total_page: number;
     }) => {
@@ -83,6 +85,12 @@ function page() {
       return undefined;
     },
   });
+
+  const noResult = () => (
+    <div className="flex w-full flex-col items-center justify-center">
+      <span className="text-2xl">검색 결과가 없습니다. 😢</span>
+    </div>
+  );
 
   useEffect(() => {
     if (!hasNextPage) return;
@@ -107,46 +115,59 @@ function page() {
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
-      <div className="flex h-full w-96 flex-col items-center justify-center md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
-        {searchType === 'category' ? (
-          <div className="flex w-full flex-row items-center justify-start text-2xl">
-            <figure className="relative m-6 flex h-32 w-32">
-              <Image
-                src={category.category_image[Number(searchKeyword)]}
-                alt="category icon"
-                className="rounded-full border border-gray-300"
-                layout="fill"
-                objectFit="cover"
-              />
-            </figure>
-            <span className="text-4xl font-bold">
-              #{category.category_name[Number(searchKeyword)]}
-            </span>
-          </div>
-        ) : (
-          <div className="flex w-full flex-row items-center justify-center text-2xl">
-            <span className="text-4xl font-bold">
-              &quot;{searchKeyword}&quot;&nbsp;
-            </span>
-            검색 결과
-          </div>
-        )}
-        <div className="flex flex-row flex-wrap items-center justify-start">
-          {data?.pages.map((page: any, pageIndex) =>
-            page?.meeting_list.map((meeting: any, index: any) => (
-              <Post
-                key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
-                titleImage={
-                  meeting.image_url ||
-                  category.category_image[Number(searchKeyword)]
-                }
-                title={meeting.title}
-                location={meeting.road_address_name}
-                meetingId={meeting.meeting_id}
-                endTime={meeting.end_time}
-              />
-            )),
+      <div className="mb-12 flex h-48 w-screen items-center justify-center bg-zinc-100">
+        <div className="flex h-full w-96 flex-col items-center justify-center md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
+          {searchType === 'category' ? (
+            <div className="flex w-full flex-row items-center justify-start text-2xl">
+              <figure className="relative m-6 flex h-32 w-32">
+                <Image
+                  src={category.category_image[Number(searchKeyword)]}
+                  alt="category icon"
+                  className="rounded-full border border-gray-300"
+                  layout="fill"
+                  objectFit="cover"
+                />
+              </figure>
+              <span className="text-4xl font-bold">
+                #{category.category_name[Number(searchKeyword)]}
+              </span>
+            </div>
+          ) : (
+            <div className="flex w-full flex-row items-center justify-start text-2xl">
+              <span className="text-4xl font-bold">
+                &quot;{searchKeyword}&quot;&nbsp;
+              </span>
+              검색 결과
+            </div>
           )}
+        </div>
+      </div>
+      <div className="flex h-full w-96 flex-col flex-nowrap items-start justify-start md:w-[38rem] lg:w-[58rem] xl:w-[67.5rem]">
+        <div className="flex flex-row flex-wrap items-center justify-start">
+          {data?.pages.map((page, pageIndex) =>
+            page?.meeting_list.map(
+              (meeting: meetingListProps, index: number) => (
+                <>
+                  <Post
+                    key={`${pageIndex}-${index}`} // 각 페이지와 인덱스를 조합하여 고유 키 생성
+                    titleImage={
+                      meeting.image_url ||
+                      category.category_image[
+                        searchType === 'category'
+                          ? Number(searchKeyword)
+                          : meeting.category_id
+                      ]
+                    }
+                    title={meeting.title}
+                    location={meeting.road_address_name}
+                    meetingId={meeting.meeting_id}
+                    endTime={meeting.end_time}
+                  />
+                </>
+              ),
+            ),
+          )}
+          {data?.pages.length === 1 && noResult()}
           <div ref={loadMoreRef} />
         </div>
       </div>

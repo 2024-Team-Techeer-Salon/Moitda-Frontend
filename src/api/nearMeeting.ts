@@ -1,15 +1,11 @@
-/* eslint-disable import/extensions */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable no-console */
-/* eslint-disable consistent-return */
-import { api } from './axios.config';
+import { api } from './axios.config.ts';
 
-export const searchMeetings = async (
+const searchMeetings = async (
   latitude: number,
   longitude: number,
   page: number,
   size: number,
-  sort: any,
+  sort: string,
 ) => {
   try {
     const response = await api.get(
@@ -17,6 +13,8 @@ export const searchMeetings = async (
     );
     return response.data;
   } catch (error) {
-    console.error('searchMeetings error:', error);
+    throw new Error('주변 모임 검색 에러 : ', error || '');
   }
 };
+
+export default searchMeetings;

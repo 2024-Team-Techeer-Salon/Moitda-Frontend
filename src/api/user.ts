@@ -1,7 +1,3 @@
-/* eslint-disable no-undef */
-/* eslint-disable import/prefer-default-export */
-/* eslint-disable consistent-return */
-/* eslint-disable no-console */
 import { api, formApi } from './axios.config.ts';
 
 // 회원가입시 정보 입력
@@ -19,8 +15,8 @@ export async function signupUserInfo(
       location,
     });
     return response.data;
-  } catch (error: any) {
-    console.error('users error : ', error.response);
+  } catch (error) {
+    throw new Error('users error : ', error || '');
   }
 }
 
@@ -29,8 +25,8 @@ export async function getUserInfo(userId: number) {
   try {
     const response = await api.get(`/users/${userId}`);
     return response.data;
-  } catch (error: any) {
-    console.error('users error : ', error.response);
+  } catch (error) {
+    throw new Error('users error : ', error || '');
   }
 }
 
@@ -74,10 +70,9 @@ export async function putUserInfo(
 
   try {
     const response = await formApi.put('/users', formData);
-    console.log(response.data);
     return response.data;
-  } catch (error: any) {
-    console.error('users error : ', error.response);
+  } catch (error) {
+    throw new Error('users error : ', error || '');
   }
 }
 
@@ -87,7 +82,7 @@ export async function login() {
     const response = await api.get('/users/me');
     return response.data;
   } catch (error) {
-    console.error('Get User ID Error : ', error);
+    throw new Error('users error : ', error || '');
   }
 }
 
@@ -97,7 +92,7 @@ export async function logout() {
     const response = await api.post('/logout');
     return response.data;
   } catch (error) {
-    console.error('Logout Error : ', error);
+    throw new Error('users error : ', error || '');
   }
 }
 
@@ -121,7 +116,8 @@ export async function getMyMeetingList(
       );
       return response.data;
     }
+    throw new Error('users error : tab error');
   } catch (error) {
-    console.error('Get Participant List Error : ', error);
+    throw new Error('users error : ', error || '');
   }
 }

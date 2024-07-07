@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable operator-linebreak */
+
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Montserrat } from 'next/font/google';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -20,17 +23,25 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ['login'],
     queryFn: login,
   });
 
-  // 토큰이 있는데 401 에러가 발생하면 새로고침
-  if (isError && getCookie('accessToken')) {
-    setTimeout(() => {
-      window.location.reload();
-    }, 100);
-  }
+  const checkAuthentication = async () => {
+    if (
+      !getCookie('accessToken') &&
+      !getCookie('refreshToken') &&
+      path !== '/auth/login' &&
+      path !== '/auth/signup'
+    ) {
+      await router.push('/login');
+    }
+  };
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
 
   if (ignorePath().includes(path)) {
     return null;
@@ -145,7 +156,7 @@ function Header() {
               {category.category_name.map((item: string, index: number) => (
                 <Link
                   key={index}
-                  href={`search?type=category&keyword=${index}`}
+                  href={`/search?type=category&keyword=${index}`}
                   className="text-md p-2"
                   onClick={() => setOpenMenu(false)}
                 >
@@ -165,7 +176,7 @@ function Header() {
 
         {/* 메뉴 푸터 */}
         <button
-          className="m-8 flex h-12 w-full flex-col"
+          className="mb-8 flex h-12 w-full flex-col p-8"
           onClick={() => {
             if (data) {
               logout();
