@@ -13,7 +13,7 @@ const searchMeetings = async (
     );
     return response.data;
   } catch (error) {
-    throw new Error('meeting search api request error : ', error || '');
+    throw new Error('주변 모임 검색 에러 : ', error || '');
   }
 };
 

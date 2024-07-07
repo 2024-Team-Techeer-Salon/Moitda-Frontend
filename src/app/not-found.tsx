@@ -8,7 +8,7 @@ const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 export default function Notfound() {
   return (
-    <div className="-mb-20 flex min-h-screen flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-blue-200">
+    <div className="-mb-20 flex min-h-screen w-full flex-col items-center justify-center bg-gradient-to-br from-gray-100 to-blue-200">
       <Head>
         <link
           href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap"
@@ -35,11 +35,6 @@ export default function Notfound() {
         </div>
       </div>
       <div className="mt-10 flex flex-row items-center justify-center">
-        <Link href="/">
-          <p className="ml-2 mr-2 flex h-12 w-40 items-center justify-center border-2 border-black transition duration-300 hover:bg-zinc-900 hover:text-white">
-            이전으로
-          </p>
-        </Link>
         <Link href="/">
           <p className="ml-2 mr-2 flex h-12 w-40 items-center justify-center border-2 border-black transition duration-300 hover:bg-zinc-900 hover:text-white">
             메인으로
