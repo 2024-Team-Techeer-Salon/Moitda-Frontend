@@ -31,7 +31,8 @@ const reIssuedToken = async () => {
     }
     return response.data;
   } catch (error) {
-    throw new Error('토큰 재발급 로직 에러 : ', error || '');
+    setCookie('accessToken', '');
+    setCookie('refreshToken', '');
   }
 };
 
@@ -80,8 +81,36 @@ export { api };
 export const formApi = axios.create({
   withCredentials: true,
   baseURL: BASE_URL,
-  headers: {
-    'Content-Type': 'multipart/form-data',
-    Authorization: `Bearer ${accessToken}`,
-  },
 });
+
+formApi.interceptors.request.use(
+  (config) => {
+    const token = getCookie('accessToken');
+    config.headers.Authorization = `Bearer ${token}`;
+    return config;
+  },
+  (error) => Promise.reject(error),
+);
+
+formApi.interceptors.response.use(
+  (response) => response,
+  async (error) => {
+    if (accessToken !== undefined) {
+      const originalRequest = error.config;
+      if (error.response.status === 401 && !originalRequest._retry) {
+        originalRequest._retry = true;
+        try {
+          const data = await reIssuedToken();
+          formApi.defaults.headers.common.Authorization = `Bearer ${data.data.access_token}`;
+          originalRequest.headers.Authorization = `Bearer ${data.data.access_token}`;
+
+          return formApi(originalRequest);
+        } catch (refreshError) {
+          return Promise.reject(refreshError);
+        }
+      }
+
+      return Promise.reject(error);
+    }
+  },
+);
