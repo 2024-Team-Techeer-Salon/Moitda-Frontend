@@ -54,7 +54,6 @@ function Header() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (searchQuery) {
-      // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
       router.push(`/search?type=keyword&keyword=${searchQuery}`);
     }
     setIsModalOpen(false); // 검색 시 모달 닫기
