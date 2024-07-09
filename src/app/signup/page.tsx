@@ -66,6 +66,9 @@ function page() {
             showConfirmButton: false,
             timer: 1500,
           });
+          if (response.code === 'U002') {
+            console.log('유효하지 않은 토큰입니다.');
+          }
           router.push('/home');
         }
       },

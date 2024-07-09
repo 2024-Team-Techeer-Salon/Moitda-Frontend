@@ -14,7 +14,7 @@ export const chatlists = async (
 ) => {
   try {
     const response = await api.get(
-      `/chattings/rooms/chatlists/room_id=${room_id}?&page=${page}&size=${size}`,
+      `/chattings/rooms/chatlists/${room_id}?&page=${page}&size=${size}`,
     );
     return response.data;
   } catch (error) {

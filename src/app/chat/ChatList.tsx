@@ -24,12 +24,12 @@ function lastTimeStr(lastTime: string) {
   return `${differenceInDays}일 전`;
 }
 
-function unreadCountStr(unreadCount: number) {
-  if (unreadCount < 100) {
-    return unreadCount;
-  }
-  return '99+';
-}
+// function unreadCountStr(unreadCount: number) {
+//   if (unreadCount < 100) {
+//     return unreadCount;
+//   }
+//   return '99+';
+// }
 
 function ChatElement({
   titleImage,
@@ -37,7 +37,6 @@ function ChatElement({
   peopleCount,
   lastTime,
   lastChat,
-  unreadCount,
 }: chatListProps) {
   return (
     <div className="flex w-full cursor-pointer flex-row items-center justify-center py-2 hover:bg-zinc-50">
@@ -68,9 +67,7 @@ function ChatElement({
         {/* 정보 아랫 줄 : 마지막 채팅, 안 읽은 채팅 수 */}
         <div className="flex w-full items-center justify-start">
           <span className="w-5/6 truncate pr-8 text-zinc-400">{lastChat}</span>
-          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[10px] text-white">
-            {unreadCountStr(unreadCount)}
-          </span>
+          <span className="flex h-6 w-6 items-center justify-center rounded-full bg-black text-[10px] text-white"></span>
         </div>
       </div>
     </div>
@@ -86,7 +83,6 @@ function ChatList() {
         peopleCount={3}
         lastTime="2024-05-04 18:00:58"
         lastChat="그럼 그 때 봬요!"
-        unreadCount={13}
       />
       <ChatElement
         titleImage="https://i.ibb.co/556bLCN/image.png"
@@ -94,7 +90,6 @@ function ChatList() {
         peopleCount={2}
         lastTime="2024-05-03 18:00:58"
         lastChat="후추가 좀 더 있었으면 좋겠어요. 향이 조금 약한게 아쉽네요 ㅠㅠ"
-        unreadCount={3}
       />
       <ChatElement
         titleImage="https://i.ibb.co/KDg6p1L/image.png"
@@ -102,7 +97,6 @@ function ChatList() {
         peopleCount={16}
         lastTime="2024-05-02 18:00:58"
         lastChat="자리는 어떡하죠?"
-        unreadCount={990}
       />
     </div>
   );

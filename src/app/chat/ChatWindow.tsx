@@ -1,27 +1,26 @@
-/* eslint-disable consistent-return */
-/* eslint-disable arrow-body-style */
-/* eslint-disable operator-linebreak */
-/* eslint-disable object-curly-newline */
-/* eslint-disable react-hooks/exhaustive-deps */
-/* eslint-disable import/order */
-/* eslint-disable prefer-template */
-/* eslint-disable import/no-unresolved */
-/* eslint-disable no-unused-vars */
-/* eslint-disable no-shadow */
 /* eslint-disable func-names */
-/* eslint-disable object-shorthand */
+/* eslint-disable no-unused-vars */
+/* eslint-disable implicit-arrow-linebreak */
+/* eslint-disable operator-linebreak */
+/* eslint-disable consistent-return */
+/* eslint-disable curly */
+/* eslint-disable no-unused-expressions */
+/* eslint-disable nonblock-statement-body-position */
+/* eslint-disable object-curly-newline */
+/* eslint-disable no-shadow */
+/* eslint-disable import/no-unresolved */
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-console */
 
 'use client';
 
-import React, { use, useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Image from 'next/image';
 import * as StompJs from '@stomp/stompjs';
-import { useSelector } from 'react-redux';
-import { chatProps } from '@/types/chat.ts';
-import Cookies from 'js-cookie';
-import { login } from '@/api/user';
 import { useInfiniteQuery } from '@tanstack/react-query';
+import { getCookie } from '../cookies.tsx';
+import { chatProps } from '@/types/chat.ts';
+import { login } from '@/api/user.ts';
 import { chatlists } from '@/api/chat.ts';
 
 export default function ChatRoom() {
@@ -31,12 +30,7 @@ export default function ChatRoom() {
   const [chatList, setChatList] = useState<any>([]); // 채팅 기록
   const [headerName, setHeaderName] = useState('새로 나온 와퍼 먹으러 갈 사람'); // 채팅방 이름
 
-  // const userId = useSelector<any>((state) => state.user?.userCode ?? '');
-  const [readCount, setReadCount] = useState(1);
   const [userId, setUserId] = useState(null);
-  // const userId = useSelector((state) => {
-  //   return state.user.userCode;
-  // });
   const [senders, setSenders] = useState('발신자');
 
   const callback = function (message: { body?: string }) {
@@ -46,9 +40,9 @@ export default function ChatRoom() {
     }
   };
 
-  const connect = () => {
+  const connect = async () => {
     try {
-      const token = Cookies.get('accessToken');
+      const token = await getCookie('accessToken');
       console.log('쿠키에 저장된 액세스 토큰:', token);
 
       const clientdata = new StompJs.Client({
@@ -56,13 +50,14 @@ export default function ChatRoom() {
         connectHeaders: {
           Authorization: `Bearer ${token}`,
         },
-        debug: function (str) {
+        debug(str) {
           console.log(str);
         },
         reconnectDelay: 5000,
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
       });
+
       // 구독
       clientdata.onConnect = function () {
         clientdata.subscribe(`/sub/chat/room/${chatroomId}`, callback);
@@ -83,13 +78,12 @@ export default function ChatRoom() {
 
   // 클라이언트 연결 해제
   const disConnect = () => {
-    if (client === null) {
-      return;
+    if (client) {
+      client.deactivate();
     }
-    client.deactivate();
   };
 
-  const sendChat = () => {
+  const sendChat = async () => {
     if (chat === '') {
       return;
     }
@@ -99,37 +93,52 @@ export default function ChatRoom() {
       return;
     }
 
-    client.publish({
-      destination: `/sub/chat/room/${chatroomId}`,
-      body: JSON.stringify({
-        userid: userId,
-        sender: senders,
-        profile_image:
-          'https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg',
-        content: chat,
-        send_date: new Date().toISOString(),
-      }),
-    });
+    //TODO 보내기
+    try {
+      const token = await getCookie('accessToken');
+      // console.log('쿠키에 저장된 액세스 토큰:', token);
 
-    setChat('');
+      client.publish({
+        destination: `/pub/chat/room/${chatroomId}`,
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          //   userid: userId,
+          // sender: senders,
+          //   profile_image:
+          //     'https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg',
+          message: chat,
+          type: 1,
+          // send_date: new Date().toISOString(),
+        }),
+      });
+
+      setChat('');
+      console.log('쿠키에 저장된 액세스 토큰:', token);
+    } catch (error) {
+      console.error('Failed to send chat message:', error);
+    }
   };
 
+  //TODO 쿠키값
   useEffect(() => {
     const fetchUserId = async () => {
-      const userId = await login();
-      return userId;
+      const getUserId = await login();
+      return getUserId;
     };
     fetchUserId().then((data) => {
       if (data.code === 'U003') {
         setUserId(data.data.user_id);
-        // console.log(userId);
+        // console.error('id값 읽기 성공');
       } else {
         console.error('id값 읽기 실패');
       }
     });
-  }, [connect]);
+  }, []);
 
   useEffect(() => {
+    // setClient('');
     connect();
 
     return () => disConnect();
@@ -142,26 +151,28 @@ export default function ChatRoom() {
   const handleSubmit = (event: any) => {
     event.preventDefault();
   };
-  function timeStr(time: string) {
+  function timeStr(time: string | any[]) {
+    if (!time) {
+      return '00:00'; // 기본값을 반환하거나 다른 적절한 값을 반환
+    }
     return time.slice(11, 16);
   }
 
   // 채팅 불러오기
 
   const roomId = 1; // 필요한 room_id 값 설정
-  const pageSize = 20; // 페이지 크기 설정
+  const pageSize = 32; // 페이지 크기 설정
 
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useInfiniteQuery({
       queryKey: ['Chat List', roomId],
-      queryFn: async ({ pageParam = 0 }) => {
-        return chatlists(roomId, pageParam, pageSize);
-      },
+      queryFn: async ({ pageParam = 0 }) =>
+        chatlists(roomId, pageParam, pageSize),
       getNextPageParam: (lastPage, allPages) => {
-        if (!lastPage || null) {
-          return undefined;
+        if (!lastPage || lastPage.length === 0) {
+          return undefined; // 마지막 페이지일 경우 다음 페이지 파라미터 없음
         }
-        return allPages.length;
+        return allPages.length; // 다음 페이지 파라미터 설정
       },
       initialPageParam: 0,
     });
@@ -169,40 +180,69 @@ export default function ChatRoom() {
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
-    if (!hasNextPage) return;
+    if (!hasNextPage) return; // 다음 페이지가 없으면 아무것도 하지 않음
+
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0].isIntersecting) {
-          fetchNextPage();
+          fetchNextPage(); // 무한 스크롤 시 다음 페이지 로드
         }
       },
       {
-        root: null, // 기본적으로 브라우저 뷰포트를 root로 사용
+        root: null,
         rootMargin: '0px',
-        threshold: 0.2, // 타겟 요소가 10% 보이면 콜백 실행
+        threshold: 0.2,
       },
     );
-    if (loadMoreRef.current) observer.observe(loadMoreRef.current);
+
+    // if (loadMoreRef.current) observer.observe(loadMoreRef.current); // 로드 더 링크에 observer 등록
 
     return () => {
-      if (loadMoreRef.current) observer.disconnect();
+      if (loadMoreRef.current)
+        observer.disconnect(); // 컴포넌트가 언마운트될 때 observer 해제
+      else;
     };
   }, [hasNextPage, fetchNextPage, loadMoreRef.current]);
 
+  //TODO 스크롤 중복
+  // const scrollContainerRef = useRef<HTMLDivElement | null>(null);
+  // const [fetchingMore, setFetchingMore] = useState<boolean>(false);
+
+  // const handleScroll = () => {
+  //   const scrollContainer = scrollContainerRef.current;
+  //   if (scrollContainer) {
+  //     // 스크롤이 가장 위로 도달했을 때 새로운 페이지를 로드
+  //     if (scrollContainer.scrollTop === 0 && !fetchingMore) {
+  //       setFetchingMore(true);
+  //       console.log('good');
+  //       fetchNextPage().then(() => {
+  //         setFetchingMore(false);
+  //       });
+  //     }
+  //   }
+  // };
+
+  // useEffect(() => {
+  //   const scrollContainer = scrollContainerRef.current;
+  //   if (scrollContainer) {
+  //     scrollContainer.addEventListener('scroll', handleScroll);
+  //   }
+  //   return () => {
+  //     if (scrollContainer) {
+  //       scrollContainer.removeEventListener('scroll', handleScroll);
+  //     }
+  //   };
+  // }, []);
+
   // 내 채팅
-  function MyChat({ time, chat, unreaderCount }: chatProps) {
+  function MyChat({ time, chat }: chatProps) {
     return (
       <div className="flex w-full flex-row items-end justify-end">
         <div className="mt-2 flex h-full w-2/3 flex-col items-end justify-center p-2">
-          <div className="flex w-full flex-row items-center justify-end">
-            <div className="mr-2 flex flex-col items-end justify-end">
-              <span className="mr-2 text-sm text-zinc-400">
-                {unreaderCount}&nbsp;
-              </span>
-              <span className="mr-2 text-sm text-zinc-200">
-                {timeStr(time)}
-              </span>
-            </div>
+          <div className="mb-1 flex w-full flex-row items-end justify-end">
+            <span className="mr-2 flex h-full flex-col items-end justify-end text-sm text-zinc-200">
+              {timeStr(time)}
+            </span>
             <span className="flex items-center justify-end rounded-2xl bg-black px-4 py-3 text-white">
               {chat}
             </span>
@@ -213,18 +253,12 @@ export default function ChatRoom() {
   }
 
   // 상대 채팅
-  function OpponentChat({
-    profileImage,
-    name,
-    time,
-    chat,
-    unreaderCount,
-  }: chatProps) {
+  function OpponentChat({ profileImage, name, time, chat }: chatProps) {
     return (
       <div className="flex w-full flex-row items-start justify-start">
         <div className="m-4 flex h-12 w-12">
           <Image
-            src={profileImage}
+            src={profileImage || '/default-profile.png'}
             width={1024}
             height={1024}
             alt="profile"
@@ -236,18 +270,13 @@ export default function ChatRoom() {
           <span className="text-l flex w-full items-center justify-start font-bold">
             {name}
           </span>
-          <div className="flex w-full flex-row items-center justify-start">
-            <span className="flex items-center justify-start rounded-2xl bg-zinc-100 px-4 py-3">
+          <div className="flex h-full w-full flex-row items-end justify-start">
+            <span className="flex items-end justify-start rounded-2xl bg-zinc-100 px-4 py-3">
               {chat}
             </span>
-            <div className="ml-2 flex flex-col items-start justify-start">
-              <span className="ml-2 text-sm text-zinc-400">
-                {unreaderCount}&nbsp;
-              </span>
-              <span className="ml-2 text-sm text-zinc-200">
-                {timeStr(time)}
-              </span>
-            </div>
+            <span className="mb-1 ml-2  flex flex-col items-end justify-start text-sm text-zinc-200">
+              {timeStr(time)}
+            </span>
           </div>
         </div>
       </div>
@@ -255,31 +284,54 @@ export default function ChatRoom() {
   }
 
   // Render chat messages using the appropriate component
-  const msgBox = chatList.map((item: any, idx: number) => {
+  const msgBox = chatList.map((item: any, index: number) => {
     if (userId !== Number(item.userid)) {
       return (
         <OpponentChat
-          key={idx}
-          // profileImage="https://i.ibb.co/0GtvPDT/Kakao-Talk-Photo-2024-04-17-21-26-58.jpg"
+          key={index}
           profileImage={item.profile_image}
           name={item.sender}
           time={item.send_date}
           chat={item.content}
-          unreaderCount={readCount} // 임시
         />
       );
     }
     return (
       <MyChat
-        key={idx}
+        key={index}
         time={item.send_date}
         chat={item.content}
-        unreaderCount={readCount} // 임시
         profileImage={''}
         name={''}
       />
     );
   });
+
+  //TODO 채팅 박스
+  function renderChat(data: any, index: number) {
+    if (data?.user_id && userId !== Number(data.user_id)) {
+      return (
+        <OpponentChat
+          key={index}
+          profileImage={data.profile_image}
+          name={data.sender}
+          time={data.send_date}
+          chat={data.content}
+        />
+      );
+    }
+    // return (
+    //   <MyChat
+    //     key={data.id}
+    //     time={data.send_date}
+    //     chat={data.content}
+    //     profileImage={''}
+    //     name={''}
+    //   />
+    // );
+  }
+
+  const msgListBox = data?.pages.map(renderChat);
 
   return (
     <div className="flex h-full w-full flex-col items-center justify-center">
@@ -287,15 +339,16 @@ export default function ChatRoom() {
         <span className="font-bold">{headerName}</span>
         <span className="text-md ml-2 text-zinc-200">2</span>
       </div>
-      <div ref={loadMoreRef} />
+
       <div
         className="hide-scrollbar flex h-full w-full flex-col-reverse justify-start overflow-y-auto pt-2"
         onSubmit={handleSubmit}
       >
+        <div ref={loadMoreRef} />
         <div>
           {msgBox}
+          {msgListBox}
           {isFetchingNextPage && <div>Loading...</div>}
-          <div ref={loadMoreRef} />
         </div>
       </div>
 

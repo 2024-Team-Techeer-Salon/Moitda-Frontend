@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 /* eslint-disable object-curly-newline */
 /* eslint-disable import/no-unresolved */
 /* eslint-disable function-paren-newline */
@@ -13,10 +14,10 @@ import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
 import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
+import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import searchMeetings from '@/api/nearMeeting.ts';
 import category from '@/util/category.json';
-import { useRouter } from 'next/navigation';
 import Post from '../components/Post.tsx';
 
 function Distance() {

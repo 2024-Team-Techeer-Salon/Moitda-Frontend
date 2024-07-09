@@ -72,7 +72,7 @@ export async function putUserInfo(
     const response = await formApi.put('/users', formData);
     return response.data;
   } catch (error) {
-    throw new Error('users error : ', error || '');
+    // throw new Error('users error : ', error || '');
   }
 }
 
