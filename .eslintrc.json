@@ -6,5 +6,8 @@
   "extends": ["next/core-web-vitals", "prettier", "airbnb-base"],
   "rules": {
     "linebreak-style": 0
+  },
+  "typescript": {
+    "alwaysTryTypes": true
   }
 }
