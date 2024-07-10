@@ -21,6 +21,7 @@ import { useInfiniteQuery } from '@tanstack/react-query';
 import { getCookie } from '../cookies.tsx';
 import { chatProps } from '@/types/chat.ts';
 import { login } from '@/api/user.ts';
+import category from '@/util/category.json';
 import { chatlists } from '@/api/chat.ts';
 
 export default function ChatRoom() {
@@ -195,7 +196,7 @@ export default function ChatRoom() {
       },
     );
 
-    // if (loadMoreRef.current) observer.observe(loadMoreRef.current); // 로드 더 링크에 observer 등록
+    if (loadMoreRef.current) observer.observe(loadMoreRef.current); // 로드 더 링크에 observer 등록
 
     return () => {
       if (loadMoreRef.current)
@@ -258,7 +259,7 @@ export default function ChatRoom() {
       <div className="flex w-full flex-row items-start justify-start">
         <div className="m-4 flex h-12 w-12">
           <Image
-            src={profileImage || '/default-profile.png'}
+            src={profileImage || category.basic_image[4]}
             width={1024}
             height={1024}
             alt="profile"
