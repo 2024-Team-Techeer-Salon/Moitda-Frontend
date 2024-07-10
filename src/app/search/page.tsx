@@ -167,7 +167,7 @@ function page() {
               ),
             ),
           )}
-          {data?.pages.length === 1 && noResult()}
+          {!(data && data.pages[0]) && noResult()}
           <div ref={loadMoreRef} />
         </div>
       </div>

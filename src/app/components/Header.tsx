@@ -1,6 +1,9 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+/* eslint-disable operator-linebreak */
+
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { Montserrat } from 'next/font/google';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,7 +11,7 @@ import category from '@/util/category.json';
 import { useQuery } from '@tanstack/react-query';
 import { login, logout } from '@/api/user.ts';
 import ignorePath from '../styles/ignorePath.ts';
-import { removeCookie } from '../cookies.tsx';
+import { getCookie, removeCookie } from '../cookies.tsx';
 
 const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
@@ -25,6 +28,21 @@ function Header() {
     queryFn: login,
   });
 
+  const checkAuthentication = async () => {
+    if (
+      !getCookie('accessToken') &&
+      !getCookie('refreshToken') &&
+      path !== '/auth/login' &&
+      path !== '/auth/signup'
+    ) {
+      await router.push('/login');
+    }
+  };
+
+  useEffect(() => {
+    checkAuthentication();
+  }, []);
+
   if (ignorePath().includes(path)) {
     return null;
   }
@@ -36,7 +54,6 @@ function Header() {
   const handleSubmit = (event: { preventDefault: () => void }) => {
     event.preventDefault();
     if (searchQuery) {
-      // 검색 실행 시 /search/{사용자가 작성한 글} 경로로 이동
       router.push(`/search?type=keyword&keyword=${searchQuery}`);
     }
     setIsModalOpen(false); // 검색 시 모달 닫기
@@ -170,7 +187,7 @@ function Header() {
             }
           }}
         >
-          {data ? '로그아웃' : '로그인'}
+          로그아웃
         </button>
       </div>
 
@@ -285,7 +302,7 @@ function Header() {
                 }
               }}
             >
-              {data ? '로그아웃' : '로그인'}
+              로그아웃
             </button>
           )}
         </div>

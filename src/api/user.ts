@@ -1,3 +1,8 @@
+/* eslint-disable no-undef */
+/* eslint-disable import/prefer-default-export */
+/* eslint-disable consistent-return */
+/* eslint-disable no-console */
+import { removeCookie } from '@/app/cookies.tsx';
 import { api, formApi } from './axios.config.ts';
 
 // 회원가입시 정보 입력
@@ -82,6 +87,8 @@ export async function login() {
     const response = await api.get('/users/me');
     return response.data;
   } catch (error) {
+    removeCookie('accessToken');
+    removeCookie('refreshToken');
     throw new Error('users error : ', error || '');
   }
 }
@@ -90,7 +97,7 @@ export async function login() {
 export async function logout() {
   try {
     const response = await api.post('/logout');
-    return response.data;
+    return response.data || {};
   } catch (error) {
     throw new Error('users error : ', error || '');
   }

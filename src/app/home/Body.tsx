@@ -50,29 +50,28 @@ function Distance() {
 
   const renderSize = 8;
 
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useInfiniteQuery({
-      queryKey: ['Latest Meeting List', latitude, longitude],
-      queryFn: async ({ pageParam = 0 }) => {
-        if (latitude !== null && longitude !== null) {
-          return searchMeetings(
-            latitude,
-            longitude,
-            pageParam,
-            renderSize,
-            'asc',
-          );
-        }
-      },
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage === null) {
-          return undefined;
-        }
-        return allPages.length;
-      },
-      enabled: locationFetched, // 위치 정보를 성공적으로 가져왔을 때만 쿼리 실행
-      initialPageParam: 0,
-    });
+  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+    queryKey: ['Latest Meeting List', latitude, longitude],
+    queryFn: async ({ pageParam = 0 }) => {
+      if (latitude !== null && longitude !== null) {
+        return searchMeetings(
+          latitude,
+          longitude,
+          pageParam,
+          renderSize,
+          'asc',
+        );
+      }
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      if (lastPage === null) {
+        return undefined;
+      }
+      return allPages.length;
+    },
+    enabled: locationFetched, // 위치 정보를 성공적으로 가져왔을 때만 쿼리 실행
+    initialPageParam: 0,
+  });
 
   const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
@@ -260,7 +259,7 @@ function Distance() {
               ),
             ),
           )}
-        {isFetchingNextPage && <div>Loading...</div>}
+        {/* {isFetchingNextPage && <div>Loading...</div>} */}
         <div ref={loadMoreRef} />
       </div>
     </div>
