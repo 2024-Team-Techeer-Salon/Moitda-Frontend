@@ -177,14 +177,10 @@ function Header() {
         <button
           className="mb-8 flex h-12 w-full flex-col p-8"
           onClick={() => {
-            if (data) {
-              logout();
-              removeCookie('accessToken');
-              removeCookie('refreshToken');
-              window.location.reload();
-            } else {
-              router.push('/login');
-            }
+            logout();
+            removeCookie('accessToken');
+            removeCookie('refreshToken');
+            window.location.reload();
           }}
         >
           로그아웃
@@ -292,14 +288,10 @@ function Header() {
           {!isLoading && (
             <button
               onClick={() => {
-                if (data) {
-                  logout();
-                  removeCookie('accessToken');
-                  removeCookie('refreshToken');
-                  window.location.reload();
-                } else {
-                  router.push('/login');
-                }
+                logout();
+                removeCookie('accessToken');
+                removeCookie('refreshToken');
+                window.location.reload();
               }}
             >
               로그아웃
