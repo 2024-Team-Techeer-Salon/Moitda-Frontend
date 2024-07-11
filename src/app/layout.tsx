@@ -4,11 +4,13 @@ import { Inter } from 'next/font/google';
 import './styles/globals.css';
 import Script from 'next/script';
 // import StoreProvider from './StoreProvider.tsx';
+import { Montserrat } from 'next/font/google';
 import Header from './components/Header.tsx';
 import Footer from './components/Footer.tsx';
 import QueryProviders from '../lib/QueryProvider.tsx';
 
 const inter = Inter({ subsets: ['latin'] });
+const mont = Montserrat({ subsets: ['latin'], weight: ['500'] });
 
 export const metadata: Metadata = {
   title: 'Moitda',
@@ -29,7 +31,17 @@ export default function RootLayout({
           sizes="any"
         />
         <QueryProviders>
-          <Suspense fallback={<div>로딩중인데요?ㅋㅋ</div>}>
+          <Suspense
+            fallback={
+              <div className="flex h-screen w-screen items-center justify-center">
+                <h1
+                  className={`${mont.className} animate-bounce font-montserrat text-9xl text-black`}
+                >
+                  MOITDA
+                </h1>
+              </div>
+            }
+          >
             <Header />
             {/* <StoreProvider> */}
             <Script
