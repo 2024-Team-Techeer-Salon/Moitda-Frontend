@@ -9,18 +9,6 @@ function Banner() {
   const [pageIndex, setPageIndex] = useState(1);
   const [maxPageIndex] = useState(4);
 
-  const handleForwardClick = () => {
-    if (pageIndex < maxPageIndex) {
-      setPageIndex(pageIndex + 1);
-    }
-  };
-
-  const handleBackwardClick = () => {
-    if (pageIndex > 1) {
-      setPageIndex(pageIndex - 1);
-    }
-  };
-
   return (
     <div className="relative flex h-52 w-full flex-row items-center justify-center overflow-hidden bg-black opacity-90 sm:h-72 lg:h-96">
       <img
@@ -28,20 +16,7 @@ function Banner() {
         alt="home-Image"
         className="absolute h-full w-full"
       />
-      <div className="b 0 z-0 flex h-full w-1/6 items-center justify-center">
-        <button
-          className="btn btn-circle border-none bg-black bg-opacity-20 text-white hover:bg-zinc-800"
-          onClick={handleBackwardClick}
-        >
-          <svg
-            className="h-6 w-6 rotate-180 transform"
-            fill="none"
-            stroke="currentColor"
-          >
-            <path strokeWidth="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      <div className="b 0 z-0 flex h-full w-1/6 items-center justify-center"></div>
       <div className="z-0 flex h-full w-4/6 flex-col justify-center">
         <div>
           <p className="text-2xl text-white lg:text-5xl">모임을 만들고</p>
@@ -53,16 +28,7 @@ function Banner() {
           간편 만남 서비스, <span className="font-bold">모잇다</span>
         </p>
       </div>
-      <div className="z-0 flex h-full w-1/6 items-center justify-center">
-        <button
-          className="btn btn-circle border-none bg-black bg-opacity-20 text-white hover:bg-zinc-800"
-          onClick={handleForwardClick}
-        >
-          <svg className="h-6 w-6 transform" fill="none" stroke="currentColor">
-            <path strokeWidth="2" d="M9 5l7 7-7 7" />
-          </svg>
-        </button>
-      </div>
+      <div className="z-0 flex h-full w-1/6 items-center justify-center"></div>
     </div>
   );
 }

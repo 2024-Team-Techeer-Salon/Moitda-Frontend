@@ -46,3 +46,11 @@ export interface meetingListProps {
   category_id: number;
   image_url: string;
 }
+
+export interface nearMeetingProps {
+  latitude: number;
+  longitude: number;
+  page: number;
+  size: number;
+  sort: string;
+}

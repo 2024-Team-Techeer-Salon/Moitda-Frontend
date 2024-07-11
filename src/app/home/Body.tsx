@@ -12,29 +12,46 @@
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { format } from 'date-fns';
+import { format, set } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import searchMeetings from '@/api/nearMeeting.ts';
+import { searchMeetings, getAllMeetings } from '@/api/search.ts';
 import category from '@/util/category.json';
 import Post from '../components/Post.tsx';
 
 function Distance() {
   const [latitude, setLatitude] = useState<number | null>(null);
   const [longitude, setLongitude] = useState<number | null>(null);
+  const [currentLocation, setCurrentLocation] = useState({
+    latitude: 33,
+    longitude: 12,
+  });
   const [locationFetched, setLocationFetched] = useState(false);
+  const [selectedTime, setSelectedTime] = useState<string>('');
+  const [selectedTitle, setSelectedTitle] = useState<string>('');
+  const [selectedAddress, setSelectedAddress] = useState<string>('');
+  const [selectedAddressName, setSelectedAddressName] = useState<string>('');
+  const [selectedImg, setSelectedImg] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
+  const [selectedMeetingId, setSelectedMeetingId] = useState<number | null>(
+    null,
+  );
   const router = useRouter();
+  const mapRef = useRef<kakao.maps.Map | null>(null);
+  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     function successCallback(position: {
       coords: { latitude: number; longitude: number };
     }) {
       // 완료 되면 콘솔 지우기!!
-      console.log('Latitude: ', position.coords.latitude);
-      console.log('Longitude: ', position.coords.longitude);
       setLatitude(position.coords.latitude);
       setLongitude(position.coords.longitude);
+      setCurrentLocation({
+        latitude: position.coords.latitude,
+        longitude: position.coords.longitude,
+      });
       setLocationFetched(true); // 위치 정보를 성공적으로 가져온 후 설정
     }
 
@@ -48,19 +65,49 @@ function Distance() {
   const locPosition =
     latitude && longitude ? { lat: latitude, lng: longitude } : null;
 
-  const renderSize = 8;
-
-  const { data, fetchNextPage, hasNextPage } = useInfiniteQuery({
+  const {
+    data: mapData,
+    fetchNextPage: mapFetchNextPage,
+    hasNextPage: mapHasNextPage,
+  } = useInfiniteQuery({
     queryKey: ['Latest Meeting List', latitude, longitude],
     queryFn: async ({ pageParam = 0 }) => {
       if (latitude !== null && longitude !== null) {
-        return searchMeetings(
+        return searchMeetings({
           latitude,
           longitude,
-          pageParam,
-          renderSize,
-          'asc',
-        );
+          page: pageParam,
+          size: 1000,
+          sort: 'asc',
+        });
+      }
+    },
+    getNextPageParam: (lastPage, allPages) => {
+      console.log('라스트요~', allPages[0].data.current_page + 1);
+      if (lastPage === null) {
+        return undefined;
+      }
+      return allPages[0].data.current_page + 1;
+    },
+    enabled: locationFetched,
+    initialPageParam: 0,
+  });
+
+  const {
+    data: locData,
+    fetchNextPage,
+    hasNextPage,
+  } = useInfiniteQuery({
+    queryKey: ['All Meeting List', latitude, longitude],
+    queryFn: async ({ pageParam = 0 }) => {
+      if (latitude !== null && longitude !== null) {
+        return getAllMeetings({
+          latitude: currentLocation.latitude,
+          longitude: currentLocation.longitude,
+          page: pageParam,
+          size: 16,
+          sort: 'asc',
+        });
       }
     },
     getNextPageParam: (lastPage, allPages) => {
@@ -72,8 +119,6 @@ function Distance() {
     enabled: locationFetched, // 위치 정보를 성공적으로 가져왔을 때만 쿼리 실행
     initialPageParam: 0,
   });
-
-  const loadMoreRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     if (!hasNextPage) return;
@@ -96,15 +141,19 @@ function Distance() {
     };
   }, [hasNextPage, fetchNextPage, loadMoreRef.current]);
 
-  const [selectedTime, setSelectedTime] = useState<string>('');
-  const [selectedTitle, setSelectedTitle] = useState<string>('');
-  const [selectedAddress, setSelectedAddress] = useState<string>('');
-  const [selectedAddressName, setSelectedAddressName] = useState<string>('');
-  const [selectedImg, setSelectedImg] = useState<string>('');
-  const [selectedCategory, setSelectedCategory] = useState<number | null>(null);
-  const [selectedMeetingId, setSelectedMeetingId] = useState<number | null>(
-    null,
-  );
+  useEffect(() => {
+    if (mapHasNextPage) {
+      mapFetchNextPage(); // 다음 페이지가 있을 경우 다음 페이지 데이터를 가져옵니다.
+    }
+  }, [mapHasNextPage, mapFetchNextPage]);
+
+  const updateCenter = () => {
+    if (mapRef.current) {
+      const center = mapRef.current.getCenter();
+      setLatitude(center.getLat());
+      setLongitude(center.getLng());
+    }
+  };
 
   const handleMain = (marker: {
     time: string;
@@ -129,7 +178,7 @@ function Distance() {
   };
 
   const markers =
-    data?.pages
+    mapData?.pages
       .filter((page) => page && page.data && page.data.meeting_list)
       .flatMap((page) =>
         page.data.meeting_list.map(
@@ -209,6 +258,8 @@ function Distance() {
               center={locPosition}
               style={{ width: '100%', height: '100%' }}
               level={3}
+              onCreate={(map) => (mapRef.current = map)}
+              onDragEnd={updateCenter} // 드래그가 끝났을 때 실행할 함수
             >
               {/* 내위치 */}
               {/* <MapMarker position={locPosition} /> */}
@@ -233,7 +284,7 @@ function Distance() {
         </div>
       </div>
       <div className="my-20 flex flex-row flex-wrap items-center">
-        {data?.pages // pages가 정의된 경우에만 접근
+        {locData?.pages // pages가 정의된 경우에만 접근
           .filter((page) => page && page.data && page.data.meeting_list)
           .flatMap((page) =>
             page.data.meeting_list.map(

@@ -1,6 +1,7 @@
 import { api } from './axios.config.ts';
+import { nearMeetingProps } from '@/types/meeting.ts';
 
-const getSearchData = async (
+export const getSearchData = async (
   searchType: string,
   searchKeyword: string,
   lat: number,
@@ -24,4 +25,37 @@ const getSearchData = async (
   }
 };
 
-export default getSearchData;
+export const searchMeetings = async ({
+  latitude,
+  longitude,
+  page,
+  size,
+  sort,
+}: nearMeetingProps) => {
+  try {
+    const response = await api.get(
+      `/meetings/search/?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}&sort=${sort}`,
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error('주변 모임 검색 에러 : ', error || '');
+  }
+};
+
+// 모든 모임 리스트 조회
+export const getAllMeetings = async ({
+  latitude,
+  longitude,
+  page,
+  size,
+  sort,
+}: nearMeetingProps) => {
+  try {
+    const response = await api.get(
+      `/meetings/search/all?latitude=${latitude}&longitude=${longitude}&page=${page}&size=${size}&sort=${sort}`,
+    );
+    return response.data;
+  } catch (error) {
+    throw new Error('all meeting list get api request error : ', error || '');
+  }
+};

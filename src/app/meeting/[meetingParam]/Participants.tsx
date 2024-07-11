@@ -54,7 +54,7 @@ function Participants({
       />
       <div className={`flex ${isOwner ? 'h-1/2' : 'h-full'} w-full flex-col`}>
         <h2 className="text-medium mt-2 font-semibold">참여 인원</h2>
-        <ul className="flex flex-col overflow-y-scroll">
+        <ul className="hide-scrollbar flex flex-col overflow-y-auto">
           {participantInfo.map((participant, index) => (
             <li
               className="m-1 flex flex-row justify-between pr-2"
@@ -100,7 +100,7 @@ function Participants({
         </ul>
       </div>
       {isOwner && (
-        <div className="flex h-1/2 w-full flex-col overflow-y-scroll">
+        <div className="hide-scrollbar flex h-1/2 w-full flex-col overflow-y-scroll">
           <h2 className="text-medium mt-2 font-semibold">신청 현황</h2>
           <ul className="flex flex-col overflow-y-scroll">
             {applicantInfo?.map((applicant) => (
