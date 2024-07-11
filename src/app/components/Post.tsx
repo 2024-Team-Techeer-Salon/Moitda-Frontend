@@ -9,7 +9,7 @@ import { postProps } from '../../types/post.ts';
 function Post({ titleImage, title, location, meetingId, endTime }: postProps) {
   return (
     <Link
-      className="m-4 flex cursor-pointer flex-col justify-center"
+      className="m-4 flex w-32 cursor-pointer flex-col justify-center sm:w-40 md:w-48 lg:w-56"
       href={`/meeting/${meetingId}`}
     >
       <figure className="relative flex h-32 w-32 rounded-lg shadow-xl sm:h-40 sm:w-40 md:h-48 md:w-48 lg:h-56 lg:w-56">
@@ -26,7 +26,9 @@ function Post({ titleImage, title, location, meetingId, endTime }: postProps) {
           </div>
         )}
       </figure>
-      <p className="pt-1 text-lg font-bold">{title}</p>
+      <p className="overflow-hidden overflow-ellipsis whitespace-nowrap pt-1 text-lg font-bold">
+        {title}
+      </p>
       <p className="text-sm">{location}</p>
     </Link>
   );

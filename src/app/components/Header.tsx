@@ -23,7 +23,7 @@ function Header() {
   const router = useRouter();
   const path = usePathname() || '';
 
-  const { data, isLoading } = useQuery({
+  const { data } = useQuery({
     queryKey: ['login'],
     queryFn: login,
   });
@@ -35,7 +35,7 @@ function Header() {
       path !== '/auth/login' &&
       path !== '/auth/signup'
     ) {
-      await router.push('/login');
+      router.push('/login');
     }
   };
 
@@ -285,18 +285,16 @@ function Header() {
           </svg>
         </div>
         <div className="flex items-center justify-end pr-8 sm:w-1/6 lg:w-1/6">
-          {!isLoading && (
-            <button
-              onClick={() => {
-                logout();
-                removeCookie('accessToken');
-                removeCookie('refreshToken');
-                window.location.reload();
-              }}
-            >
-              로그아웃
-            </button>
-          )}
+          <button
+            onClick={() => {
+              logout();
+              removeCookie('accessToken');
+              removeCookie('refreshToken');
+              window.location.reload();
+            }}
+          >
+            로그아웃
+          </button>
         </div>
       </div>
     </div>
