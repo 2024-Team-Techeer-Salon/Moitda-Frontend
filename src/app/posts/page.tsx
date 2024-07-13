@@ -475,7 +475,7 @@ function page() {
   return (
     <div className="mt-20 flex h-full w-full flex-col items-center justify-center">
       <WarningAlert errorMessage={errorMessage} showAlert={showAlert} />
-      <div className="flex h-full w-full flex-col px-60 md:px-60 lg:px-80 xl:px-[32rem]">
+      <div className="flex h-full w-full flex-col px-16 md:px-20 lg:px-24 xl:px-40 2xl:px-56">
         {/* 제목 입력 및 카테고리 선택 */}
         <div className="flex h-12 w-full flex-row">
           <input
