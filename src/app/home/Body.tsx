@@ -12,7 +12,7 @@
 import { Map, MapMarker } from 'react-kakao-maps-sdk';
 import Image from 'next/image';
 import { useEffect, useRef, useState } from 'react';
-import { format, set } from 'date-fns';
+import { format } from 'date-fns';
 import { ko } from 'date-fns/locale';
 import { useRouter } from 'next/navigation';
 import { useInfiniteQuery } from '@tanstack/react-query';

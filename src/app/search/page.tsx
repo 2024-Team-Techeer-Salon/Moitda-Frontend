@@ -17,7 +17,7 @@ import { useEffect, useState, useRef } from 'react';
 import category from '@/util/category.json';
 import Image from 'next/image';
 import { useInfiniteQuery } from '@tanstack/react-query';
-import getSearchData from '@/api/search.ts';
+import { getSearchData } from '@/api/search.ts';
 import { meetingListProps } from '@/types/meeting.ts';
 import Post from '../components/Post.tsx';
 
